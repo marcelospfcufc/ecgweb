@@ -6,32 +6,48 @@
 package br.ufc.deti.ecgweb.domain;
 
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
-@XmlRootElement
+@Entity
+@Table(name="client")
 public class Client implements Serializable {   
-    private int id;
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @Column(name = "name", nullable = false)    
     private String name;
-
     
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
     
+    @Column(name = "password")
     private String password;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    private ClientCategory category;
 
     public Client() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,4 +75,13 @@ public class Client implements Serializable {
         this.password = password;
     }
 
+    public ClientCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ClientCategory category) {
+        this.category = category;
+    }
+    
+    
 }

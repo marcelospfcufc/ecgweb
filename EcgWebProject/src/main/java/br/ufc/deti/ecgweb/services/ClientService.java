@@ -6,6 +6,9 @@
 package br.ufc.deti.ecgweb.services;
 
 import br.ufc.deti.ecgweb.domain.Client;
+import java.util.List;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,19 +24,45 @@ import javax.ws.rs.core.Response;
 @Path("/client")
 public class ClientService {
     
+    EntityManager em;
+    
     @GET
-    @Path("/list")
+    @Path("/")
     @Produces("application/json")
-    public Response getClients() {
-        return Response.ok("TODO ..").build();
+    public Response getClients() throws NamingException {
+        
+        List<Client> listClients;
+        
+        em = EntityManagerUtils.getEntityManager();
+        em.getTransaction().begin();
+        
+        listClients = em.createQuery("select c from Client c").getResultList();
+        
+        em.getTransaction().commit();
+        em.close();
+        
+        return Response.ok(listClients).build();
     }
     
     @POST
     @Path("/add")
     @Produces(MediaType.APPLICATION_JSON)    
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addClient(Client client) {
-        System.out.println(client);
-        return Response.ok("deu certo").build();
+    public Response addClient(Client client) throws NamingException {
+        
+        Response rs;
+        
+        em = EntityManagerUtils.getEntityManager();
+        em.getTransaction().begin();        
+        try {
+            em.persist(client);
+            em.getTransaction().commit();
+            rs = Response.ok().build();
+        }catch(Exception ex) {
+            rs = Response.status(Response.Status.BAD_REQUEST).build();
+        }finally {
+            em.close();            
+        }
+        return rs;
     }
 }
