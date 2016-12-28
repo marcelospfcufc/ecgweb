@@ -10,9 +10,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,12 +36,16 @@ public class Client implements Serializable {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
     
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private ClientCategory category;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "research_database_id", nullable = true)
+    private ResearchDatabase researchDatabase;       
 
     public Client() {
     }
@@ -82,6 +89,12 @@ public class Client implements Serializable {
     public void setCategory(ClientCategory category) {
         this.category = category;
     }
-    
-    
+
+    public ResearchDatabase getResearchDatabase() {
+        return researchDatabase;
+    }
+
+    public void setResearchDatabase(ResearchDatabase researchDatabase) {
+        this.researchDatabase = researchDatabase;
+    }
 }

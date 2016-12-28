@@ -20,8 +20,8 @@ public class ApplicationConfig extends Application{
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> set = new HashSet<>();
-        set.add(ClientService.class);
+        set.add(ClientService.class);        
+        set.add(AdministrativeService.class);
         return set;
-    }
-    
+    }    
 }

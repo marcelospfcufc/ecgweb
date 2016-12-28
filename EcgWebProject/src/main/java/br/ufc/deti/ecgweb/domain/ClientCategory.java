@@ -9,4 +9,4 @@ package br.ufc.deti.ecgweb.domain;
  *
  * @author javadev
  */
-public enum ClientCategory { DOCTOR, PACIENT, RESEARCH, OTHER}
+public enum ClientCategory { DOCTOR, PATIENT, RESEARCHER, ADMINISTRATOR, OTHER}

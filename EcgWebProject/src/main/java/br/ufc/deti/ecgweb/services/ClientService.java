@@ -6,6 +6,7 @@
 package br.ufc.deti.ecgweb.services;
 
 import br.ufc.deti.ecgweb.domain.Client;
+import br.ufc.deti.ecgweb.domain.ClientCategory;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -49,6 +50,10 @@ public class ClientService {
     @Produces(MediaType.APPLICATION_JSON)    
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addClient(Client client) throws NamingException {
+        
+        if(client.getCategory() == ClientCategory.DOCTOR) {
+            Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         
         Response rs;
         

@@ -3,6 +3,7 @@
   <persistence-unit name="br.ufc.deti.ecgweb_pu" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>br.ufc.deti.ecgweb.domain.Client</class>
+    <class>br.ufc.deti.ecgweb.domain.ResearchDatabase</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?useTimezone=true&amp;serverTimezone=UTC"/>
@@ -10,7 +11,7 @@
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.password" value="qpalzm"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
-      <property name="hibernate.hbm2ddl.auto" value="create-drop" /> 
+      <property name="hibernate.hbm2ddl.auto" value="update" /> 
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
     </properties>
   </persistence-unit>
