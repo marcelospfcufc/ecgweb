@@ -4,6 +4,8 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>br.ufc.deti.ecgweb.domain.Client</class>
     <class>br.ufc.deti.ecgweb.domain.ResearchDatabase</class>
+    <class>br.ufc.deti.ecgweb.domain.Exam</class>
+    
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?useTimezone=true&amp;serverTimezone=UTC"/>

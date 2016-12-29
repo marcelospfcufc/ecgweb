@@ -6,6 +6,8 @@
 package br.ufc.deti.ecgweb.domain;
 
 import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -46,6 +49,9 @@ public class Client implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "research_database_id", nullable = true)
     private ResearchDatabase researchDatabase;       
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER)
+    private Collection<Exam> exams;
 
     public Client() {
     }
@@ -97,4 +103,20 @@ public class Client implements Serializable {
     public void setResearchDatabase(ResearchDatabase researchDatabase) {
         this.researchDatabase = researchDatabase;
     }
+
+    public Collection<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(Collection<Exam> exams) {
+        this.exams = exams;
+    }
+    
+    public void addExam(Exam exam) {
+        exams.add(exam);
+    }
+    
+    
+    
+    
 }
