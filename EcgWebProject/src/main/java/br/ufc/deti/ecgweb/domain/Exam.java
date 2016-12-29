@@ -9,12 +9,9 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,6 +29,9 @@ public class Exam implements Serializable{
     @Column(name = "id")
     private Long id;
     
+    @Column(name = "client_id")
+    private Long clientId;
+    
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
@@ -41,10 +41,6 @@ public class Exam implements Serializable{
     
     @Column(name = "number_of_channels")
     private Integer numberOfChannels;
-    
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "client", referencedColumnName = "id")
-    private Client client;
 
     public Exam() {
     }
@@ -79,13 +75,15 @@ public class Exam implements Serializable{
 
     public void setNumberOfChannels(Integer numberOfChannels) {
         this.numberOfChannels = numberOfChannels;
+    }    
+
+    public Long getClientId() {
+        return clientId;
     }
 
-    public Client getClient() {
-        return client;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
+    
+    
 }
