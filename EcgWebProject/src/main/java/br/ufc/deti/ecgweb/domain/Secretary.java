@@ -5,10 +5,11 @@
  */
 package br.ufc.deti.ecgweb.domain;
 
+import java.util.List;
+
 /**
  *
  * @author javadev
  */
 public class Secretary extends AbstractClient{
-    
 }

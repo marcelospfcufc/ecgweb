@@ -6,17 +6,25 @@
 package br.ufc.deti.ecgweb.domain;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class Doctor extends AbstractClient implements Serializable {       
-    private String crm_;
+public class Doctor extends AbstractClient implements Serializable {
+
+    private String crm_;    
 
     public Doctor(String crm_, String name, Identification ident, String email, String password, ContactNumber numbers) {
         super(name, ident, email, password, numbers);
+        this.crm_ = crm_;
+    }    
+
+    public String getCrm_() {
+        return crm_;
+    }
+
+    public void setCrm_(String crm_) {
         this.crm_ = crm_;
     }
 }
