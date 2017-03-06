@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.infrastructure.jpa;
+package br.ufc.deti.ecgweb.domain;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "dummy_entity")
-public class DummyEntity implements Serializable {
+public class Dummy implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

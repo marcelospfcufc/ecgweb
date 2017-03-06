@@ -9,7 +9,7 @@ package br.ufc.deti.ecgweb.domain.repositories;
  *
  * @author marcelo
  */
-public interface ClienteEntityRepository<T1> {    
+public interface ClienteRepository<T1> {    
     T1 findOneByRg(String rg);    
     T1 findOneByCpf(String cpf);        
 }

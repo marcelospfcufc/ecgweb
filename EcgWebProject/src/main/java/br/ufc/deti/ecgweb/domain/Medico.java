@@ -5,10 +5,25 @@
  */
 package br.ufc.deti.ecgweb.domain;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
 /**
  *
  * @author marcelo
  */
+@Entity
+@DiscriminatorValue(value = "Medico")
+public class Medico extends AbstractCliente{    
+    private String crm;
 
-public interface Medico extends Entity {    
+    public String getCrm() {
+        return crm;
+    }
+
+    public void setCrm(String crm) {
+        //TODO
+        //VALIDAR
+        this.crm = crm;
+    }    
 }

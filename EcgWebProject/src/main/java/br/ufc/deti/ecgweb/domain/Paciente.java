@@ -5,10 +5,15 @@
  */
 package br.ufc.deti.ecgweb.domain;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  *
  * @author marcelo
  */
-public interface Paciente extends Entity{
-    
+@Entity
+@DiscriminatorValue(value = "Paciente")
+public class Paciente extends AbstractCliente{
 }

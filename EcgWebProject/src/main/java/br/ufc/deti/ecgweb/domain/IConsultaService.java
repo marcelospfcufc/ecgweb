@@ -5,12 +5,16 @@
  */
 package br.ufc.deti.ecgweb.domain;
 
-import java.time.LocalDateTime;
+import br.ufc.deti.ecgweb.infrastructure.dto.ConsultaDTO;
+import java.util.List;
 
 /**
  *
  * @author marcelo
  */
 public interface IConsultaService {
-    public void criarConsulta(Medico medico, Paciente paciente, LocalDateTime data);    
+
+    public List<Consulta> listarConsultas();
+    
+    public void marcarConsulta(ConsultaDTO consultaDTO);
 }

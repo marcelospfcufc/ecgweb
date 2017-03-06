@@ -5,7 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.infrastructure.jpa.DummyEntity;
+import br.ufc.deti.ecgweb.domain.Dummy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @author Marcelo Araujo Lima
  */
 @Repository
-public interface DummyEntityRepository extends JpaRepository<DummyEntity, Long>{
+public interface DummyRepository extends JpaRepository<Dummy, Long>{
     
 }
