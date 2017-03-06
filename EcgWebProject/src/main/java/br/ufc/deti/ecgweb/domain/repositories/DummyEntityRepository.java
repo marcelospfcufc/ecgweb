@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.mvc.repository;
+package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.mvc.entity.DummyEntity;
+import br.ufc.deti.ecgweb.infrastructure.jpa.DummyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
+@Repository
 public interface DummyEntityRepository extends JpaRepository<DummyEntity, Long>{
     
 }

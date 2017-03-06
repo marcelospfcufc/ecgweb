@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.mvc.controller;
+package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.mvc.entity.DummyEntity;
-import br.ufc.deti.ecgweb.mvc.repository.DummyEntityRepository;
+import br.ufc.deti.ecgweb.infrastructure.jpa.PacienteEntity;
+import br.ufc.deti.ecgweb.domain.repositories.PacienteRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,31 +18,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- *
- * @author Marcelo Araujo Lima
+ * @author marcelo
  */
 @Controller
-@RequestMapping("/ecgweb/dummy")
-public class DummyEntityController {
-
+@RequestMapping("/ecgweb/paciente")
+public class PacienteEntityController {
+    
     @Autowired
-    private DummyEntityRepository dummyRepository;
+    private PacienteRepository pacienteRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public String dummyWelcome() {
-        List<DummyEntity> entities = dummyRepository.findAll();
-        StringBuilder builder = new StringBuilder();
-        for (DummyEntity entitie : entities) {
-            builder.append(entitie.getValue());
-        }
-        
-        return builder.toString();
+    public List<PacienteEntity> listarPacientes() {
+        List<PacienteEntity> entities = pacienteRepository.findAll();
+        return entities;
     }
-
+    
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.CREATED)
-    public void addDummy(@RequestBody DummyEntity dummy) {
-        dummyRepository.save(dummy);
+    public void adicionarPaciente(@RequestBody PacienteEntity paciente) {        
+        pacienteRepository.save(paciente);        
     }
+    
+    @RequestMapping(value = "/del", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removerPaciente(@RequestBody Long id) {                
+        PacienteEntity entity = pacienteRepository.findOne(id);        
+        pacienteRepository.delete(entity);        
+    }    
 }

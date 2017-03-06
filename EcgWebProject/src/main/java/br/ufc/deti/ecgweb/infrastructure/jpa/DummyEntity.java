@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.mvc.entity;
+package br.ufc.deti.ecgweb.infrastructure.jpa;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
