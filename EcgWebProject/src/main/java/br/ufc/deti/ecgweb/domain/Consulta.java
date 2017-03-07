@@ -5,11 +5,14 @@
  */
 package br.ufc.deti.ecgweb.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CollectionTable;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,8 +34,12 @@ public class Consulta implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
     
+    @ElementCollection
+    @CollectionTable(name = "observacao")
+    private final List<Observacao> observacoes = new ArrayList<Observacao>();
+    
     @Column(name = "data_consulta")    
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)        
     private LocalDateTime dataConsulta;        
     
     @Column(name = "data_criacao")    
@@ -42,6 +49,10 @@ public class Consulta implements Serializable {
     @ManyToOne
     @JoinColumn(name = "medico_id")
     private Medico medico;
+    
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
 
     public Long getId() {        
         return id;
@@ -73,5 +84,25 @@ public class Consulta implements Serializable {
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public void adicionarObservacao(Observacao observacao) {
+        observacoes.add(observacao);
+    }
+    
+    public void removerObservacao(Observacao observacao) {
+        observacoes.remove(observacao);
+    }
+
+    public List<Observacao> getObservacoes() {
+        return observacoes;
     }
 }

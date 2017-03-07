@@ -6,20 +6,16 @@
 package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.domain.Consulta;
-import br.ufc.deti.ecgweb.domain.IConsultaService;
-import br.ufc.deti.ecgweb.domain.Medico;
-import br.ufc.deti.ecgweb.domain.Paciente;
-import br.ufc.deti.ecgweb.domain.repositories.ConsultaRepository;
-import br.ufc.deti.ecgweb.domain.repositories.MedicoRepository;
-import br.ufc.deti.ecgweb.domain.repositories.PacienteRepository;
-import br.ufc.deti.ecgweb.infrastructure.dto.ConsultaDTO;
+import br.ufc.deti.ecgweb.domain.ConsultaService;
+import br.ufc.deti.ecgweb.domain.Observacao;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,40 +26,79 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author marcelo
  */
 @Controller
-@RequestMapping("/ecgweb/consulta")
-public class ConsultaController implements IConsultaService{
+@RequestMapping("/ecgweb/consulta/")
+public class ConsultaController{
     
     @Autowired
-    private MedicoRepository medicoRepository;
+    private ConsultaService service;        
     
-    @Autowired
-    private PacienteRepository pacienteRepository;
+    private static class ConsultaDTO {
+        private Long medicoId;
+        private Long pacienteId;                
+        
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+        private LocalDateTime data;
+
+        public ConsultaDTO() {
+        }
+
+        public Long getMedicoId() {
+            return medicoId;
+        }
+
+        public void setMedicoId(Long medicoId) {
+            this.medicoId = medicoId;
+        }
+
+        public Long getPacienteId() {
+            return pacienteId;
+        }
+
+        public void setPacienteId(Long pacienteId) {
+            this.pacienteId = pacienteId;
+        }
+
+        public LocalDateTime getData() {
+            return data;
+        }
+
+        public void setData(LocalDateTime data) {
+            this.data = data;
+        }
+    }
     
-    @Autowired
-    private ConsultaRepository consultaRepository;    
-    
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")    
+    @RequestMapping(value = "listAll", method = RequestMethod.GET, produces = "application/json")    
     @ResponseBody    
-    @ResponseStatus(HttpStatus.OK)
-    @Override
-    public List<Consulta> listarConsultas() {                                        
-        
-        List<Consulta> consultas = consultaRepository.findAll();
-        return consultas;
+    @ResponseStatus(HttpStatus.OK)    
+    public List<Consulta> listarConsultas() { 
+        return service.listarConsultas();
     }
     
-    @RequestMapping(value = "/add", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)    
-    @Override
+    @RequestMapping(value = "add", method = RequestMethod.PUT, consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)        
     public void marcarConsulta(@RequestBody ConsultaDTO consultaDTO) {                                        
-        Consulta consulta = new Consulta();
-        
-        Medico medico = medicoRepository.findOne(consultaDTO.getMedicoId());
-        Paciente paciente = pacienteRepository.findOne(consultaDTO.getPacienteId());        
-        consulta.setDataConsulta(consultaDTO.getData());        
-        consulta.setDataCriacao(LocalDateTime.now());
-        consulta.setMedico(medico);
-        
-        consultaRepository.save(consulta);
+        service.marcarConsulta(consultaDTO.getMedicoId(), consultaDTO.getPacienteId(), consultaDTO.getData());
     }
+    
+    @RequestMapping(value = "{id}/del", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)        
+    public void removerConsulta(@PathVariable final Long id) {                                        
+        service.removerConsulta(id);
+    }
+    
+    @RequestMapping(value = "{id}/addObservacao", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)        
+    public void adicionarObservacao(@PathVariable final Long id, @RequestBody Observacao observacao) {                                                
+        service.adicionarObservacao(id, observacao);        
+    }
+    
+    @RequestMapping(value = "{id}/delObservacao", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)        
+    public void removerObservacao(@PathVariable final Long id, @RequestBody Observacao observacao) {             
+        
+        service.removerObservacao(id, observacao);
+    }
+    
+    
 }

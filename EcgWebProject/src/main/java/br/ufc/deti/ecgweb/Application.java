@@ -29,5 +29,4 @@ public class Application {
         Persistence.generateSchema("ecgweb", null);
         SpringApplication.run(Application.class, args);
     }
-
 }
