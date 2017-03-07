@@ -87,13 +87,13 @@ public class ConsultaController{
         service.removerConsulta(id);
     }
     
-    @RequestMapping(value = "{id}/addObservacao", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "{id}/addObservation", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)        
     public void adicionarObservacao(@PathVariable final Long id, @RequestBody Observacao observacao) {                                                
         service.adicionarObservacao(id, observacao);        
     }
     
-    @RequestMapping(value = "{id}/delObservacao", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "{id}/delObservation", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)        
     public void removerObservacao(@PathVariable final Long id, @RequestBody Observacao observacao) {             
         

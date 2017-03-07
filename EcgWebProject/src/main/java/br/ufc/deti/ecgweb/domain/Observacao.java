@@ -15,23 +15,23 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Observacao implements Serializable {    
     
-    private String valor;
+    private String observacao;
 
     public Observacao() {
     }
 
     public String getValor() {
-        return valor;
+        return observacao;
     }
 
-    public void setValor(String valor) {
-        this.valor = valor;
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + (this.valor != null ? this.valor.hashCode() : 0);
+        hash = 67 * hash + (this.observacao != null ? this.observacao.hashCode() : 0);
         return hash;
     }
 
@@ -47,7 +47,7 @@ public class Observacao implements Serializable {
             return false;
         }
         final Observacao other = (Observacao) obj;
-        if ((this.valor == null) ? (other.valor != null) : !this.valor.equals(other.valor)) {
+        if ((this.observacao == null) ? (other.observacao != null) : !this.observacao.equals(other.observacao)) {
             return false;
         }
         return true;
