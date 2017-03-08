@@ -13,12 +13,15 @@ import javax.persistence.CollectionTable;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,6 +36,9 @@ public class Consulta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
+    
+    @Embedded    
+    private Receita receita;
     
     @ElementCollection
     @CollectionTable(name = "observacao")
@@ -53,6 +59,10 @@ public class Consulta implements Serializable {
     @ManyToOne
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
+    
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "Consulta_Id")
+    private final List<AbstractExame> exames = new ArrayList<AbstractExame>();
 
     public Long getId() {        
         return id;
@@ -104,5 +114,34 @@ public class Consulta implements Serializable {
 
     public List<Observacao> getObservacoes() {
         return observacoes;
+    }
+
+    public Receita getReceita() {
+        return receita;
+    }
+
+    public void setReceita(Receita receita) {
+        this.receita = receita;
+    }
+    
+    public void adicionarExame(Ecg exame) {        
+        exames.add(exame);
+    }
+    
+    public void removerExame(Long exameId) {
+        AbstractExame exameAux = null;
+        
+        for (AbstractExame exameInt : exames) {
+            if(exameInt.getId() == exameId) {
+                exameAux = exameInt;
+            }
+        }
+        
+        if (exameAux != null) 
+            exames.remove(exameAux);
+    }
+
+    public List<AbstractExame> getExames() {
+        return exames;
     }
 }

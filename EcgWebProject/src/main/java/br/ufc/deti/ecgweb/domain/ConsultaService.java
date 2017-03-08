@@ -6,6 +6,7 @@
 package br.ufc.deti.ecgweb.domain;
 
 import br.ufc.deti.ecgweb.domain.repositories.ConsultaRepository;
+import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MedicoRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PacienteRepository;
 import java.time.LocalDateTime;
@@ -28,6 +29,9 @@ public class ConsultaService {
     
     @Autowired
     private PacienteRepository pacienteRepository;
+    
+    @Autowired
+    private EcgRepository ecgRepository;
     
     public List<Consulta> listarConsultas() {
         return consultaRepository.findAll();
@@ -60,4 +64,49 @@ public class ConsultaService {
         consulta.removerObservacao(observacao);        
         consultaRepository.save(consulta);
     }
+    
+    public void editarReceita(Long consultaId, Receita receita) {
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        consulta.setReceita(receita);
+        consultaRepository.save(consulta);
+    }
+    
+    public void adicionarExame(Long idConsulta, LocalDateTime data) {        
+        
+        Ecg ecg = new Ecg();
+        ecg.setDataExame(data);
+        ecgRepository.save(ecg);
+        
+        Consulta consulta = consultaRepository.findOne(idConsulta);
+        consulta.adicionarExame(ecg);
+        consultaRepository.save(consulta);
+    }
+    
+    public void removerExame(Long idConsulta, Long idEcg) {     
+        
+        Consulta consulta = consultaRepository.findOne(idConsulta);        
+        consulta.removerExame(idEcg);
+        consultaRepository.save(consulta);
+    }
+    
+    public void adicionarMarcacao(Long idConsulta, Long idExame, Long idMedico, Long tempo, String comentario) {        
+        
+        Consulta consulta = consultaRepository.findOne(idConsulta);
+        
+        Ecg ecg = consultaRepository.findByExameAndIdIn(consulta.getExames(), idExame);
+        
+        Marcacao marcacao = new Marcacao();        
+        marcacao.setTempo(tempo);
+        marcacao.setComentario(comentario);
+        
+        ecg.adicionarMarcacao();
+        consultaRepository.save(consulta);
+    }
+    
+    public void removerMarcacao(Long idConsulta, Long idEcg) {     
+        
+        
+    }
+    
+    
 }

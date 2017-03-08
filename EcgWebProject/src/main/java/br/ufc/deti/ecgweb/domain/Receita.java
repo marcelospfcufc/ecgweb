@@ -15,4 +15,15 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Receita implements Serializable {    
     private String receita;
+
+    public Receita() {
+    }
+
+    public String getReceita() {
+        return receita;
+    }
+
+    public void setReceita(String receita) {
+        this.receita = receita;
+    }
 }
