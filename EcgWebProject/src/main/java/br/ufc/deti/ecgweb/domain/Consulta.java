@@ -62,7 +62,7 @@ public class Consulta implements Serializable {
     
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Consulta_Id")
-    private final List<AbstractExame> exames = new ArrayList<AbstractExame>();
+    private final List<Ecg> exames = new ArrayList<Ecg>();
 
     public Long getId() {        
         return id;
@@ -141,7 +141,19 @@ public class Consulta implements Serializable {
             exames.remove(exameAux);
     }
 
-    public List<AbstractExame> getExames() {
+    public List<Ecg> getExames() {
         return exames;
+    }
+    
+    public Ecg getExameById(Long id) {
+        
+        Ecg ecgAux = null;
+        
+        for(Ecg ecg : exames) {
+            if( ecg.getId() == id ) {
+                ecgAux = ecg;
+            }
+        }
+        return ecgAux;
     }
 }

@@ -20,27 +20,27 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConsultaService {
-    
+
     @Autowired
     private ConsultaRepository consultaRepository;
-    
+
     @Autowired
     private MedicoRepository medicoRepository;
-    
+
     @Autowired
     private PacienteRepository pacienteRepository;
-    
+
     @Autowired
     private EcgRepository ecgRepository;
-    
+
     public List<Consulta> listarConsultas() {
         return consultaRepository.findAll();
-    }            
-    
-    public void marcarConsulta(Long medicoId, Long pacienteId, LocalDateTime data){
+    }
+
+    public void marcarConsulta(Long medicoId, Long pacienteId, LocalDateTime data) {
         Medico medico = medicoRepository.findOne(medicoId);
         Paciente paciente = pacienteRepository.findOne(pacienteId);
-        
+
         Consulta consulta = new Consulta();
         consulta.setMedico(medico);
         consulta.setPaciente(paciente);
@@ -48,65 +48,81 @@ public class ConsultaService {
         consulta.setDataCriacao(LocalDateTime.now());
         consultaRepository.save(consulta);
     }
-    
+
     public void removerConsulta(Long consultaId) {
         consultaRepository.delete(consultaId);
     }
-    
-    public void adicionarObservacao(Long idConsulta, Observacao observacao) {        
+
+    public void adicionarObservacao(Long idConsulta, Observacao observacao) {
         Consulta consulta = consultaRepository.findOne(idConsulta);
-        consulta.adicionarObservacao(observacao);        
+        consulta.adicionarObservacao(observacao);
         consultaRepository.save(consulta);
     }
-    
+
     public void removerObservacao(Long idConsulta, Observacao observacao) {
-        Consulta consulta = consultaRepository.findOne(idConsulta);        
-        consulta.removerObservacao(observacao);        
+        Consulta consulta = consultaRepository.findOne(idConsulta);
+        consulta.removerObservacao(observacao);
         consultaRepository.save(consulta);
     }
-    
+
     public void editarReceita(Long consultaId, Receita receita) {
         Consulta consulta = consultaRepository.findOne(consultaId);
         consulta.setReceita(receita);
         consultaRepository.save(consulta);
     }
-    
-    public void adicionarExame(Long idConsulta, LocalDateTime data) {        
-        
+
+    public void adicionarExame(Long idConsulta, LocalDateTime data) {
+
         Ecg ecg = new Ecg();
         ecg.setDataExame(data);
         ecgRepository.save(ecg);
-        
+
         Consulta consulta = consultaRepository.findOne(idConsulta);
         consulta.adicionarExame(ecg);
         consultaRepository.save(consulta);
     }
-    
-    public void removerExame(Long idConsulta, Long idEcg) {     
-        
-        Consulta consulta = consultaRepository.findOne(idConsulta);        
+
+    public void removerExame(Long idConsulta, Long idEcg) {
+
+        Consulta consulta = consultaRepository.findOne(idConsulta);
         consulta.removerExame(idEcg);
         consultaRepository.save(consulta);
     }
-    
-    public void adicionarMarcacao(Long idConsulta, Long idExame, Long idMedico, Long tempo, String comentario) {        
-        
-        Consulta consulta = consultaRepository.findOne(idConsulta);
-        
-        Ecg ecg = consultaRepository.findByExameAndIdIn(consulta.getExames(), idExame);
-        
-        Marcacao marcacao = new Marcacao();        
+
+    public void adicionarMarcacao(Long consultaId, Long exameId, Long medicoId, Double tempo, String comentario) {
+
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        Medico medico = medicoRepository.findOne(medicoId);
+
+        Marcacao marcacao = new Marcacao();
         marcacao.setTempo(tempo);
         marcacao.setComentario(comentario);
-        
-        ecg.adicionarMarcacao();
+        marcacao.setMedico(medico);
+
+        List<Ecg> ecgs = consulta.getExames();
+        for (Ecg ecg : ecgs) {
+            if (ecg.getId() == exameId) {
+                ecg.getMarcacoes().add(marcacao);
+            }
+        }
+
         consultaRepository.save(consulta);
     }
-    
-    public void removerMarcacao(Long idConsulta, Long idEcg) {     
-        
-        
+
+    public void removerMarcacao(Long consultaId, Long exameId, Double tempo) {
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        Ecg ecg = consulta.getExameById(exameId);
+        ecg.removerMarcacoesByTempo(tempo);
+        consultaRepository.save(consulta);
     }
-    
-    
+
+    public void alterarLaudo(Long consultaId, Long exameId, String strLaudo) {
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        Ecg ecg = consulta.getExameById(exameId);
+        Laudo laudo = new Laudo();
+        laudo.setLaudo(strLaudo);
+
+        ecg.setLaudo(laudo);
+        consultaRepository.save(consulta);
+    }
 }

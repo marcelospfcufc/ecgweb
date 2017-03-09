@@ -20,22 +20,34 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @DiscriminatorValue(value = "Ecg")
-public class Ecg extends AbstractExame{
-    
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)    
+public class Ecg extends AbstractExame {
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "Exame_Id")
     private final List<Marcacao> marcacoes = new ArrayList<Marcacao>();
 
     public List<Marcacao> getMarcacoes() {
         return marcacoes;
     }
-    
+
     public void adicionarMarcacao(Marcacao marcacao) {
         marcacoes.add(marcacao);
     }
-    
+
     public void removerMarcacao(Marcacao marcacao) {
         marcacoes.remove(marcacao);
+    }
+
+    public void removerMarcacoesByTempo(Double tempo) {
+        List<Marcacao> marcacoesAux = new ArrayList<Marcacao>();
+        for (Marcacao marcacaoAux : marcacoes) {
+            if (Double.compare(tempo, marcacaoAux.getTempo()) == 0) {
+                marcacoesAux.add(marcacaoAux);
+            }
+        }
+
+        for (int i = 0; i < marcacoesAux.size(); i++) {
+            marcacoes.remove(marcacoesAux.get(i));
+        }
     }
 }

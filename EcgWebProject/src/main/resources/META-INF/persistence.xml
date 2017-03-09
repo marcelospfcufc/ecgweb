@@ -9,6 +9,8 @@
     <class>br.ufc.deti.ecgweb.domain.Paciente</class>
     <class>br.ufc.deti.ecgweb.domain.AbstractExame</class>
     <class>br.ufc.deti.ecgweb.domain.Ecg</class>
+    <class>br.ufc.deti.ecgweb.domain.Marcacao</class>
+    <class>br.ufc.deti.ecgweb.domain.Laudo</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="ecgweb"/>

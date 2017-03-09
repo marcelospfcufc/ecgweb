@@ -8,33 +8,47 @@ package br.ufc.deti.ecgweb.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
  *
  * @author marcelo
  */
-
 @Entity
 @Table(name = "exame")
 @DiscriminatorColumn(name = "TIPO_EXAME")
 public abstract class AbstractExame implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;        
-    
-    @Column(name = "data_exame")        
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    private Long id;
+
+    @Column(name = "data_exame")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dataExame;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Laudo laudo;
 
     public Long getId() {
         return id;
+    }
+
+    public Laudo getLaudo() {
+        return laudo;
+    }
+
+    public void setLaudo(Laudo laudo) {
+        this.laudo = laudo;
     }
 
     public void setId(Long id) {
@@ -48,7 +62,7 @@ public abstract class AbstractExame implements Serializable {
     public void setDataExame(LocalDateTime dataExame) {
         this.dataExame = dataExame;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -77,6 +91,5 @@ public abstract class AbstractExame implements Serializable {
         }
         return true;
     }
-    
-    
+
 }
