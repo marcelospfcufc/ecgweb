@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain;
+package br.ufc.deti.ecgweb.domain.consulta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +22,18 @@ import javax.persistence.OneToMany;
 @DiscriminatorValue(value = "Ecg")
 public class Ecg extends AbstractExame {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Exame_Id")
     private final List<Marcacao> marcacoes = new ArrayList<Marcacao>();
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "Exame_Id")
+    private final List<SinalEcg> sinais = new ArrayList<SinalEcg>();
 
     public List<Marcacao> getMarcacoes() {
         return marcacoes;
     }
-
+    
     public void adicionarMarcacao(Marcacao marcacao) {
         marcacoes.add(marcacao);
     }
@@ -48,6 +52,35 @@ public class Ecg extends AbstractExame {
 
         for (int i = 0; i < marcacoesAux.size(); i++) {
             marcacoes.remove(marcacoesAux.get(i));
+        }
+    }
+
+    public List<SinalEcg> getSinais() {
+        return sinais;
+    }
+    
+    public List<SinalEcg> getSinaisByTempo(Double tempo) {
+        List<SinalEcg> sinaisAux = new ArrayList<SinalEcg>();
+        for(SinalEcg sinal : sinais) {
+            if(Double.compare(tempo, sinal.getTempo()) == 0) {
+                sinaisAux.add(sinal);
+            }                
+        }        
+        return sinaisAux;
+    }
+    
+    public void adicionarSinal(SinalEcg sinal) {
+        sinais.add(sinal);
+    }
+    
+    public void removerSinal(SinalEcg sinal) {
+        sinais.remove(sinal);
+    }
+    
+    public void removerSinaisByTempo(Double tempo) {
+        List<SinalEcg> sinaisAux = getSinaisByTempo(tempo);
+        for(SinalEcg sinal : sinaisAux) {
+            sinais.remove(sinal);
         }
     }
 }

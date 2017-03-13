@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain;
+package br.ufc.deti.ecgweb.domain.consulta;
 
+import br.ufc.deti.ecgweb.domain.cliente.Medico;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

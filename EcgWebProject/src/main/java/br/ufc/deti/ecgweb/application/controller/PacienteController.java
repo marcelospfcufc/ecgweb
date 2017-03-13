@@ -5,8 +5,8 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.domain.ClienteService;
-import br.ufc.deti.ecgweb.domain.Paciente;
+import br.ufc.deti.ecgweb.domain.cliente.ClienteService;
+import br.ufc.deti.ecgweb.domain.cliente.Paciente;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

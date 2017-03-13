@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain;
+package br.ufc.deti.ecgweb.domain.cliente;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

@@ -5,10 +5,10 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.domain.Consulta;
-import br.ufc.deti.ecgweb.domain.ConsultaService;
-import br.ufc.deti.ecgweb.domain.Observacao;
-import br.ufc.deti.ecgweb.domain.Receita;
+import br.ufc.deti.ecgweb.domain.consulta.Consulta;
+import br.ufc.deti.ecgweb.domain.consulta.ConsultaService;
+import br.ufc.deti.ecgweb.domain.consulta.Observacao;
+import br.ufc.deti.ecgweb.domain.consulta.Receita;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,17 +32,51 @@ public class ConsultaController {
 
     @Autowired
     private ConsultaService service;
+    
+    private static class SinalEcgDTO {
+        private Double tempoSinal;
+        private Double intensidadeSinal;
+
+        public SinalEcgDTO() {
+        }
+
+        public Double getTempoSinal() {
+            return tempoSinal;
+        }
+
+        public void setTempoSinal(Double tempoSinal) {
+            this.tempoSinal = tempoSinal;
+        }
+
+        public Double getIntensidadeSinal() {
+            return intensidadeSinal;
+        }
+
+        public void setIntensidadeSinal(Double intensidadeSinal) {
+            this.intensidadeSinal = intensidadeSinal;
+        }
+    }
 
     private static class ConsultaDTO {
 
         private Long medicoId;
         private Long pacienteId;
+        
+        List<SinalEcgDTO> sinais;
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
         private LocalDateTime data;
 
         public ConsultaDTO() {
+        }
+
+        public List<SinalEcgDTO> getSinais() {
+            return sinais;
+        }
+
+        public void setSinais(List<SinalEcgDTO> sinais) {
+            this.sinais = sinais;
         }
 
         public Long getMedicoId() {
@@ -224,5 +258,17 @@ public class ConsultaController {
     @ResponseStatus(HttpStatus.OK)
     public void alterarLaudoEcg(@PathVariable final Long consultaId, @PathVariable final Long exameId, @RequestBody EcgDTO dados) {
         service.alterarLaudo(consultaId, exameId, dados.getLaudo());
+    }
+    
+    @RequestMapping(value = "{consultaId}/{exameId}/addSignal", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void adicionarSinalEcg(@PathVariable final Long consultaId, @PathVariable final Long exameId, @RequestBody SinalEcgDTO sinal) {
+        service.adicionarSinalEcg(consultaId, exameId, sinal.getTempoSinal(), sinal.getIntensidadeSinal());
+    }
+    
+    @RequestMapping(value = "{consultaId}/{exameId}/delSignal", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void removerSinalEcg(@PathVariable final Long consultaId, @PathVariable final Long exameId, @RequestBody SinalEcgDTO sinal) {
+        service.removerSinalEcg(consultaId, exameId, sinal.getTempoSinal());
     }
 }

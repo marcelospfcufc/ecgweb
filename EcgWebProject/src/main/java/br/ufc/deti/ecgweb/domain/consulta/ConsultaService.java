@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain;
+package br.ufc.deti.ecgweb.domain.consulta;
 
+import br.ufc.deti.ecgweb.domain.cliente.Paciente;
+import br.ufc.deti.ecgweb.domain.cliente.Medico;
 import br.ufc.deti.ecgweb.domain.repositories.ConsultaRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MedicoRepository;
@@ -125,4 +127,23 @@ public class ConsultaService {
         ecg.setLaudo(laudo);
         consultaRepository.save(consulta);
     }
+    
+    public void adicionarSinalEcg(Long consultaId, Long exameId, Double tempo, Double intensidade) {
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        Ecg ecg = consulta.getExameById(exameId);
+        SinalEcg sinal = new SinalEcg();
+        sinal.setTempo(tempo);
+        sinal.setIntensidade(intensidade);        
+        ecg.adicionarSinal(sinal);
+        consultaRepository.save(consulta);
+    }
+    
+    public void removerSinalEcg(Long consultaId, Long exameId, Double tempo) {
+        Consulta consulta = consultaRepository.findOne(consultaId);
+        Ecg ecg = consulta.getExameById(exameId);
+        ecg.removerSinaisByTempo(tempo);
+        consultaRepository.save(consulta);
+    }
+    
+    
 }
