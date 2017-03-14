@@ -55,25 +55,43 @@ public class ConsultaService {
         consultaRepository.delete(consultaId);
     }
 
-    public void adicionarObservacao(Long idConsulta, Observacao observacao) {
+    public void adicionarObservacao(Long idConsulta, List<String> observacoes) {
         Consulta consulta = consultaRepository.findOne(idConsulta);
-        consulta.adicionarObservacao(observacao);
+
+        for (String strAux : observacoes) {
+            Observacao obs = new Observacao();
+            obs.setObservacao(strAux);
+            consulta.adicionarObservacao(obs);
+        }
         consultaRepository.save(consulta);
     }
 
-    public void removerObservacao(Long idConsulta, Observacao observacao) {
+    public void removerObservacao(Long idConsulta, String strObservacao) {
         Consulta consulta = consultaRepository.findOne(idConsulta);
-        consulta.removerObservacao(observacao);
-        consultaRepository.save(consulta);
+
+        List<Observacao> observacoes = consulta.getObservacoes();
+        Observacao observacao = null;
+        for (Observacao obsAux : observacoes) {
+            if (obsAux.getObservacao().equalsIgnoreCase(strObservacao)) {
+                observacao = obsAux;
+            }
+        }
+
+        if (observacao != null) {
+            consulta.removerObservacao(observacao);
+            consultaRepository.save(consulta);
+        }
     }
 
-    public void editarReceita(Long consultaId, Receita receita) {
+    public void editarReceita(Long consultaId, String strReceita) {
         Consulta consulta = consultaRepository.findOne(consultaId);
+        Receita receita = new Receita();
+        receita.setReceita(strReceita);        
         consulta.setReceita(receita);
         consultaRepository.save(consulta);
     }
 
-    public void adicionarExame(Long idConsulta, LocalDateTime data) {
+    public Long adicionarExame(Long idConsulta, LocalDateTime data) {
 
         Ecg ecg = new Ecg();
         ecg.setDataExame(data);
@@ -82,6 +100,8 @@ public class ConsultaService {
         Consulta consulta = consultaRepository.findOne(idConsulta);
         consulta.adicionarExame(ecg);
         consultaRepository.save(consulta);
+        
+        return consulta.getId();
     }
 
     public void removerExame(Long idConsulta, Long idEcg) {
@@ -127,23 +147,22 @@ public class ConsultaService {
         ecg.setLaudo(laudo);
         consultaRepository.save(consulta);
     }
-    
+
     public void adicionarSinalEcg(Long consultaId, Long exameId, Double tempo, Double intensidade) {
         Consulta consulta = consultaRepository.findOne(consultaId);
         Ecg ecg = consulta.getExameById(exameId);
         SinalEcg sinal = new SinalEcg();
         sinal.setTempo(tempo);
-        sinal.setIntensidade(intensidade);        
+        sinal.setIntensidade(intensidade);
         ecg.adicionarSinal(sinal);
         consultaRepository.save(consulta);
     }
-    
+
     public void removerSinalEcg(Long consultaId, Long exameId, Double tempo) {
         Consulta consulta = consultaRepository.findOne(consultaId);
         Ecg ecg = consulta.getExameById(exameId);
         ecg.removerSinaisByTempo(tempo);
         consultaRepository.save(consulta);
     }
-    
-    
+
 }

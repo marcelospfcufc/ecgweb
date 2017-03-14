@@ -20,7 +20,7 @@ public class Observacao implements Serializable {
     public Observacao() {
     }
 
-    public String getValor() {
+    public String getObservacao() {
         return observacao;
     }
 
