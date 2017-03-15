@@ -5,10 +5,11 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.domain.cliente.Medico;
+import br.ufc.deti.ecgweb.domain.security.Login;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MedicoRepository extends JpaRepository<Medico, Long> {    
+public interface LoginRepository extends JpaRepository<Login, Long> {
+    public Login findByLogin(String login);
 }

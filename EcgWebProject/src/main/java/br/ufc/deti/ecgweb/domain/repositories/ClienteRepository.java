@@ -5,11 +5,13 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
+import br.ufc.deti.ecgweb.domain.cliente.AbstractCliente;
+import br.ufc.deti.ecgweb.domain.consulta.Consulta;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 /**
  *
  * @author marcelo
  */
-public interface ClienteRepository<T1> {    
-    T1 findOneByRg(String rg);    
-    T1 findOneByCpf(String cpf);        
+public interface ClienteRepository extends JpaRepository<AbstractCliente, Long>{        
 }
