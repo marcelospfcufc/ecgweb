@@ -5,7 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.domain.consulta.Ecg;
+import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

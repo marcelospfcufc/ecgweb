@@ -5,14 +5,13 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.domain.cliente.Paciente;
+import br.ufc.deti.ecgweb.domain.client.AbstractClient;
+import br.ufc.deti.ecgweb.domain.appointment.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author marcelo
  */
-@Repository
-public interface PacienteRepository extends JpaRepository<Paciente, Long>{
+public interface ClientRepository extends JpaRepository<AbstractClient, Long>{        
 }

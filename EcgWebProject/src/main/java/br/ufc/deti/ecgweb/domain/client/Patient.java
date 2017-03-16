@@ -3,17 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.cliente;
+package br.ufc.deti.ecgweb.domain.client;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
  * @author marcelo
  */
 @Entity
-@DiscriminatorValue(value = "Paciente")
-public class Paciente extends AbstractCliente{
+@DiscriminatorValue(value = ClientType.PATIENT)
+public class Patient extends AbstractClient{
 }

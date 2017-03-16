@@ -3,21 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.cliente;
+package br.ufc.deti.ecgweb.domain.client;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
  *
- * @author marcelo
+ * @author Marcelo Araujo Lima
  */
 @Entity
-@DiscriminatorValue(value = "Medico")
-public class Medico extends AbstractCliente{    
+@DiscriminatorValue(value = ClientType.DOCTOR)
+public class Doctor extends AbstractClient {
+
     private String crm;
 
-    public String getCrm() {
+    public String getCrm() {        
         return crm;
     }
 
@@ -25,5 +26,5 @@ public class Medico extends AbstractCliente{
         //TODO
         //VALIDAR
         this.crm = crm;
-    }    
+    }
 }

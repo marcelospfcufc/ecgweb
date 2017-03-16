@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.consulta;
+package br.ufc.deti.ecgweb.domain.appointment;
 
+import br.ufc.deti.ecgweb.domain.exam.EcgReport;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -26,29 +27,29 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "exame")
 @DiscriminatorColumn(name = "TIPO_EXAME")
-public abstract class AbstractExame implements Serializable {
+public abstract class AbstractExam implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "data_exame")
+    @Column(name = "exam_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime dataExame;
+    private LocalDateTime examDate;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Laudo laudo;
+    private EcgReport report;
 
     public Long getId() {
         return id;
     }
 
-    public Laudo getLaudo() {
-        return laudo;
+    public EcgReport getReport() {
+        return report;
     }
 
-    public void setLaudo(Laudo laudo) {
-        this.laudo = laudo;
+    public void setReport(EcgReport report) {
+        this.report = report;
     }
 
     public void setId(Long id) {
@@ -56,18 +57,18 @@ public abstract class AbstractExame implements Serializable {
     }
 
     public LocalDateTime getDataExame() {
-        return dataExame;
+        return examDate;
     }
 
-    public void setDataExame(LocalDateTime dataExame) {
-        this.dataExame = dataExame;
+    public void setExamDate(LocalDateTime date) {
+        this.examDate = date;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 29 * hash + (this.dataExame != null ? this.dataExame.hashCode() : 0);
+        hash = 29 * hash + (this.examDate != null ? this.examDate.hashCode() : 0);
         return hash;
     }
 
@@ -82,11 +83,11 @@ public abstract class AbstractExame implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AbstractExame other = (AbstractExame) obj;
+        final AbstractExam other = (AbstractExam) obj;
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
-        if (this.dataExame != other.dataExame && (this.dataExame == null || !this.dataExame.equals(other.dataExame))) {
+        if (this.examDate != other.examDate && (this.examDate == null || !this.examDate.equals(other.examDate))) {
             return false;
         }
         return true;

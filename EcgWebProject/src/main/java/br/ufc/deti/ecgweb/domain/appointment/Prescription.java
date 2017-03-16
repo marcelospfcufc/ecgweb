@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.consulta;
+package br.ufc.deti.ecgweb.domain.appointment;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -13,17 +13,17 @@ import javax.persistence.Embeddable;
  * @author Marcelo Araujo Lima
  */
 @Embeddable
-public class Receita implements Serializable {    
-    private String receita;
+public class Prescription implements Serializable {    
+    private String prescription;
 
-    public Receita() {
+    public Prescription() {
     }
 
-    public String getReceita() {
-        return receita;
+    public String getPrescription() {
+        return prescription;
     }
 
-    public void setReceita(String receita) {
-        this.receita = receita;
+    public void setPrescription(String prescription) {
+        this.prescription = prescription;
     }
 }

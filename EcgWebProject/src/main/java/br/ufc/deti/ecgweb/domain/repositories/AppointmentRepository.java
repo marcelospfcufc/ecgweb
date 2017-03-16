@@ -5,10 +5,10 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.domain.consulta.Consulta;
+import br.ufc.deti.ecgweb.domain.appointment.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ConsultaRepository extends JpaRepository<Consulta, Long> {    
+public interface AppointmentRepository extends JpaRepository<Appointment, Long> {    
 }

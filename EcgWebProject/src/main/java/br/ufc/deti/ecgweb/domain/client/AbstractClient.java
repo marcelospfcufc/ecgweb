@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.cliente;
+package br.ufc.deti.ecgweb.domain.client;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -20,14 +20,14 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "client")
 @DiscriminatorColumn(name = "TIPO_CLIENTE")
-public abstract class AbstractCliente implements Serializable {
+public abstract class AbstractClient implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
     @Column(nullable = false, unique = false)
-    private String nome;        
+    private String name;        
     @Column(nullable = false, unique = true)
     private String cpf;
     @Column(nullable = false, unique = true)
@@ -43,12 +43,12 @@ public abstract class AbstractCliente implements Serializable {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCpf() {

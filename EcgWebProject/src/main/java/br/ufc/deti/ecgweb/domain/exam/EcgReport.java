@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.consulta;
+package br.ufc.deti.ecgweb.domain.exam;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "laudo")
-public class Laudo {
+public class EcgReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Laudo {
 
     private String laudo;
 
-    public Laudo() {
+    public EcgReport() {
     }
 
     public Long getId() {

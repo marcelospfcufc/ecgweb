@@ -5,10 +5,8 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.domain.consulta.Consulta;
-import br.ufc.deti.ecgweb.domain.consulta.ConsultaService;
-import br.ufc.deti.ecgweb.domain.consulta.Observacao;
-import br.ufc.deti.ecgweb.domain.consulta.Receita;
+import br.ufc.deti.ecgweb.domain.appointment.Appointment;
+import br.ufc.deti.ecgweb.domain.appointment.AppointmentService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,11 +24,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author marcelo
  */
 @Controller
-@RequestMapping("/ecgweb/consulta/")
-public class ConsultaController {
+@RequestMapping("/ecgweb/appointment/")
+public class AppointmentController {
 
     @Autowired
-    private ConsultaService service;
+    private AppointmentService service;
 
     private static class SinalEcgDTO {
 
@@ -233,57 +230,90 @@ public class ConsultaController {
     @RequestMapping(value = "listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Consulta> listarConsultas() {
-        return service.listarConsultas();
+    public List<Appointment> listarConsultas() {
+        return service.listAllAppointments();
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST, consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void marcarConsulta(@RequestBody ConsultaDTO consultaDTO) {
-        service.marcarConsulta(consultaDTO.getMedicoId(), consultaDTO.getPacienteId(), consultaDTO.getDataConsulta());
+    public void createAppointment(@RequestBody ConsultaDTO consultaDTO) {
+        service.createAppointment(consultaDTO.getMedicoId(), consultaDTO.getPacienteId(), consultaDTO.getDataConsulta());
     }
 
     @RequestMapping(value = "del", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void removerConsulta(@RequestBody ConsultaDTO consulta) {
-        service.removerConsulta(consulta.getId());
+    public void delAppointment(@RequestBody ConsultaDTO appointment) {
+        service.delAppointment(appointment.getId());
     }
 
-    @RequestMapping(value = "addObservation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "addComment", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void adicionarObservacao(@RequestBody ConsultaDTO consulta) {
-        service.adicionarObservacao(consulta.getId(), consulta.getObservacoes());
+    public void addComment(@RequestBody ConsultaDTO appointment) {
+        service.addComment(appointment.getId(), appointment.getObservacoes());
     }
 
-    @RequestMapping(value = "delObservation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "delComment", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void removerObservacao(@RequestBody ConsultaDTO consulta) {
-        List<String> observacoes = consulta.getObservacoes();
-        for (String obs : observacoes) {
-            service.removerObservacao(consulta.getId(), obs);
+    public void delComment(@RequestBody ConsultaDTO appointment) {
+        List<String> comments = appointment.getObservacoes();
+        for (String obs : comments) {
+            service.delComment(appointment.getId(), obs);
         }
     }
 
     @RequestMapping(value = "changePrescription", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void alterarReceita(@RequestBody ConsultaDTO consulta) {
-        service.editarReceita(consulta.getId(), consulta.getReceita());
+    public void changePrescription(@RequestBody ConsultaDTO appointment) {
+        service.changePrescription(appointment.getId(), appointment.getReceita());
     }
 
     @RequestMapping(value = "addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void adicionarExameEcg(@RequestBody ConsultaDTO consulta) {
-        List<EcgDTO> ecgs = consulta.getEcgs();
+    public void addEcgExam(@RequestBody ConsultaDTO appointment) {
+        List<EcgDTO> ecgs = appointment.getEcgs();
         for (EcgDTO ecg : ecgs) {
-            Long exameId = service.adicionarExame(consulta.getId(), ecg.getDataExame());
+            Long exameId = service.addExam(appointment.getId(), ecg.getDataExame());
             List<SinalEcgDTO> sinais = ecg.getSinais();
             for (SinalEcgDTO sinal : sinais) {
-                service.adicionarSinalEcg(consulta.getId(), exameId, sinal.getTempoSinal(), sinal.getIntensidadeSinal());
+                //service.ad(appointment.getId(), exameId, sinal.getTempoSinal(), sinal.getIntensidadeSinal());
+            }
+        }
+    }
+    
+    @RequestMapping(value = "addAnnotation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addEcgAnnotation(@RequestBody ConsultaDTO appointment) {
+        List<EcgDTO> ecgs = appointment.getEcgs();
+        for (EcgDTO ecg : ecgs) {
+            List<MarcacaoDTO> annotations = ecg.getMarcacoes();
+            for (MarcacaoDTO annotation : annotations) {
+                //service.addAnnotation(appointment.getId(), ecg.getId(), appointment.getMedicoId(), appointment.get(), appointment.get);
             }
         }
     }
 
-    @RequestMapping(value = "delEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "delAnnotation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void delEcgAnnotation(@RequestBody ConsultaDTO appointment) {
+        List<EcgDTO> ecgs = appointment.getEcgs();
+        for (EcgDTO ecg : ecgs) {
+            List<MarcacaoDTO> annotations = ecg.getMarcacoes();
+            for (MarcacaoDTO annotation : annotations) {
+                service.delAnnotation(appointment.getId(), ecg.getId(), annotation.getTempoMs());
+            }
+        }
+    }
+    
+    @RequestMapping(value = "changeReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeEcgReport(@RequestBody ConsultaDTO appointment) {
+        List<EcgDTO> ecgs = appointment.getEcgs();
+        for (EcgDTO ecg : ecgs) {
+            service.changeEcgReport(appointment.getId(), ecg.getId(), ecg.getLaudo());
+        }
+    }
+
+    /*@RequestMapping(value = "delEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void removerExameEcg(@RequestBody ConsultaDTO consulta) {
         List<EcgDTO> ecgs = consulta.getEcgs();
@@ -291,39 +321,7 @@ public class ConsultaController {
             service.removerExame(consulta.getId(), ecg.getId());
         }
     }
-
-    @RequestMapping(value = "addAnnotation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void adicionarMarcacaoEcg(@RequestBody ConsultaDTO consulta) {
-        List<EcgDTO> ecgs = consulta.getEcgs();
-        for (EcgDTO ecg : ecgs) {
-            List<MarcacaoDTO> marcacoes = ecg.getMarcacoes();
-            for (MarcacaoDTO marcacao : marcacoes) {
-                service.adicionarMarcacao(consulta.getId(), ecg.getId(), marcacao.getMedicoId(), marcacao.getTempoMs(), marcacao.getComentario());
-            }
-        }
-    }
-
-    @RequestMapping(value = "delAnnotation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void removerMarcacaoEcg(@RequestBody ConsultaDTO consulta) {
-        List<EcgDTO> ecgs = consulta.getEcgs();
-        for (EcgDTO ecg : ecgs) {
-            List<MarcacaoDTO> marcacoes = ecg.getMarcacoes();
-            for (MarcacaoDTO marcacao : marcacoes) {
-                service.removerMarcacao(consulta.getId(), ecg.getId(), marcacao.getTempoMs());
-            }
-        }
-    }
-
-    @RequestMapping(value = "changeReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void alterarLaudoEcg(@RequestBody ConsultaDTO consulta) {
-        List<EcgDTO> ecgs = consulta.getEcgs();
-        for (EcgDTO ecg : ecgs) {
-            service.alterarLaudo(consulta.getId(), ecg.getId(), ecg.getLaudo());
-        }
-    }
+    
 
     @RequestMapping(value = "addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -346,5 +344,5 @@ public class ConsultaController {
         for (SinalEcgDTO sinal : sinais) {
             service.removerSinalEcg(consulta.getId(), ecg.getId(), sinal.getTempoSinal());
         }
-    }
+    }*/
 }

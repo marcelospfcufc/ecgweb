@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.consulta;
+package br.ufc.deti.ecgweb.domain.appointment;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -13,25 +13,25 @@ import javax.persistence.Embeddable;
  * @author Marcelo Araujo Lima
  */
 @Embeddable
-public class Observacao implements Serializable {    
+public class Comment implements Serializable {    
     
-    private String observacao;
+    private String comment;
 
-    public Observacao() {
+    public Comment() {
     }
 
-    public String getObservacao() {
-        return observacao;
+    public String getComment() {
+        return comment;
     }
 
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + (this.observacao != null ? this.observacao.hashCode() : 0);
+        hash = 67 * hash + (this.comment != null ? this.comment.hashCode() : 0);
         return hash;
     }
 
@@ -46,8 +46,8 @@ public class Observacao implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Observacao other = (Observacao) obj;
-        if ((this.observacao == null) ? (other.observacao != null) : !this.observacao.equals(other.observacao)) {
+        final Comment other = (Comment) obj;
+        if ((this.comment == null) ? (other.comment != null) : !this.comment.equals(other.comment)) {
             return false;
         }
         return true;
