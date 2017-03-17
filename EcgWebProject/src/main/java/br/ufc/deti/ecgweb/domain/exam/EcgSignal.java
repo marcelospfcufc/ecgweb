@@ -6,60 +6,42 @@
 package br.ufc.deti.ecgweb.domain.exam;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
-@Entity
-@Table(name = "sinal")
+@Embeddable
 public class EcgSignal implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  
-    
-    private Double tempo;    
-    private Double intensidade;
+    private Double xTime;
+    private Double yIntensity;
 
     public EcgSignal() {
+    }    
+
+    public Double getxTime() {
+        return xTime;
     }
 
-    public Long getId() {
-        return id;
+    public void setxTime(Double xTime) {
+        this.xTime = xTime;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Double getyIntensity() {
+        return yIntensity;
     }
 
-    public Double getTempo() {
-        return tempo;
-    }
-
-    public void setTempo(Double tempo) {
-        this.tempo = tempo;
-    }
-
-    public Double getIntensidade() {
-        return intensidade;
-    }
-
-    public void setIntensidade(Double intensidade) {
-        this.intensidade = intensidade;
-    }
+    public void setyIntensity(Double yIntensity) {
+        this.yIntensity = yIntensity;
+    }  
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 19 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 19 * hash + (this.tempo != null ? this.tempo.hashCode() : 0);
-        hash = 19 * hash + (this.intensidade != null ? this.intensidade.hashCode() : 0);
+        int hash = 3;
+        hash = 41 * hash + (this.xTime != null ? this.xTime.hashCode() : 0);
+        hash = 41 * hash + (this.yIntensity != null ? this.yIntensity.hashCode() : 0);
         return hash;
     }
 
@@ -75,15 +57,14 @@ public class EcgSignal implements Serializable {
             return false;
         }
         final EcgSignal other = (EcgSignal) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.xTime != other.xTime && (this.xTime == null || !this.xTime.equals(other.xTime))) {
             return false;
         }
-        if (this.tempo != other.tempo && (this.tempo == null || !this.tempo.equals(other.tempo))) {
-            return false;
-        }
-        if (this.intensidade != other.intensidade && (this.intensidade == null || !this.intensidade.equals(other.intensidade))) {
+        if (this.yIntensity != other.yIntensity && (this.yIntensity == null || !this.yIntensity.equals(other.yIntensity))) {
             return false;
         }
         return true;
     }
+    
+    
 }

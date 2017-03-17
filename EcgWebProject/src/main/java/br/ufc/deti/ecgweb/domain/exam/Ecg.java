@@ -5,7 +5,6 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
-import br.ufc.deti.ecgweb.domain.appointment.AbstractExam;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -23,66 +22,76 @@ import javax.persistence.OneToMany;
 public class Ecg extends AbstractExam {
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exame_Id")
-    private final List<Annotation> marcacoes = new ArrayList<Annotation>();
+    @JoinColumn(name = "Exam_Id")
+    private final List<EcgAnnotation> annotations = new ArrayList<EcgAnnotation>();
     
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exame_Id")
-    private final List<EcgSignal> sinais = new ArrayList<EcgSignal>();
+    @JoinColumn(name = "Exam_Id")
+    private final List<EcgChannel> channels = new ArrayList<EcgChannel>();
+    
+    private Long durationMs;
     
     private Long sampleRate;
 
-    public List<Annotation> getMarcacoes() {
-        return marcacoes;
+    public List<EcgAnnotation> getAnnotations() {
+        return annotations;
     }
     
-    public void adicionarMarcacao(Annotation marcacao) {
-        marcacoes.add(marcacao);
+    public void addAnnotation(EcgAnnotation annotation) {
+        annotations.add(annotation);
     }
 
-    public void removerMarcacao(Annotation marcacao) {
-        marcacoes.remove(marcacao);
+    public void delAnnotation(EcgAnnotation annotation) {
+        annotations.remove(annotation);
     }
 
-    public void removerMarcacoesByTempo(Double tempo) {
-        List<Annotation> marcacoesAux = new ArrayList<Annotation>();
-        for (Annotation marcacaoAux : marcacoes) {
-            if (Double.compare(tempo, marcacaoAux.getTempo()) == 0) {
-                marcacoesAux.add(marcacaoAux);
+    public void delAnnotationByTimeMs(Double timeMs) {
+        List<EcgAnnotation> annotations_ = new ArrayList<EcgAnnotation>();
+        for (EcgAnnotation annotationAux : annotations) {
+            if (Double.compare(timeMs, annotationAux.getTempo()) == 0) {
+                annotations_.add(annotationAux);
             }
         }
 
-        for (int i = 0; i < marcacoesAux.size(); i++) {
-            marcacoes.remove(marcacoesAux.get(i));
-        }
+        for (int i = 0; i < annotations_.size(); i++) {
+            annotations.remove(annotations_.get(i));
+        }        
     }
 
-    public List<EcgSignal> getSinais() {
-        return sinais;
+    public List<EcgChannel> getChannels() {
+        return channels;
     }
     
-    public List<EcgSignal> getSinaisByTempo(Double tempo) {
-        List<EcgSignal> sinaisAux = new ArrayList<EcgSignal>();
-        for(EcgSignal sinal : sinais) {
-            if(Double.compare(tempo, sinal.getTempo()) == 0) {
-                sinaisAux.add(sinal);
-            }                
-        }        
-        return sinaisAux;
+    public void addChannel(EcgChannel channel) {
+        channels.add(channel);
     }
     
-    public void adicionarSinal(EcgSignal sinal) {
-        sinais.add(sinal);
+    public void delChannel(EcgChannel channel) {
+        channels.remove(channel);
     }
     
-    public void removerSinal(EcgSignal sinal) {
-        sinais.remove(sinal);
-    }
-    
-    public void removerSinaisByTempo(Double tempo) {
-        List<EcgSignal> sinaisAux = getSinaisByTempo(tempo);
-        for(EcgSignal sinal : sinaisAux) {
-            sinais.remove(sinal);
+    public EcgChannel getChannelByType(EcgLeadType type) {
+        EcgChannel channel_ = null;
+        for(EcgChannel channel : channels) {
+            
         }
+        
+        return channel_;
+    }
+
+    public Long getDurationMs() {
+        return durationMs;
+    }
+
+    public void setDurationMs(Long durationMs) {
+        this.durationMs = durationMs;
+    }
+
+    public Long getSampleRate() {
+        return sampleRate;
+    }
+
+    public void setSampleRate(Long sampleRate) {
+        this.sampleRate = sampleRate;
     }
 }

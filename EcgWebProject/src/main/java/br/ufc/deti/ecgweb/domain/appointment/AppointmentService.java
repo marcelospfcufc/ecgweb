@@ -5,7 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.appointment;
 
-import br.ufc.deti.ecgweb.domain.exam.Annotation;
+import br.ufc.deti.ecgweb.domain.exam.EcgAnnotation;
 import br.ufc.deti.ecgweb.domain.exam.EcgReport;
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.client.Patient;
@@ -119,7 +119,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findOne(appointmentId);
         Doctor doctor = medicoRepository.findOne(doctorId);
 
-        Annotation annotation = new Annotation();
+        EcgAnnotation annotation = new EcgAnnotation();
         annotation.setTempo(timeMs);
         annotation.setComentario(strComment);
         annotation.setMedico(doctor);
@@ -127,7 +127,7 @@ public class AppointmentService {
         List<Ecg> ecgs = appointment.getExams();
         for (Ecg ecg : ecgs) {
             if (ecg.getId() == examId) {
-                ecg.getMarcacoes().add(annotation);
+                ecg.getAnnotations().add(annotation);
             }
         }
 
@@ -137,7 +137,7 @@ public class AppointmentService {
     public void delAnnotation(Long appointmentId, Long examId, Double timeMs) {
         Appointment appointment = appointmentRepository.findOne(appointmentId);
         Ecg ecg = appointment.getExamById(examId);
-        ecg.removerMarcacoesByTempo(timeMs);
+        ecg.delAnnotationByTimeMs(timeMs);
         appointmentRepository.save(appointment);
     }
 

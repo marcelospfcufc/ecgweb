@@ -5,6 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.appointment;
 
+import br.ufc.deti.ecgweb.domain.exam.AbstractExam;
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.client.Patient;
 import br.ufc.deti.ecgweb.domain.client.Doctor;

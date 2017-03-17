@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "marcacao")
-public class Annotation implements Serializable {
+public class EcgAnnotation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,7 +88,7 @@ public class Annotation implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Annotation other = (Annotation) obj;
+        final EcgAnnotation other = (EcgAnnotation) obj;
         if ((this.comentario == null) ? (other.comentario != null) : !this.comentario.equals(other.comentario)) {
             return false;
         }
@@ -103,6 +103,4 @@ public class Annotation implements Serializable {
         }
         return true;
     }
-    
-    
 }

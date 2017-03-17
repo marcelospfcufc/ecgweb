@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufc.deti.ecgweb.domain.appointment;
+package br.ufc.deti.ecgweb.domain.exam;
 
 import br.ufc.deti.ecgweb.domain.exam.EcgReport;
 import com.fasterxml.jackson.annotation.JsonFormat;
