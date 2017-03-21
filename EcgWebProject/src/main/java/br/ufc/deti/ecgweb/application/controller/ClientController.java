@@ -7,8 +7,12 @@ package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.domain.client.ClientService;
 import br.ufc.deti.ecgweb.domain.client.Doctor;
+import br.ufc.deti.ecgweb.domain.client.Patient;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,24 +25,57 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Marcelo Araujo Lima 
  */
 @Controller
-@RequestMapping("/ecgweb/client/")
+@RequestMapping("/ecgweb/")
 public class ClientController{
     
     @Autowired
     private ClientService service;   
+    
+    private static class EcgDTO {
+        
+        private Long id;
 
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+        private LocalDateTime examDate;        
+        private String report;
+
+        public EcgDTO() {
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public LocalDateTime getExamDate() {
+            return examDate;
+        }
+
+        public void setExamDate(LocalDateTime examDate) {
+            this.examDate = examDate;
+        }
+
+        public String getReport() {
+            return report;
+        }
+
+        public void setReport(String report) {
+            this.report = report;
+        }
+    }
 
     private static class ClientDTO {
         private Long clientId;
         private String name;
         private String email;
         private String cpf;
-        private String rg;
-        private ClientTypeDTO clientType;
+        private String rg;     
         
-        private enum ClientTypeDTO {
-            DOCTOR, PATIENT;
-        }
+        private List<EcgDTO> ecgs;
 
         public ClientDTO() {
         }
@@ -81,19 +118,19 @@ public class ClientController{
 
         public void setRg(String rg) {
             this.rg = rg;
+        }  
+
+        public List<EcgDTO> getEcgs() {
+            return ecgs;
         }
 
-        public ClientTypeDTO getClientType() {
-            return clientType;
-        }
-
-        public void setClientType(ClientTypeDTO clientType) {
-            this.clientType = clientType;
+        public void setEcgs(List<EcgDTO> ecgs) {
+            this.ecgs = ecgs;
         }
     }
     
     private static class DoctorDTO extends ClientDTO{
-        private String crm;
+        private String crm;        
 
         public String getCrm() {
             return crm;
@@ -103,27 +140,50 @@ public class ClientController{
             this.crm = crm;
         }
     }
+    
+    private static class PatientDTO extends ClientDTO {
+        
+    }
 
-    @RequestMapping(value = "listAll", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "doctor/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Doctor> listAllClients(@RequestBody ClientDTO clientDTO) {
-        
-        if(clientDTO.getClientType() == ClientDTO.ClientTypeDTO.DOCTOR)
-            return service.listAllDoctors();
-        
-        return null;
+    public List<Doctor> listAllDoctors() {        
+        return service.listAllDoctors();  
     }
     
-    @RequestMapping(value = "add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<Patient> listAllPatients() {        
+        return service.listAllPatients();  
+    }
+    
+    @RequestMapping(value = "doctor/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
     public void addDoctor(@RequestBody DoctorDTO doctorDTO) {        
         service.addDoctor(doctorDTO.getName(), doctorDTO.getEmail(), doctorDTO.getCpf(), doctorDTO.getRg(), doctorDTO.getCrm());
     }
     
-    @RequestMapping(value = "del", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "patient/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
-    public void delDoctor(@RequestBody ClientDTO clientDTO) {                
-        service.delDoctor(clientDTO.getClientId());
+    public void addPatient(@RequestBody PatientDTO patientDTO) {        
+        service.addPatient(patientDTO.getName(), patientDTO.getEmail(), patientDTO.getCpf(), patientDTO.getRg());
+    }
+    
+    @RequestMapping(value = "client/del", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+    public void delClient(@RequestBody ClientDTO clientDTO) {                        
+        service.delClient(clientDTO.getClientId());
     }    
+    
+    @RequestMapping(value = "client/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addEcg(@RequestBody ClientDTO clientDTO) {
+        Long clientId = clientDTO.getClientId();
+        List<EcgDTO> ecgs =  clientDTO.getEcgs();
+        for(EcgDTO ecg : ecgs) {
+            service.addEcg(clientId, ecg.getExamDate());
+        }
+    }
 }

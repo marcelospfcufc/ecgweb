@@ -25,8 +25,8 @@ import javax.persistence.Table;
  * @author marcelo
  */
 @Entity
-@Table(name = "exame")
-@DiscriminatorColumn(name = "TIPO_EXAME")
+@Table(name = "exam")
+@DiscriminatorColumn(name = "EXAM_TYPE")
 public abstract class AbstractExam implements Serializable {
 
     @Id

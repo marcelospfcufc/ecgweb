@@ -5,24 +5,30 @@
  */
 package br.ufc.deti.ecgweb.domain.client;
 
+import br.ufc.deti.ecgweb.domain.exam.AbstractExam;
+import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
  *
- * @author marcelo
+ * @author Marcelo Araujo Lima
  */
-
 @Entity
 @Table(name = "client")
-@DiscriminatorColumn(name = "TIPO_CLIENTE")
-public abstract class AbstractClient implements Serializable {
+@DiscriminatorColumn(name = "CLIENT_TYPE")
+public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
@@ -34,6 +40,10 @@ public abstract class AbstractClient implements Serializable {
     private String rg;
     @Column(nullable = false, unique = true)
     private String email;
+    
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "Client_Id")
+    private final List<Ecg> exams = new ArrayList<Ecg>();
 
     public Long getId() {
         return id;
@@ -57,7 +67,7 @@ public abstract class AbstractClient implements Serializable {
 
     public void setCpf(String cpf) {
         //TODO
-        //VALIDAR
+        //Check value
         this.cpf = cpf;
     }
 
@@ -67,7 +77,7 @@ public abstract class AbstractClient implements Serializable {
 
     public void setRg(String rg) {
         //TODO
-        //VALIDAR
+        //Check value
         this.rg = rg;
     }
 
@@ -77,10 +87,40 @@ public abstract class AbstractClient implements Serializable {
 
     public void setEmail(String email) {
         //TODO
-        //VALIDAR
+        //Check value
         this.email = email;
     }
     
+    public void addEcgExam(Ecg exam) {        
+        exams.add(exam);
+    }
     
+    public void delExam(Long examId) {
+        AbstractExam examAux = null;
+        
+        for (AbstractExam examInt : exams) {
+            if(Long.compare(examInt.getId(),examId) == 0) {
+                examAux = examInt;
+            }
+        }
+        
+        if (examAux != null) 
+            exams.remove(examAux);
+    }
+
+    public List<Ecg> getExams() {
+        return exams;
+    }
     
+    public Ecg getExamById(Long id) {
+        
+        Ecg ecgAux = null;
+        
+        for(Ecg ecg : exams) {
+            if( ecg.getId() == id ) {
+                ecgAux = ecg;
+            }
+        }
+        return ecgAux;
+    }
 }

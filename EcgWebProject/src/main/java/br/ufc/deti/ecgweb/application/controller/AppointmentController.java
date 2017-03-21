@@ -30,7 +30,7 @@ public class AppointmentController {
     @Autowired
     private AppointmentService service;
 
-    private static class SinalEcgDTO {
+    /*private static class SinalEcgDTO {
 
         private Double tempoSinal;
         private Double intensidadeSinal;
@@ -151,24 +151,20 @@ public class AppointmentController {
         public void setMarcacoes(List<MarcacaoDTO> marcacoes) {
             this.marcacoes = marcacoes;
         }
-    }
+    }*/
 
-    private static class ConsultaDTO {
+    private static class AppointmentDTO {
 
         private Long id;
         
-        private Long medicoId;
-        private Long pacienteId;
-        private String receita;
-        private List<String> observacoes;
-        private List<EcgDTO> ecgs;
+        private Long doctorId;
+        private Long patientId;
+        private String prescription;
+        private List<String> comments;        
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-        private LocalDateTime dataConsulta;
-
-        public ConsultaDTO() {
-        }
+        private LocalDateTime appointmentDate;
 
         public Long getId() {
             return id;
@@ -178,52 +174,44 @@ public class AppointmentController {
             this.id = id;
         }
 
-        public Long getMedicoId() {
-            return medicoId;
+        public Long getDoctorId() {
+            return doctorId;
         }
 
-        public void setMedicoId(Long medicoId) {
-            this.medicoId = medicoId;
+        public void setDoctorId(Long doctorId) {
+            this.doctorId = doctorId;
         }
 
-        public Long getPacienteId() {
-            return pacienteId;
+        public Long getPatientId() {
+            return patientId;
         }
 
-        public void setPacienteId(Long pacienteId) {
-            this.pacienteId = pacienteId;
+        public void setPatientId(Long patientId) {
+            this.patientId = patientId;
         }
 
-        public List<EcgDTO> getEcgs() {
-            return ecgs;
+        public String getPrescription() {
+            return prescription;
         }
 
-        public void setEcgs(List<EcgDTO> ecgs) {
-            this.ecgs = ecgs;
+        public void setPrescription(String prescription) {
+            this.prescription = prescription;
         }
 
-        public LocalDateTime getDataConsulta() {
-            return dataConsulta;
+        public List<String> getComments() {
+            return comments;
         }
 
-        public void setDataConsulta(LocalDateTime dataConsulta) {
-            this.dataConsulta = dataConsulta;
+        public void setComments(List<String> comments) {
+            this.comments = comments;
         }
 
-        public List<String> getObservacoes() {
-            return observacoes;
+        public LocalDateTime getAppointmentDate() {
+            return appointmentDate;
         }
 
-        public void setObservacoes(List<String> observacoes) {
-            this.observacoes = observacoes;
-        }
-
-        public String getReceita() {
-            return receita;
-        }
-
-        public void setReceita(String receita) {
-            this.receita = receita;
+        public void setAppointmentDate(LocalDateTime appointmentDate) {
+            this.appointmentDate = appointmentDate;
         }
     }
 
@@ -234,7 +222,7 @@ public class AppointmentController {
         return service.listAllAppointments();
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.POST, consumes = "application/json")
+    /*@RequestMapping(value = "add", method = RequestMethod.POST, consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void createAppointment(@RequestBody ConsultaDTO consultaDTO) {
         service.createAppointment(consultaDTO.getMedicoId(), consultaDTO.getPacienteId(), consultaDTO.getDataConsulta());
@@ -313,7 +301,7 @@ public class AppointmentController {
         }
     }
 
-    /*@RequestMapping(value = "delEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "delEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void removerExameEcg(@RequestBody ConsultaDTO consulta) {
         List<EcgDTO> ecgs = consulta.getEcgs();

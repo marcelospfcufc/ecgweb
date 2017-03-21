@@ -8,6 +8,7 @@ package br.ufc.deti.ecgweb.domain.exam;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -27,10 +28,12 @@ public class Ecg extends AbstractExam {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Exam_Id")
-    private final List<EcgChannel> channels = new ArrayList<EcgChannel>();
+    private final List<EcgChannel> channels = new ArrayList<EcgChannel>();    
     
+    @Column(name = "duration_ms")
     private Long durationMs;
     
+    @Column(name = "sample_rate")
     private Long sampleRate;
 
     public List<EcgAnnotation> getAnnotations() {
@@ -48,7 +51,7 @@ public class Ecg extends AbstractExam {
     public void delAnnotationByTimeMs(Double timeMs) {
         List<EcgAnnotation> annotations_ = new ArrayList<EcgAnnotation>();
         for (EcgAnnotation annotationAux : annotations) {
-            if (Double.compare(timeMs, annotationAux.getTempo()) == 0) {
+            if (Double.compare(timeMs, annotationAux.getTimeMs()) == 0) {
                 annotations_.add(annotationAux);
             }
         }

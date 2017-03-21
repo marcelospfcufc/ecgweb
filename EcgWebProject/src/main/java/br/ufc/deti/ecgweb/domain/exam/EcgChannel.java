@@ -8,15 +8,12 @@ package br.ufc.deti.ecgweb.domain.exam;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,7 +21,7 @@ import javax.persistence.Table;
  * @author Marcelo Araujo Lima
  */
 @Entity
-@Table(name = "channel")
+@Table(name = "ecg_channel")
 public class EcgChannel implements Serializable {
 
     @Id
@@ -32,7 +29,7 @@ public class EcgChannel implements Serializable {
     private Long id;
     
     @ElementCollection
-    @CollectionTable(name = "signal")
+    @CollectionTable(name = "ecg_signal")
     private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
     private EcgLeadType leadType;

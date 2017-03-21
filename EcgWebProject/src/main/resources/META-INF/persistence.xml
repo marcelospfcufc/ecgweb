@@ -7,11 +7,13 @@
     <class>br.ufc.deti.ecgweb.domain.exam.EcgSignal</class>
     <class>br.ufc.deti.ecgweb.domain.exam.EcgReport</class>
     <class>br.ufc.deti.ecgweb.domain.appointment.Appointment</class>
-    <class>br.ufc.deti.ecgweb.domain.client.AbstractClient</class>
     <class>br.ufc.deti.ecgweb.domain.client.Doctor</class>
     <class>br.ufc.deti.ecgweb.domain.client.Patient</class>
     <class>br.ufc.deti.ecgweb.domain.exam.AbstractExam</class>
     <class>br.ufc.deti.ecgweb.domain.exam.EcgAnnotation</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.EcgChannel</class>
+    <class>br.ufc.deti.ecgweb.domain.security.Login</class>
+    <class>br.ufc.deti.ecgweb.domain.client.Client</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="ecgweb"/>

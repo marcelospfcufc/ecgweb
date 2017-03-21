@@ -16,8 +16,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.ufc.deti.ecgweb.domain.repositories.AppointmentRepository;
-import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
-import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
+import br.ufc.deti.ecgweb.domain.repositories.ClientRepository;
 
 /**
  *
@@ -28,12 +27,9 @@ public class AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
-
+    
     @Autowired
-    private DoctorRepository medicoRepository;
-
-    @Autowired
-    private PatientRepository pacienteRepository;
+    private ClientRepository clientRepository;    
 
     @Autowired
     private EcgRepository ecgRepository;
@@ -42,9 +38,9 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
-    public void createAppointment(Long doctorId, Long patientId, LocalDateTime date) {
-        Doctor doctor = medicoRepository.findOne(doctorId);
-        Patient patient = pacienteRepository.findOne(patientId);
+    /*public void createAppointment(Long doctorId, Long patientId, LocalDateTime date) {
+        Doctor doctor = (Doctor) clientRepository.findOne(doctorId);
+        Patient patient = (Patient) clientRepository.findOne(patientId);
 
         Appointment appointment = new Appointment();
         appointment.setDoctor(doctor);
@@ -117,12 +113,12 @@ public class AppointmentService {
     public void addAnnotation(Long appointmentId, Long examId, Long doctorId, Double timeMs, String strComment) {
 
         Appointment appointment = appointmentRepository.findOne(appointmentId);
-        Doctor doctor = medicoRepository.findOne(doctorId);
+        Doctor doctor = (Doctor) clientRepository.findOne(doctorId);
 
         EcgAnnotation annotation = new EcgAnnotation();
-        annotation.setTempo(timeMs);
-        annotation.setComentario(strComment);
-        annotation.setMedico(doctor);
+        annotation.setTimeMs(timeMs);
+        annotation.setComment(strComment);
+        annotation.setDoctor(doctor);
 
         List<Ecg> ecgs = appointment.getExams();
         for (Ecg ecg : ecgs) {
@@ -149,7 +145,7 @@ public class AppointmentService {
 
         ecg.setReport(report);
         appointmentRepository.save(appointment);
-    }
+    }*/
 
     /*public void adicionarSinalEcg(Long consultaId, Long exameId, Double tempo, Double intensidade) {
         Appointment consulta = appointmentRepository.findOne(consultaId);

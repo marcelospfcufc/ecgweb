@@ -14,5 +14,5 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue(value = ClientType.PATIENT)
-public class Patient extends AbstractClient{
+public class Patient extends Client{
 }

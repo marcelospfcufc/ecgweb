@@ -5,6 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,8 +17,8 @@ import javax.persistence.Table;
  * @author Marcelo Araujo Lima
  */
 @Entity
-@Table(name = "laudo")
-public class EcgReport {
+@Table(name = "ecg_report")
+public class EcgReport implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

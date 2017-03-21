@@ -63,10 +63,6 @@ public class Appointment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
-    
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "Appointment_Id")
-    private final List<Ecg> exams = new ArrayList<Ecg>();
 
     public Long getId() {        
         return id;
@@ -126,38 +122,5 @@ public class Appointment implements Serializable {
 
     public void setPrescription(Prescription prescription) {
         this.prescription = prescription;
-    }
-    
-    public void addEcgExam(Ecg exam) {        
-        exams.add(exam);
-    }
-    
-    public void delExam(Long examId) {
-        AbstractExam examAux = null;
-        
-        for (AbstractExam examInt : exams) {
-            if(examInt.getId() == examId) {
-                examAux = examInt;
-            }
-        }
-        
-        if (examAux != null) 
-            exams.remove(examAux);
-    }
-
-    public List<Ecg> getExams() {
-        return exams;
-    }
-    
-    public Ecg getExamById(Long id) {
-        
-        Ecg ecgAux = null;
-        
-        for(Ecg ecg : exams) {
-            if( ecg.getId() == id ) {
-                ecgAux = ecg;
-            }
-        }
-        return ecgAux;
     }
 }
