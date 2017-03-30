@@ -8,6 +8,7 @@ import javax.persistence.Entity;
  * @author Marcelo Araujo Lima
  */
 @Entity
-@DiscriminatorValue(value = RoleType.PATIENT)
-public class Patient extends Client{    
+@DiscriminatorValue(value = RoleType.MIT_BIH_PATIENT)
+public class MitBihClient extends Client{
+    
 }

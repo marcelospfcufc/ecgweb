@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,7 @@ public class EcgChannel implements Serializable {
     @CollectionTable(name = "ecg_signal")
     private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
+    @Column (name = "lead_type")
     private EcgLeadType leadType;
 
     public EcgChannel() {

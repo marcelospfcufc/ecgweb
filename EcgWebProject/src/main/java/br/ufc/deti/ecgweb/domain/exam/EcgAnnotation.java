@@ -7,6 +7,7 @@ package br.ufc.deti.ecgweb.domain.exam;
 
 import br.ufc.deti.ecgweb.domain.client.Doctor;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class EcgAnnotation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    
     
+    @Column(name = "time_ms")
     private Double timeMs;
     
     private String comment;    

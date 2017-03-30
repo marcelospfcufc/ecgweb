@@ -6,12 +6,11 @@
 package br.ufc.deti.ecgweb.domain.repositories;
 
 import br.ufc.deti.ecgweb.domain.client.Client;
-import br.ufc.deti.ecgweb.domain.appointment.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author marcelo
  */
-public interface ClientRepository extends JpaRepository<Client, Long>{        
+public interface ClientRepository extends JpaRepository<Client, Long>{    
 }

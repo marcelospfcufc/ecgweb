@@ -26,10 +26,10 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     @Autowired
-    private DoctorRepository medicoRepository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
-    private PatientRepository pacienteRepository;
+    private PatientRepository patientRepository;
     
     @Autowired
     private EcgRepository ecgRepository;   
@@ -41,12 +41,12 @@ public class ClientService {
         doctor.setEmail(email);
         doctor.setCpf(cpf);
         doctor.setRg(rg);
-        doctor.setCrm(crm);
-        medicoRepository.save(doctor);
+        doctor.setCrm(crm);        
+        doctorRepository.save(doctor);
     }
 
     public List<Doctor> listAllDoctors() {
-        List<Doctor> doctors = medicoRepository.findAll();
+        List<Doctor> doctors = doctorRepository.findAll();
         return doctors;
     }
 
@@ -56,11 +56,11 @@ public class ClientService {
         patient.setEmail(email);
         patient.setCpf(cpf);
         patient.setRg(rg);
-        pacienteRepository.save(patient);
+        patientRepository.save(patient);
     }
 
     public List<Patient> listAllPatients() {
-        List<Patient> patients = pacienteRepository.findAll();
+        List<Patient> patients = patientRepository.findAll();
         return patients;
     }
 
@@ -74,10 +74,8 @@ public class ClientService {
         ecg.setExamDate(examDate);
         ecgRepository.save(ecg);
         
-        Client client = clientRepository.findOne(clientId);
+        Client client= (Client)clientRepository.findOne(clientId);
         client.addEcgExam(ecg);
         clientRepository.save(client);        
     }
-    
-    
 }
