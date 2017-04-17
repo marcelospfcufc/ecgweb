@@ -5,7 +5,6 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
-import br.ufc.deti.ecgweb.domain.exam.EcgReport;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -46,7 +46,7 @@ public class Ecg extends AbstractExam {
     public void delAnnotationByTimeMs(Double timeMs) {
         List<EcgAnnotation> annotations_ = new ArrayList<EcgAnnotation>();
         for (EcgAnnotation annotationAux : annotations) {
-            if (Double.compare(timeMs, annotationAux.getTimeMs()) == 0) {
+            if (Double.compare(timeMs, annotationAux.getStartTimeMs()) >= 0 && Double.compare(timeMs, annotationAux.getFinalTimeMs()) <= 0 ) {
                 annotations_.add(annotationAux);
             }
         }

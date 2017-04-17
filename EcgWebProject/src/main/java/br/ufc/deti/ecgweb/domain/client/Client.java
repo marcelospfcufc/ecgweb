@@ -41,6 +41,8 @@ public class Client implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
     
+    private GenderType gender;
+    
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Client_Id")
     private final List<Ecg> exams = new ArrayList<Ecg>();
@@ -110,5 +112,13 @@ public class Client implements Serializable {
 
     public List<Ecg> getExams() {
         return exams;
+    }
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
     }
 }

@@ -8,6 +8,7 @@ package br.ufc.deti.ecgweb.domain.exam;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -15,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -34,7 +37,19 @@ public class EcgChannel implements Serializable {
     private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
     @Column (name = "lead_type")
-    private EcgLeadType leadType;
+    private EcgLeadType leadType;    
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "WAVE_ID")
+    private QrsComplex qrsComplex;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "WAVE_ID")
+    private TWave tWave;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "WAVE_ID")
+    private PWave pWave;    
 
     public EcgChannel() {
     }
@@ -111,4 +126,30 @@ public class EcgChannel implements Serializable {
     public void setLeadType(EcgLeadType leadType) {
         this.leadType = leadType;
     }
+
+    public QrsComplex getQrsComplex() {
+        return qrsComplex;
+    }
+
+    public void setQrsComplex(QrsComplex qrsComplex) {
+        this.qrsComplex = qrsComplex;
+    }
+
+    public TWave gettWave() {
+        return tWave;
+    }
+
+    public void settWave(TWave tWave) {
+        this.tWave = tWave;
+    }
+
+    public PWave getpWave() {
+        return pWave;
+    }
+
+    public void setpWave(PWave pWave) {
+        this.pWave = pWave;
+    }
+    
+    
 }
