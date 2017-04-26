@@ -14,6 +14,11 @@
     <class>br.ufc.deti.ecgweb.domain.exam.EcgChannel</class>
     <class>br.ufc.deti.ecgweb.domain.security.Login</class>
     <class>br.ufc.deti.ecgweb.domain.client.Client</class>
+    <class>br.ufc.deti.ecgweb.domain.client.MitBihClient</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.AbstractWave</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.PWave</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.QrsComplex</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.TWave</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="ecgweb"/>

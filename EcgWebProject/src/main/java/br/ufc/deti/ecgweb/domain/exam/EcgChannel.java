@@ -40,15 +40,15 @@ public class EcgChannel implements Serializable {
     private EcgLeadType leadType;    
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "WAVE_ID")
+    @JoinColumn(name = "QRS_ID")
     private QrsComplex qrsComplex;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "WAVE_ID")
+    @JoinColumn(name = "TWAVE_ID")
     private TWave tWave;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "WAVE_ID")
+    @JoinColumn(name = "PWAVE_ID")
     private PWave pWave;    
 
     public EcgChannel() {
