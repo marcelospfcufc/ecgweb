@@ -6,12 +6,10 @@
 package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.application.dto.ClientDTO;
+import br.ufc.deti.ecgweb.application.dto.Converters;
+import br.ufc.deti.ecgweb.application.dto.PersonalDataDTO;
 import br.ufc.deti.ecgweb.domain.client.ClientService;
-import br.ufc.deti.ecgweb.domain.client.Doctor;
-import br.ufc.deti.ecgweb.domain.client.Patient;
-import java.util.ArrayList;
 import java.util.List;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -37,36 +35,46 @@ public class ClientController{
     @Autowired
     private ClientService service;      
     
-    @RequestMapping(value = "doctor/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)
-    public void addDoctor(@RequestBody ClientDTO client) {        
-        
-        System.out.println(client.getGender());
-        
-        service.addDoctor(client.getName(), client.getEmail(), client.getCpf(), client.getRg(), client.getCrm());
-    }
-    
-
-    @RequestMapping(value = "client/listAll", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "doctor/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllClients() {            
-        //List<Client> clients = new ModelMapper().map(, ArrayList.class);  
-        
-        List<ClientDTO> clientsDTO = new ArrayList<ClientDTO>();
-        List<Doctor> doctors = service.listAllDoctors();
-        for (Doctor doctor : doctors) {
-            ClientDTO dto = new ModelMapper().map(doctor, ClientDTO.class);
-            clientsDTO.add(dto);
-        }
+    public List<ClientDTO> listAllDoctors() {                            
+        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllDoctors());                        
         return clientsDTO;
+    }
+    
+    @RequestMapping(value = "doctor/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+    public void addDoctor(@RequestBody PersonalDataDTO personalData) {                        
+        service.addDoctor(personalData.getName(), personalData.getEmail(), personalData.getCpf(), personalData.getRg(), personalData.getCrm(), personalData.getGender());
     }
     
     @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<Patient> listAllPatients() {     
-        return service.listAllPatients();  
+    public List<ClientDTO> listAllPatients() {     
+        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllPatients());                        
+        return clientsDTO;        
+    }
+
+    @RequestMapping(value = "patient/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+    public void addPatient(@RequestBody PersonalDataDTO personalData) {        
+        service.addPatient(personalData.getName(), personalData.getEmail(), personalData.getCpf(), personalData.getRg(), personalData.getGender());
+    }
+    
+    @RequestMapping(value = "mitbih/listAll", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<ClientDTO> listAllMitBihClients() {     
+        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllMitBihClients());                        
+        return clientsDTO;        
+    }
+
+    @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+    public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
+        service.addMitBihClient(personalData.getName(), personalData.getGender());
     }
     
     /*@RequestMapping(value = "doctor/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    

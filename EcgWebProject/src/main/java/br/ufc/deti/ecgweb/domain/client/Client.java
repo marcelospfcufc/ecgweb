@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -33,15 +34,9 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
     @Column(nullable = false, unique = false)
-    private String name;        
-    @Column(nullable = false, unique = true)
-    private String cpf;
-    @Column(nullable = false, unique = true)
-    private String rg;
-    @Column(nullable = false, unique = true)
-    private String email;
     
-    private GenderType gender;
+    @Embedded
+    private PersonalData personalData;        
     
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Client_Id")
@@ -53,44 +48,14 @@ public class Client implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }    
+
+    public PersonalData getPersonalData() {
+        return personalData;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        //TODO
-        //Check value
-        this.cpf = cpf;
-    }
-
-    public String getRg() {
-        return rg;
-    }
-
-    public void setRg(String rg) {
-        //TODO
-        //Check value
-        this.rg = rg;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        //TODO
-        //Check value
-        this.email = email;
+    public void setPersonalData(PersonalData personalData){
+        this.personalData = personalData;
     }
     
     public void addEcgExam(Ecg exam) {        
@@ -112,13 +77,5 @@ public class Client implements Serializable {
 
     public List<Ecg> getExams() {
         return exams;
-    }
-
-    public GenderType getGender() {
-        return gender;
-    }
-
-    public void setGender(GenderType gender) {
-        this.gender = gender;
-    }
+    }    
 }
