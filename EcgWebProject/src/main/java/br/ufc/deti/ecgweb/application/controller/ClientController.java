@@ -13,9 +13,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -38,7 +40,7 @@ public class ClientController{
     @RequestMapping(value = "doctor/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllDoctors() {                            
+    public List<ClientDTO> listAllDoctors() {
         List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllDoctors());                        
         return clientsDTO;
     }
@@ -48,6 +50,25 @@ public class ClientController{
     public void addDoctor(@RequestBody PersonalDataDTO personalData) {                        
         service.addDoctor(personalData.getName(), personalData.getEmail(), personalData.getCpf(), personalData.getRg(), personalData.getCrm(), personalData.getGender());
     }
+    
+    @RequestMapping(value = "doctor/{doctorId}/addPatient", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestParam(value = "patientId", required = true) Long patientId) {  
+        
+        System.out.println("Doctor:" + doctorId + " : " + patientId);
+        
+        service.addPatientToDoctor(doctorId, patientId);
+    }
+    
+    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<ClientDTO> listAllPatientsFromDoctor(@PathVariable(value = "doctorId") Long doctorId) {             
+        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllPatientsFromDoctor(doctorId));                        
+        System.out.println("Clients=" + service.listAllPatientsFromDoctor(doctorId));
+        return clientsDTO;        
+    }
+    
     
     @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody

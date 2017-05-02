@@ -1,7 +1,11 @@
 package br.ufc.deti.ecgweb.domain.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  *
@@ -10,4 +14,16 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue(value = RoleType.PATIENT)
 public class Patient extends Client{    
+    
+    @ManyToMany
+    @JoinTable(name = "patient_doctor")
+    private List<Doctor> doctors = new ArrayList<Doctor>();
+
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public void addDoctor(Doctor doctor) {
+        doctors.add(doctor);
+    }
 }

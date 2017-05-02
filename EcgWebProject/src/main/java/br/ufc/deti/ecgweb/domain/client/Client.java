@@ -31,10 +31,10 @@ import javax.persistence.Table;
 @DiscriminatorColumn(name = "Role")
 public class Client implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    
     private Long id;        
-    @Column(nullable = false, unique = false)
     
+    @Column(nullable = false, unique = false)    
     @Embedded
     private PersonalData personalData;        
     

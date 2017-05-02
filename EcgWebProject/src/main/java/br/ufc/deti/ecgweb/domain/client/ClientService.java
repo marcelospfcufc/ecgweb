@@ -34,8 +34,7 @@ public class ClientService {
     private MitBihClientRepository mitBihClientRepository;
     
     @Autowired
-    private EcgRepository ecgRepository;   
-    
+    private EcgRepository ecgRepository;       
 
     public void addDoctor(String name, String email, String cpf, String rg, String crm, GenderType gender) {
         Doctor doctor = new Doctor();
@@ -71,6 +70,22 @@ public class ClientService {
     public List<Client> listAllPatients() {
         List<Client> patients = (List)patientRepository.findAll();
         return patients;
+    }
+    
+    public void addPatientToDoctor(Long doctorId, Long patientId) {
+        Patient patient = patientRepository.findOne(patientId);
+        Doctor doctor = doctorRepository.findOne(doctorId);        
+        doctor.addPatient(patient);        
+        doctorRepository.save(doctor);
+        
+        patient.addDoctor(doctor);
+        patientRepository.save(patient);
+        
+    }
+    
+    public List<Client> listAllPatientsFromDoctor(Long doctorId) {
+        Doctor doctor = doctorRepository.findOne(doctorId);
+        return (List)doctor.getPatients();
     }
     
     public void addMitBihClient(String name, GenderType gender) {
