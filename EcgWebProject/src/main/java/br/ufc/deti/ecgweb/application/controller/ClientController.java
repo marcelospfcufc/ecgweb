@@ -54,9 +54,6 @@ public class ClientController{
     @RequestMapping(value = "doctor/{doctorId}/addPatient", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
     public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestParam(value = "patientId", required = true) Long patientId) {  
-        
-        System.out.println("Doctor:" + doctorId + " : " + patientId);
-        
         service.addPatientToDoctor(doctorId, patientId);
     }
     

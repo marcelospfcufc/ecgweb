@@ -23,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- *
  * @author Marcelo Araujo Lima
  */
 @Entity
@@ -31,7 +30,7 @@ import javax.persistence.Table;
 @DiscriminatorColumn(name = "Role")
 public class Client implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
     
     @Column(nullable = false, unique = false)    

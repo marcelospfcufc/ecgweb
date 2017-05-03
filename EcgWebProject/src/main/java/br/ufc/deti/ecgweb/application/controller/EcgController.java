@@ -5,17 +5,17 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.domain.client.ClientService;
-import br.ufc.deti.ecgweb.domain.client.Doctor;
-import br.ufc.deti.ecgweb.domain.client.Patient;
+import br.ufc.deti.ecgweb.application.dto.Converters;
+import br.ufc.deti.ecgweb.application.dto.EcgChannelDTO;
+import br.ufc.deti.ecgweb.application.dto.EcgDTO;
+import br.ufc.deti.ecgweb.application.dto.ReportDTO;
+import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,72 +30,50 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class EcgController{
     
     @Autowired
-    private EcgService service;   
+    private EcgService service;           
     
-    private static class EcgDTO {
-        
-        private Long id;
-        
-        private Long patientId;
-        
-        private Long sampleRate;
-
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-        private LocalDateTime examDate;        
-        private String report;
-
-        public EcgDTO() {
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public Long getSampleRate() {
-            return sampleRate;
-        }
-
-        public void setSampleRate(Long sampleRate) {
-            this.sampleRate = sampleRate;
-        }
-        
-        
-
-        public Long getPatientId() {
-            return patientId;
-        }
-
-        public void setPatientId(Long patientId) {
-            this.patientId = patientId;
-        }       
-        
-
-        public LocalDateTime getExamDate() {
-            return examDate;
-        }
-
-        public void setExamDate(LocalDateTime examDate) {
-            this.examDate = examDate;
-        }
-
-        public String getReport() {
-            return report;
-        }
-
-        public void setReport(String report) {
-            this.report = report;
-        }
-    }           
-    
-    @RequestMapping(value = "client/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/{clientId}/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addEcg(@RequestBody EcgDTO ecgDTO) {
-        Long clientId = ecgDTO.getPatientId();
-        service.addEcg(clientId, ecgDTO.getExamDate(), ecgDTO.getSampleRate());        
+    public void addEcg(@PathVariable (value = "clientId" ) Long clientId, @RequestBody EcgDTO ecgDTO) {                
+        service.addEcg(clientId, ecgDTO.getExamDate(), ecgDTO.getSampleRate(), ecgDTO.getDurationMs(), ecgDTO.getBaseLine(), ecgDTO.getGain(), ecgDTO.getFinished(), ecgDTO.getDescription());        
+    }
+    
+    @RequestMapping(value = "ecg/{clientId}/listExams", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<EcgDTO> listExamsPerClient(@PathVariable (value = "clientId" ) Long clientId) {     
+        List<EcgDTO> ecgsDTO = Converters.converterListEcgToEcgDto(service.listAllEcgsPerPatient(clientId));                        
+        return ecgsDTO;        
+    }
+    
+    @RequestMapping(value = "ecg/{ecgId}/editReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void editReport(@PathVariable (value = "ecgId") Long ecgId, @RequestBody ReportDTO reportDTO) {                
+        service.editReport(ecgId, reportDTO.getReport());
+    }
+    
+    @RequestMapping(value = "ecg/{ecgId}/setFinished", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void setEcgFinished(@PathVariable (value = "ecgId") Long ecgId) {                
+        service.setEcgStatus(ecgId);
+    }
+    
+    @RequestMapping(value = "ecg/{ecgId}/addChannel", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addChannel(@PathVariable (value = "ecgId") Long ecgId, @RequestBody EcgChannelDTO channelDTO) {                
+        service.addEcgChannel(ecgId, channelDTO.getType());
+    }
+    
+    @RequestMapping(value = "ecg/{ecgId}/listChannels", method = RequestMethod.GET, produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EcgChannelDTO> getChannels(@PathVariable (value = "ecgId") Long ecgId) {                     
+        List<EcgChannelDTO> dtos = Converters.converterListEcgChannelToEcgChannelDto(service.getChannels(ecgId));
+        
+        
+        for (EcgChannelDTO dto : dtos) {
+            System.out.println(dto.getId() + ":" + dto.getType());
+        }
+        
+        return dtos;
     }
 }

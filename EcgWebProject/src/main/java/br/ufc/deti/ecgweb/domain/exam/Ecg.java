@@ -6,8 +6,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -18,18 +21,41 @@ import javax.persistence.OneToMany;
 public class Ecg extends AbstractExam {
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exam_Id")
+    @JoinColumn(name = "Exam_Id", nullable = true)
     private final List<EcgAnnotation> annotations = new ArrayList<EcgAnnotation>();
     
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exam_Id")
+    @JoinColumn(name = "Exam_Id", nullable = true)
     private final List<EcgChannel> channels = new ArrayList<EcgChannel>();    
     
     @Column(name = "duration_ms")
     private Long durationMs;
     
     @Column(name = "sample_rate")
-    private Long sampleRate;
+    private Long sampleRate;    
+    
+    private Long gain;
+    
+    @Column(name = "base_line")
+    private Long baseLine;
+    
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private EcgReport report;
+    
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private Boolean finished;
+    
+    private String description;
+    
+    
+    public EcgReport getReport() {
+        return report;
+    }
+
+    public void setReport(EcgReport report) {
+        this.report = report;
+    }
 
     public List<EcgAnnotation> getAnnotations() {
         return annotations;
@@ -92,4 +118,38 @@ public class Ecg extends AbstractExam {
     public void setSampleRate(Long sampleRate) {
         this.sampleRate = sampleRate;
     }
+
+    public Long getGain() {
+        return gain;
+    }
+
+    public void setGain(Long gain) {
+        this.gain = gain;
+    }
+
+    public Long getBaseLine() {
+        return baseLine;
+    }
+
+    public void setBaseLine(Long baseLine) {
+        this.baseLine = baseLine;
+    }
+
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    
 }

@@ -37,7 +37,7 @@ public class EcgChannel implements Serializable {
     private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
     @Column (name = "lead_type")
-    private EcgLeadType leadType;    
+    private String leadType;    
     
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "QRS_ID")
@@ -119,11 +119,11 @@ public class EcgChannel implements Serializable {
         signals.removeAll(signals);
     }
 
-    public String getLeadType() {
-        return EcgLeadType.getStringValue(leadType);
+    public String getLeadType() {        
+        return leadType;
     }
 
-    public void setLeadType(EcgLeadType leadType) {
+    public void setLeadType(String leadType) {
         this.leadType = leadType;
     }
 

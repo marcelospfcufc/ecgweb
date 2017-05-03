@@ -8,15 +8,12 @@ package br.ufc.deti.ecgweb.domain.exam;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -34,40 +31,31 @@ public abstract class AbstractExam implements Serializable {
 
     @Column(name = "exam_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime examDate;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private EcgReport report;
+    private LocalDateTime examDate;    
 
     public Long getId() {
         return id;
-    }
-
-    public EcgReport getReport() {
-        return report;
-    }
-
-    public void setReport(EcgReport report) {
-        this.report = report;
-    }
+    }   
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getDataExame() {
+    public LocalDateTime getExamDate() {
         return examDate;
     }
 
-    public void setExamDate(LocalDateTime date) {
-        this.examDate = date;
+    public void setExamDate(LocalDateTime examDate) {
+        this.examDate = examDate;
     }
+
+    
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 29 * hash + (this.examDate != null ? this.examDate.hashCode() : 0);
+        int hash = 7;
+        hash = 83 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 83 * hash + (this.examDate != null ? this.examDate.hashCode() : 0);
         return hash;
     }
 
@@ -91,5 +79,7 @@ public abstract class AbstractExam implements Serializable {
         }
         return true;
     }
+
+    
 
 }

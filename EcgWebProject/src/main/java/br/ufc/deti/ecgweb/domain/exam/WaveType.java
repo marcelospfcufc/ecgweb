@@ -5,8 +5,6 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
-import br.ufc.deti.ecgweb.domain.client.*;
-
 /**
  *
  * @author Marcelo Araujo Lima
