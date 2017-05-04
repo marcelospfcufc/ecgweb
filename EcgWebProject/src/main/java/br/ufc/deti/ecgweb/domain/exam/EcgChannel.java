@@ -7,16 +7,19 @@ package br.ufc.deti.ecgweb.domain.exam;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -26,18 +29,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ecg_channel")
-public class EcgChannel implements Serializable {
+public class EcgChannel implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ElementCollection
-    @CollectionTable(name = "ecg_signal")
-    private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
+    
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "Ecg_Channel_Id")
+    private final Set<EcgSignal> signals = new HashSet<EcgSignal>();
     
     @Column (name = "lead_type")
-    private String leadType;    
+    private EcgLeadType leadType;    
     
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "QRS_ID")
@@ -67,21 +71,9 @@ public class EcgChannel implements Serializable {
      * @return 
      */
     public List<EcgSignal> getSignals() {
-        return signals;
-    }
-    
-    /**
-     * Get all signals with specific time.
-     * @param timeMs
-     * @return 
-     */
-    public List<EcgSignal> getSignalByTime(Double timeMs) {
-        List<EcgSignal> signals_ = new ArrayList<EcgSignal>();
-        for(EcgSignal signal : signals) {
-            if(Double.compare(timeMs, signal.getxTime()) == 0) {
-                signals_.add(signal);
-            }                
-        }        
+        List<EcgSignal> signals_ = new ArrayList<EcgSignal>(signals);        
+        
+        Collections.sort(signals_);
         return signals_;
     }
     
@@ -94,23 +86,13 @@ public class EcgChannel implements Serializable {
     }
     
     /**
-     * Remove specific signal.
-     * @param signal 
+     * Remove specific signal. 
+     * @param idx
+     * @return 
      */
-    public void delSignal(EcgSignal signal) {
-        signals.remove(signal);
-    }
-    
-    /**
-     * Remove signals by time condition.
-     * @param timeMs 
-     */
-    public void delSignalByTtime(Double timeMs) {
-        List<EcgSignal> signals_ = getSignalByTime(timeMs);
-        for(EcgSignal signal : signals_) {
-            signals.remove(signal);
-        }
-    }
+    public boolean delSignal(Integer idx) {
+        return signals.remove(idx);
+    }   
     
     /**
      * Remove all signals.
@@ -119,11 +101,11 @@ public class EcgChannel implements Serializable {
         signals.removeAll(signals);
     }
 
-    public String getLeadType() {        
+    public EcgLeadType getLeadType() {        
         return leadType;
     }
 
-    public void setLeadType(String leadType) {
+    public void setLeadType(EcgLeadType leadType) {
         this.leadType = leadType;
     }
 
@@ -150,6 +132,4 @@ public class EcgChannel implements Serializable {
     public void setpWave(PWave pWave) {
         this.pWave = pWave;
     }
-    
-    
 }

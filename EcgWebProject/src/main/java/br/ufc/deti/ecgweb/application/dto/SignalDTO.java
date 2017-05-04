@@ -5,17 +5,14 @@
  */
 package br.ufc.deti.ecgweb.application.dto;
 
-import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
-
-
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class EcgChannelDTO {
-    
+public class SignalDTO {
     private Long id;
-    private EcgLeadType type;
+    private Integer idx;
+    private Double intensity;
 
     public Long getId() {
         return id;
@@ -25,11 +22,19 @@ public class EcgChannelDTO {
         this.id = id;
     }
 
-    public EcgLeadType getType() {
-        return type;
+    public Integer getIdx() {
+        return idx;
     }
 
-    public void setType(EcgLeadType type) {
-        this.type = type;
+    public void setIdx(Integer idx) {
+        this.idx = idx;
+    }
+
+    public Double getIntensity() {
+        return intensity;
+    }
+
+    public void setIntensity(Double intensity) {
+        this.intensity = intensity;
     }
 }

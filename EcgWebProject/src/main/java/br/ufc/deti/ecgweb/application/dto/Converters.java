@@ -8,9 +8,10 @@ package br.ufc.deti.ecgweb.application.dto;
 import br.ufc.deti.ecgweb.domain.client.Client;
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
-import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
+import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -59,6 +60,19 @@ public class Converters {
             ecgChannelsDTO.add(dto);
         }
         return ecgChannelsDTO;
+    }
+    
+    public static List<SignalDTO> converterListSignalToListSignalDto(List<EcgSignal> signals) {
+        List<SignalDTO> signalsDTO = new ArrayList<SignalDTO>();        
+        for (EcgSignal signal : signals) {
+            SignalDTO dto = new SignalDTO();            
+            dto.setId(signal.getId());
+            dto.setIdx(signal.getSampleIdx());
+            dto.setIntensity(signal.getyIntensity());
+            signalsDTO.add(dto);
+                    
+        }
+        return signalsDTO;
     }
     
     

@@ -6,15 +6,16 @@
 package br.ufc.deti.ecgweb.domain.exam;
 
 import br.ufc.deti.ecgweb.domain.client.*;
-import br.ufc.deti.ecgweb.domain.repositories.ClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgChannelRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
+import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -34,6 +35,9 @@ public class EcgService {
     
     @Autowired
     private EcgChannelRepository ecgChannelRepository;   
+    
+    @Autowired
+    private EcgSignalRepository ecgSignalRepository;   
     
     
     public void addEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
@@ -74,7 +78,7 @@ public class EcgService {
         ecgRepository.save(ecg);
     }
     
-    public void addEcgChannel(Long ecgId, String leadType) {
+    public void addEcgChannel(Long ecgId, EcgLeadType leadType) {
         EcgChannel channel = new EcgChannel();
         channel.setLeadType(leadType);
         ecgChannelRepository.save(channel);
@@ -88,4 +92,23 @@ public class EcgService {
         Ecg ecg = ecgRepository.findOne(ecgId);        
         return ecg.getChannels();
     }
+    
+    public void addEcgSignal(Long channelId, Integer idx, Double intensity) {        
+        
+        EcgSignal signal = new EcgSignal();
+        signal.setSampleIdx(idx);
+        signal.setyIntensity(intensity);        
+        ecgSignalRepository.save(signal);        
+        
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        channel.addSignal(signal);
+        ecgChannelRepository.save(channel);        
+    }
+    
+    public List<EcgSignal> getSignals(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        return channel.getSignals();
+    }
+    
+    
 }

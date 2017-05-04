@@ -9,7 +9,7 @@ import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.EcgChannelDTO;
 import br.ufc.deti.ecgweb.application.dto.EcgDTO;
 import br.ufc.deti.ecgweb.application.dto.ReportDTO;
-import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
+import br.ufc.deti.ecgweb.application.dto.SignalDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,15 +65,24 @@ public class EcgController{
     }
     
     @RequestMapping(value = "ecg/{ecgId}/listChannels", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<EcgChannelDTO> getChannels(@PathVariable (value = "ecgId") Long ecgId) {                     
         List<EcgChannelDTO> dtos = Converters.converterListEcgChannelToEcgChannelDto(service.getChannels(ecgId));
-        
-        
-        for (EcgChannelDTO dto : dtos) {
-            System.out.println(dto.getId() + ":" + dto.getType());
-        }
-        
+        return dtos;
+    }
+    
+    @RequestMapping(value = "ecg/channel/{channelId}/addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addSignal(@PathVariable (value = "channelId") Long channelId, @RequestBody SignalDTO signalDTO) {                
+        service.addEcgSignal(channelId, signalDTO.getIdx(), signalDTO.getIntensity());
+    }
+    
+    @RequestMapping(value = "ecg/channel/{channelId}/listSignals", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public List<SignalDTO> getSignals(@PathVariable (value = "channelId") Long channelId) {                     
+        List<SignalDTO> dtos = Converters.converterListSignalToListSignalDto(service.getSignals(channelId));
         return dtos;
     }
 }

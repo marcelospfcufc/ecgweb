@@ -9,7 +9,7 @@ package br.ufc.deti.ecgweb.domain.exam;
  *
  * @author Marcelo Araujo Lima
  */
-public class EcgLeadType {
+/*public enum EcgLeadType {
     public static final String ECG_LEAD_I = "I";
     public static final String ECG_LEAD_II = "II";
     public static final String ECG_LEAD_III = "III";  
@@ -25,4 +25,8 @@ public class EcgLeadType {
     public static final String ECG_LEAD_V4 = "V4";
     public static final String ECG_LEAD_V5 = "V5";
     public static final String ECG_LEAD_V6 = "V6";  
+}*/
+
+public enum EcgLeadType {
+    I, II, III, AVR, AVL, AVF, V1, V2, V3, V4, V5, V6;
 }
