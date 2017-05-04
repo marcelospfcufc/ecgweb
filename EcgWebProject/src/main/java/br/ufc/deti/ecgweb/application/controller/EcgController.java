@@ -32,13 +32,13 @@ public class EcgController{
     @Autowired
     private EcgService service;           
     
-    @RequestMapping(value = "ecg/{clientId}/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/client/{clientId}/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void addEcg(@PathVariable (value = "clientId" ) Long clientId, @RequestBody EcgDTO ecgDTO) {                
         service.addEcg(clientId, ecgDTO.getExamDate(), ecgDTO.getSampleRate(), ecgDTO.getDurationMs(), ecgDTO.getBaseLine(), ecgDTO.getGain(), ecgDTO.getFinished(), ecgDTO.getDescription());        
     }
     
-    @RequestMapping(value = "ecg/{clientId}/listExams", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "ecg/client/{clientId}/listExams", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<EcgDTO> listExamsPerClient(@PathVariable (value = "clientId" ) Long clientId) {     

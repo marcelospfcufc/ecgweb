@@ -94,32 +94,4 @@ public class ClientController{
     public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
         service.addMitBihClient(personalData.getName(), personalData.getGender());
     }
-    
-    /*@RequestMapping(value = "doctor/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)
-    public void addDoctor(@RequestBody DoctorDTO doctorDTO) {        
-        service.addDoctor(doctorDTO.getName(), doctorDTO.getEmail(), doctorDTO.getCpf(), doctorDTO.getRg(), doctorDTO.getCrm());
-    }
-    
-    @RequestMapping(value = "patient/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)
-    public void addPatient(@RequestBody PatientDTO patientDTO) {        
-        service.addPatient(patientDTO.getName(), patientDTO.getEmail(), patientDTO.getCpf(), patientDTO.getRg());
-    }
-    
-    @RequestMapping(value = "client/del", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)
-    public void delClient(@RequestBody ClientDTO clientDTO) {                        
-        service.delClient(clientDTO.getClientId());
-    }    
-    
-    @RequestMapping(value = "client/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void addEcg(@RequestBody ClientDTO clientDTO) {
-        Long clientId = clientDTO.getClientId();
-        List<EcgDTO> ecgs =  clientDTO.getEcgs();
-        for(EcgDTO ecg : ecgs) {
-            service.addEcg(clientId, ecg.getExamDate());
-        }
-    }*/
 }
