@@ -19,6 +19,7 @@
     <class>br.ufc.deti.ecgweb.domain.exam.PWave</class>
     <class>br.ufc.deti.ecgweb.domain.exam.QrsComplex</class>
     <class>br.ufc.deti.ecgweb.domain.exam.TWave</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.WaveRage</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="ecgweb"/>

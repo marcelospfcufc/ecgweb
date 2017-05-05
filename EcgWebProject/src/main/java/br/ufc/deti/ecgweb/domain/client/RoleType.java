@@ -15,5 +15,6 @@ public class RoleType {
     public static final String PATIENT = "Patient";
     public static final String MIT_BIH_PATIENT = "MIT-BIH Patient";
     public static final String SECRETARY = "Secretary";
+    public static final String ADMIN = "Admin";
     public static final String OTHER = "Other";
 }

@@ -15,7 +15,6 @@ import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -109,6 +108,4 @@ public class EcgService {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         return channel.getSignals();
     }
-    
-    
 }

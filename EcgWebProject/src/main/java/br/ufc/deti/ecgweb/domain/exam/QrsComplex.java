@@ -4,7 +4,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
- *
  * @author Marcelo Araujo Lima
  */
 @Entity

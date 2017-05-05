@@ -11,8 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
+import br.ufc.deti.ecgweb.domain.repositories.LoginRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MitBihClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
+import br.ufc.deti.ecgweb.domain.security.Login;
+import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  *
@@ -34,9 +38,13 @@ public class ClientService {
     private MitBihClientRepository mitBihClientRepository;
     
     @Autowired
-    private EcgRepository ecgRepository;       
+    private EcgRepository ecgRepository;   
+    
+    @Autowired
+    private LoginRepository loginRepository;       
+    
 
-    public void addDoctor(String name, String email, String cpf, String rg, String crm, GenderType gender) {
+    public Doctor addDoctor(String name, String email, String cpf, String rg, String crm, GenderType gender, LocalDate birthday) {
         Doctor doctor = new Doctor();
         PersonalData data = new PersonalData();
         
@@ -45,9 +53,12 @@ public class ClientService {
         data.setCpf(cpf);
         data.setRg(rg);
         data.setGender(gender);
+        data.setBirthday(birthday);
         doctor.setCrm(crm);                
-        doctor.setPersonalData(data);
-        doctorRepository.save(doctor);
+        doctor.setPersonalData(data);        
+        doctorRepository.saveAndFlush(doctor);
+        
+        return doctor;
     }
 
     public List<Client> listAllDoctors() {
@@ -55,16 +66,26 @@ public class ClientService {
         return doctors;
     }
 
-    public void addPatient(String name, String email, String cpf, String rg, GenderType gender) {
+    public Patient addPatient(String name, String email, String cpf, String rg, GenderType gender, LocalDate birthday) {
         Patient patient = new Patient();
         PersonalData data = new PersonalData();        
         data.setName(name);
         data.setEmail(email);
         data.setCpf(cpf);
         data.setRg(rg);
+        data.setBirthday(birthday);
         data.setGender(gender);
         patient.setPersonalData(data);
-        patientRepository.save(patient);
+        patientRepository.saveAndFlush(patient);
+        
+        Login login = new Login();
+        login.setLogin(data.getCpf());
+        login.setPassword(UUID.randomUUID().toString());
+        login.setEnable(true);        
+        login.setClient(patient);
+        loginRepository.saveAndFlush(login);
+        
+        return patient;
     }
 
     public List<Client> listAllPatients() {
@@ -101,21 +122,4 @@ public class ClientService {
         List<Client> clients = (List)mitBihClientRepository.findAll();
         return clients;
     }
-    
-    
-
-    /*public void delClient(Long id) {
-        clientRepository.delete(id);
-    }
-    
-    public void addEcg(Long clientId, LocalDateTime examDate) {
-
-        Ecg ecg = new Ecg();
-        ecg.setExamDate(examDate);
-        ecgRepository.save(ecg);
-        
-        Client client= (Client)clientRepository.findOne(clientId);
-        client.addEcgExam(ecg);
-        clientRepository.save(client);        
-    }*/
 }

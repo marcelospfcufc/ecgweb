@@ -5,6 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.security;
 
+import br.ufc.deti.ecgweb.application.controller.LoginFailedException;
 import br.ufc.deti.ecgweb.domain.repositories.LoginRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,40 +15,39 @@ import org.springframework.stereotype.Service;
  * @author Marcelo Araujo Lima
  */
 @Service
-public class LoginService {
-
+public class LoginService {    
+    
     @Autowired
     private LoginRepository loginRepository;    
     
-
-    public String executeLogin(String strLogin, String strPassword) throws Exception {
-        Login login = loginRepository.findByLogin(strLogin);        
+    public boolean hasAccess(String login, String uuid) {
+        Login login_ = loginRepository.findByLogin(login);        
+        if(login_.getUuid().compareTo(uuid) != 0) {
+            return false;
+        }
+                
+        return true;
+    }
+    
+    public Login loginSystem(String login, String password) {
         
-        AbstractDigest digest = DigestCreator.FactoryMethod();
-        String passwordDigiest = digest.getHashValue(strPassword);       
+        Login login_ = loginRepository.findByLogin(login);        
         
-        if(passwordDigiest.equals(login.getPassword())) {
-            return "chave valida";
+        if(login_ == null) {
+            throw  new LoginFailedException();
         }
         
-        return "chave inválida";
-    }
-    
-    public void createLogin(String strLogin, String strPassword) throws Exception {                
-        Login login = new Login();        
-        login.setPassword(strPassword);
-        login.setLogin(strLogin);
-        loginRepository.save(login);
-    }
-    
-    public boolean getLoginState(Long loginId) {
-        Login login = loginRepository.findOne(loginId);
-        return login.isEnable();
-    }
-    
-    public boolean setLoginState(Long loginId, boolean state) {
-        Login login = loginRepository.findOne(loginId);
-        login.setEnable(state);
-        return login.isEnable();
+        if(login_.getPassword().compareTo(password) != 0)  {
+            throw  new LoginFailedException();
+        }  
+        
+        if(!login_.isEnable()) {
+            throw  new LoginFailedException();
+        }
+        
+        login_.updateData();
+        loginRepository.saveAndFlush(login_);
+        
+        return login_;
     }
 }

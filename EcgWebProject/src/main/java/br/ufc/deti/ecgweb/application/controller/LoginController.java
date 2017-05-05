@@ -5,61 +5,37 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
+import br.ufc.deti.ecgweb.application.dto.ClientDTO;
+import br.ufc.deti.ecgweb.application.dto.Converters;
+import br.ufc.deti.ecgweb.application.dto.LoginDTO;
+import br.ufc.deti.ecgweb.application.dto.LoginReturnDTO;
+import br.ufc.deti.ecgweb.domain.security.Login;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * @author marcelo
+ * @author Marcelo Araujo Lima
  */
 @Controller
-@RequestMapping("/ecgweb/login/")
+@RequestMapping("/ecgweb/")
 public class LoginController {
 
     @Autowired
-    private LoginService service;
+    private LoginService service;   
 
-    
-    private static class LoginDTO {
-
-        private Long id;
-        private String login;
-        private String password;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getLogin() {
-            return login;
-        }
-
-        public void setLogin(String login) {
-            this.login = login;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
+    @RequestMapping(value = "login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)    
+    public LoginReturnDTO getLogin(@RequestBody LoginDTO login){
+        Login login_ = service.loginSystem(login.getLogin(), login.getPassword());
+        return Converters.converterLoginToLoginReturnDTO(login_);
     }
-
-    @RequestMapping(value = "add", method = RequestMethod.POST, consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void createLogin(@RequestBody LoginDTO loginDTO) throws Exception {
-        service.createLogin(loginDTO.getLogin(), loginDTO.getPassword());
-    }
-
 }
