@@ -5,9 +5,13 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.application.dto.ClientDTO;
+import br.ufc.deti.ecgweb.application.dto.AddPatientToDoctorRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListClientsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
-import br.ufc.deti.ecgweb.application.dto.ListAllClientsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllDoctorsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllMitBihClientsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllPatientsFromDoctorRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllPatientsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.PersonalDataDTO;
 import br.ufc.deti.ecgweb.domain.client.ClientService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
@@ -39,44 +43,57 @@ public class ClientController{
     @RequestMapping(value = "doctor/listAll", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllDoctors(@RequestBody ListAllClientsRequestDTO dto) {
+    public List<ListClientsResponseDTO> listAllDoctors(@RequestBody ListAllDoctorsRequestDTO dto) {
         
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
         
-        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllDoctors());                        
+        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllDoctors());                        
         return clientsDTO;
     }
     
     @RequestMapping(value = "doctor/{doctorId}/addPatient", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
-    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestParam(value = "patientId", required = true) Long patientId) {  
+    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestParam(value = "patientId", required = true) Long patientId, @RequestBody AddPatientToDoctorRequestDTO dto) {  
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }        
+        
         service.addPatientToDoctor(doctorId, patientId);
     }
     
-    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllPatientsFromDoctor(@PathVariable(value = "doctorId") Long doctorId) {             
-        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllPatientsFromDoctor(doctorId));                        
-        System.out.println("Clients=" + service.listAllPatientsFromDoctor(doctorId));
+    public List<ListClientsResponseDTO> listAllPatientsFromDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody ListAllPatientsFromDoctorRequestDTO dto) {             
+        
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllPatientsFromDoctor(doctorId));                                
         return clientsDTO;        
     }    
     
-    @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllPatients() {     
-        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllPatients());                        
+    public List<ListClientsResponseDTO> listAllPatients(@RequestBody ListAllPatientsRequestDTO dto) {     
+        
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllPatients());                        
         return clientsDTO;        
     }
     
     @RequestMapping(value = "mitbih/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ClientDTO> listAllMitBihClients() {     
-        List<ClientDTO> clientsDTO = Converters.converterListClientToClientDto(service.listAllMitBihClients());                        
+    public List<ListClientsResponseDTO> listAllMitBihClients(@RequestBody ListAllMitBihClientsRequestDTO dto) {     
+        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllMitBihClients());                        
         return clientsDTO;        
     }
     

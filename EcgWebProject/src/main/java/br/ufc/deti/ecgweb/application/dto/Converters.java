@@ -12,7 +12,6 @@ import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.security.Login;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -20,12 +19,11 @@ import java.util.Set;
  */
 public class Converters {
 
-    public static List<ClientDTO> converterListClientToClientDto(List<Client> clients) {
-        List<ClientDTO> clientsDTO = new ArrayList<ClientDTO>();
+    public static List<ListClientsResponseDTO> converterListClientToListClientsResponseDTO(List<Client> clients) {
+        List<ListClientsResponseDTO> clientsDTO = new ArrayList<ListClientsResponseDTO>();
         for (Client client : clients) {
-            ClientDTO dto = new ClientDTO();
-            dto.setName(client.getPersonalData().getName());
-            dto.setGender(client.getPersonalData().getGender());
+            ListClientsResponseDTO dto = new ListClientsResponseDTO();
+            dto.setName(client.getPersonalData().getName());            
             dto.setId(client.getId());
             clientsDTO.add(dto);
         }

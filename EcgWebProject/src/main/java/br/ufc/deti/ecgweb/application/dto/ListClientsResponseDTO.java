@@ -10,7 +10,7 @@ import br.ufc.deti.ecgweb.domain.client.GenderType;
 /**
  * @author Marcelo Araujo Lima
  */
-public class ClientDTO{    
+public class ListClientsResponseDTO{    
     private Long id;
     private String name;    
     private GenderType gender;
