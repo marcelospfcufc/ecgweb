@@ -5,13 +5,11 @@
  */
 package br.ufc.deti.ecgweb.application.controller;
 
-import br.ufc.deti.ecgweb.application.dto.ListClientsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.LoginDTO;
 import br.ufc.deti.ecgweb.application.dto.LoginReturnDTO;
 import br.ufc.deti.ecgweb.domain.security.Login;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
