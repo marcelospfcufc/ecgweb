@@ -25,15 +25,16 @@ public class Converters {
             ListClientsResponseDTO dto = new ListClientsResponseDTO();
             dto.setName(client.getPersonalData().getName());            
             dto.setId(client.getId());
+            dto.setGender(client.getPersonalData().getGender());
             clientsDTO.add(dto);
         }
         return clientsDTO;
     }
 
-    public static List<EcgDTO> converterListEcgToEcgDto(List<Ecg> ecgs) {
-        List<EcgDTO> ecgsDTO = new ArrayList<EcgDTO>();
+    public static List<ListExamsPerClientResponseDTO> converterListEcgToListEcgDto(List<Ecg> ecgs) {
+        List<ListExamsPerClientResponseDTO> ecgsDTO = new ArrayList<ListExamsPerClientResponseDTO>();
         for (Ecg ecg : ecgs) {
-            EcgDTO dto = new EcgDTO();
+            ListExamsPerClientResponseDTO dto = new ListExamsPerClientResponseDTO();
 
             dto.setBaseLine(ecg.getBaseLine());
             dto.setDescription(ecg.getDescription());
@@ -49,11 +50,11 @@ public class Converters {
         return ecgsDTO;
     }
 
-    public static List<EcgChannelDTO> converterListEcgChannelToEcgChannelDto(List<EcgChannel> channels) {
-        List<EcgChannelDTO> ecgChannelsDTO = new ArrayList<EcgChannelDTO>();
+    public static List<GetChannelsResponseDTO> converterListEcgChannelToEcgChannelDto(List<EcgChannel> channels) {
+        List<GetChannelsResponseDTO> ecgChannelsDTO = new ArrayList<GetChannelsResponseDTO>();
         for (EcgChannel channel : channels) {
-            EcgChannelDTO dto = new EcgChannelDTO();
-
+            GetChannelsResponseDTO dto = new GetChannelsResponseDTO();
+            
             dto.setId(channel.getId());
             dto.setType(channel.getLeadType());
             ecgChannelsDTO.add(dto);
@@ -61,10 +62,10 @@ public class Converters {
         return ecgChannelsDTO;
     }
 
-    public static List<SignalDTO> converterListSignalToListSignalDto(List<EcgSignal> signals) {
-        List<SignalDTO> signalsDTO = new ArrayList<SignalDTO>();
+    public static List<GetSignalsResponseDTO> converterListSignalToListSignalDto(List<EcgSignal> signals) {
+        List<GetSignalsResponseDTO> signalsDTO = new ArrayList<GetSignalsResponseDTO>();
         for (EcgSignal signal : signals) {
-            SignalDTO dto = new SignalDTO();
+            GetSignalsResponseDTO dto = new GetSignalsResponseDTO();
             dto.setId(signal.getId());
             dto.setIdx(signal.getSampleIdx());
             dto.setIntensity(signal.getyIntensity());

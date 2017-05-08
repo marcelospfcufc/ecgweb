@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.ufc.deti.ecgweb.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author Marcelo Araujo Lima
  */
-public class EcgDTO {
+public class AddEcgRequestDTO extends AbstractAuthenticationRequestDTO{
 
     private Long id;    
     

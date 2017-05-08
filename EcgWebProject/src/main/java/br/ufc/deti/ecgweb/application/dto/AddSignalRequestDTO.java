@@ -1,26 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.ufc.deti.ecgweb.application.dto;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class SignalDTO {
-    private Long id;
+public class AddSignalRequestDTO extends AbstractAuthenticationRequestDTO{
+    
     private Integer idx;
     private Double intensity;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getIdx() {
         return idx;

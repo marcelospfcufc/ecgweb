@@ -56,7 +56,7 @@ public class ClientService {
         data.setBirthday(birthday);
         doctor.setCrm(crm);                
         doctor.setPersonalData(data);        
-        doctorRepository.saveAndFlush(doctor);
+        doctorRepository.save(doctor);
         
         return doctor;
     }

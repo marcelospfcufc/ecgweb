@@ -5,14 +5,15 @@
  */
 package br.ufc.deti.ecgweb.application.dto;
 
+import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
+
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class ReportDTO {
-    
+public class GetChannelsResponseDTO extends AbstractAuthenticationRequestDTO{
     private Long id;
-    private String report;
+    private EcgLeadType type;
 
     public Long getId() {
         return id;
@@ -22,16 +23,11 @@ public class ReportDTO {
         this.id = id;
     }
 
-    public String getReport() {
-        return report;
+    public EcgLeadType getType() {
+        return type;
     }
 
-    public void setReport(String report) {
-        this.report = report;
+    public void setType(EcgLeadType type) {
+        this.type = type;
     }
-    
-    
-    
-    
-    
 }

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -53,9 +52,9 @@ public class ClientController{
         return clientsDTO;
     }
     
-    @RequestMapping(value = "doctor/{doctorId}/addPatient", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "doctor/{doctorId}/{patientId}/addPatient", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
-    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestParam(value = "patientId", required = true) Long patientId, @RequestBody AddPatientToDoctorRequestDTO dto) {  
+    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @PathVariable(value = "patientId") Long patientId, @RequestBody AddPatientToDoctorRequestDTO dto) {  
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }        
@@ -63,7 +62,7 @@ public class ClientController{
         service.addPatientToDoctor(doctorId, patientId);
     }
     
-    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<ListClientsResponseDTO> listAllPatientsFromDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody ListAllPatientsFromDoctorRequestDTO dto) {             
@@ -76,7 +75,7 @@ public class ClientController{
         return clientsDTO;        
     }    
     
-    @RequestMapping(value = "patient/listAll", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "patient/listAll", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<ListClientsResponseDTO> listAllPatients(@RequestBody ListAllPatientsRequestDTO dto) {     
