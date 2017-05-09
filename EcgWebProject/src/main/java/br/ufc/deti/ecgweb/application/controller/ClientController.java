@@ -96,9 +96,9 @@ public class ClientController{
         return clientsDTO;        
     }
     
-    @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-    @ResponseStatus(HttpStatus.OK)
-    public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
-        service.addMitBihClient(personalData.getName(), personalData.getGender());
-    }
+//    @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+//    @ResponseStatus(HttpStatus.OK)
+//    public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
+//        service.addMitBihClient(personalData.getName());
+//    }
 }

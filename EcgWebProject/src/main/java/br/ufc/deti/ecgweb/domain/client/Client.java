@@ -35,7 +35,7 @@ public class Client implements Serializable {
     
     @Column(nullable = false, unique = false)    
     @Embedded
-    private PersonalData personalData;        
+    protected PersonalData personalData;        
     
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Client_Id")

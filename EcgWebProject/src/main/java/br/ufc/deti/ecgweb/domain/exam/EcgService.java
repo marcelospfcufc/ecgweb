@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
+import br.ufc.deti.ecgweb.domain.repositories.MitBihClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +39,9 @@ public class EcgService {
     @Autowired
     private EcgSignalRepository ecgSignalRepository;   
     
+    @Autowired
+    private MitBihClientRepository mitbihRepository;   
+    
     
     public void addEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
 
@@ -54,6 +58,23 @@ public class EcgService {
         Patient patient = patientRepository.findOne(clientId);        
         patient.addEcgExam(ecg);
         patientRepository.save(patient);        
+    }
+    
+    public void addMitBihEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
+
+        Ecg ecg = new Ecg();
+        ecg.setExamDate(examDate);
+        ecg.setSampleRate(sampleRate);
+        ecg.setBaseLine(baseLine);
+        ecg.setDurationMs(durationMs);
+        ecg.setGain(gain);
+        ecg.setFinished(finished);
+        ecg.setDescription(description);
+        ecgRepository.save(ecg);
+        
+        MitBihClient mitbih = mitbihRepository.findOne(clientId);        
+        mitbih.addEcgExam(ecg);
+        mitbihRepository.save(mitbih);        
     }
     
     public List<Ecg> listAllEcgsPerPatient(Long patientId) {

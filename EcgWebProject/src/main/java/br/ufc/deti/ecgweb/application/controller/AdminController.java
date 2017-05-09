@@ -1,8 +1,10 @@
 package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.application.dto.AddDoctorRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.AddMitBihRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddPatientRequestDTO;
 import br.ufc.deti.ecgweb.domain.client.ClientService;
+import br.ufc.deti.ecgweb.domain.client.GenderType;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +51,14 @@ public class AdminController {
 
         clientService.addPatient(dto.getName(), dto.getEmail(), dto.getCpf(), dto.getRg(), dto.getGender(), dto.getBirthday());
     }
-
-    /*@RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    
+    @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
-        service.addMitBihClient(personalData.getName(), personalData.getGender());
-    }*/
+    public void addMitbih(@RequestBody AddMitBihRequestDTO dto) {
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        clientService.addMitBihClient(dto.getName());
+    }   
 }

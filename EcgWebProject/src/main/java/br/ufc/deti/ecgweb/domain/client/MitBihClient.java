@@ -24,5 +24,7 @@ public class MitBihClient extends Client{
         personalData.setCpf("00000000000");
         personalData.setRg("00000000000");
         personalData.setEmail(UUID.randomUUID().toString() + "@mitbih.com");
+        personalData.setGender(GenderType.Male);
+        this.personalData = personalData;
     }
 }

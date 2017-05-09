@@ -115,13 +115,14 @@ public class ClientService {
         return (List)doctor.getPatients();
     }
     
-    public void addMitBihClient(String name, GenderType gender) {
+    public void addMitBihClient(String name) {
         MitBihClient mit = new MitBihClient();
         PersonalData data = new PersonalData();        
-        data.setName(name);        
-        data.setGender(gender);
-        mit.setPersonalData(data);
+        data.setName(name);                
+        mit.setPersonalData(data);        
         mitBihClientRepository.save(mit);
+        
+        //Adding Ecg
     }
 
     public List<Client> listAllMitBihClients() {
