@@ -43,6 +43,15 @@ public class ClientService {
     @Autowired
     private LoginRepository loginRepository;       
     
+    private void addLogin(String strLogin, String password, Client client) {
+        Login login = new Login();
+        login.setLogin(strLogin);
+        login.setPassword(password);
+        login.setEnable(true);        
+        login.setClient(client);
+        loginRepository.saveAndFlush(login);
+    }
+    
 
     public Doctor addDoctor(String name, String email, String cpf, String rg, String crm, GenderType gender, LocalDate birthday) {
         Doctor doctor = new Doctor();
@@ -57,6 +66,8 @@ public class ClientService {
         doctor.setCrm(crm);                
         doctor.setPersonalData(data);        
         doctorRepository.save(doctor);
+        
+        addLogin(data.getCpf(), UUID.randomUUID().toString(), doctor);
         
         return doctor;
     }
@@ -78,12 +89,7 @@ public class ClientService {
         patient.setPersonalData(data);
         patientRepository.saveAndFlush(patient);
         
-        Login login = new Login();
-        login.setLogin(data.getCpf());
-        login.setPassword(UUID.randomUUID().toString());
-        login.setEnable(true);        
-        login.setClient(patient);
-        loginRepository.saveAndFlush(login);
+        addLogin(data.getCpf(), UUID.randomUUID().toString(), patient);
         
         return patient;
     }
