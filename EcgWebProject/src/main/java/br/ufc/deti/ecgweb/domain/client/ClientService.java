@@ -5,17 +5,27 @@
  */
 package br.ufc.deti.ecgweb.domain.client;
 
+import br.ufc.deti.ecgweb.domain.exam.Ecg;
+import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
+import br.ufc.deti.ecgweb.domain.exam.EcgService;
+import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.repositories.ClientRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
+import br.ufc.deti.ecgweb.domain.repositories.EcgChannelRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
+import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
 import br.ufc.deti.ecgweb.domain.repositories.LoginRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MitBihClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import br.ufc.deti.ecgweb.domain.security.Login;
+import br.ufc.deti.ecgweb.utils.mitbih.MitBihData;
+import br.ufc.deti.ecgweb.utils.mitbih.MitBihHeader;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -41,7 +51,13 @@ public class ClientService {
     private EcgRepository ecgRepository;   
     
     @Autowired
-    private LoginRepository loginRepository;       
+    private LoginRepository loginRepository;      
+    
+    @Autowired
+    private EcgChannelRepository ecgChannelRepository;   
+    
+    @Autowired
+    private EcgSignalRepository ecgSignalRepository;   
     
     private void addLogin(String strLogin, String password, Client client) {
         Login login = new Login();
@@ -115,14 +131,66 @@ public class ClientService {
         return (List)doctor.getPatients();
     }
     
-    public void addMitBihClient(String name) {
-        MitBihClient mit = new MitBihClient();
+    public void addMitBihPatient(String name) throws IOException {
+        Patient patient = new Patient();
         PersonalData data = new PersonalData();        
         data.setName(name);                
-        mit.setPersonalData(data);        
-        mitBihClientRepository.save(mit);
+        data.setCpf(UUID.randomUUID().toString());
+        data.setRg(UUID.randomUUID().toString());
+        data.setGender(GenderType.Male);
+        data.setEmail(UUID.randomUUID().toString()+"@gmail.com");
+        patient.setPersonalData(data);
+        patientRepository.saveAndFlush(patient);
         
-        //Adding Ecg
+        MitBihHeader mitBihHeader = new MitBihHeader("mitbih/" + name + ".hea");        
+        MitBihData mitBihData = new MitBihData("mitbih/" + name + ".txt");        
+        
+        Ecg ecg = new Ecg();
+        ecg.setBaseLine(mitBihHeader.getBaseLine());
+        ecg.setGain(mitBihHeader.getGain());
+        ecg.setSampleRate(mitBihHeader.getSampleRate());
+        ecg.setFinished(true);
+        ecgRepository.saveAndFlush(ecg);
+        
+        patient.addEcgExam(ecg);
+        patientRepository.saveAndFlush(patient);
+        
+        EcgChannel channel1 = new EcgChannel();
+        channel1.setLeadType(mitBihHeader.getTypeChannel1());
+        ecgChannelRepository.saveAndFlush(channel1);
+        
+        EcgChannel channel2 = new EcgChannel();
+        channel2.setLeadType(mitBihHeader.getTypeChannel2());
+        ecgChannelRepository.saveAndFlush(channel2);
+        
+        ecg.addChannel(channel1);
+        ecg.addChannel(channel2);
+        ecgRepository.saveAndFlush(ecg);
+        
+        List<Double> channel1Signals = mitBihData.getChannel1();
+        List<Double> channel2Signals = mitBihData.getChannel2();
+        
+        int count = 0;
+        for (Double channel2Signal : channel2Signals) {
+            EcgSignal signal = new EcgSignal();
+            signal.setSampleIdx(count++);
+            signal.setyIntensity(channel2Signal);
+            ecgSignalRepository.saveAndFlush(signal);
+
+            channel2.addSignal(signal);
+            ecgChannelRepository.saveAndFlush(channel2);            
+        }
+        
+        count = 0;
+        for (Double channel1Signal : channel1Signals) {
+            EcgSignal signal = new EcgSignal();
+            signal.setSampleIdx(count++);
+            signal.setyIntensity(channel1Signal);
+            ecgSignalRepository.saveAndFlush(signal);
+
+            channel1.addSignal(signal);
+            ecgChannelRepository.saveAndFlush(channel1);            
+        }
     }
 
     public List<Client> listAllMitBihClients() {

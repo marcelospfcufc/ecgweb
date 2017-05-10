@@ -7,6 +7,9 @@ import br.ufc.deti.ecgweb.domain.client.ClientService;
 import br.ufc.deti.ecgweb.domain.client.GenderType;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -59,6 +62,10 @@ public class AdminController {
             throw new ServiceNotAuthorizedException();
         }
 
-        clientService.addMitBihClient(dto.getName());
+        try {
+            clientService.addMitBihPatient(dto.getName());
+        } catch (IOException ex) {
+            ex.printStackTrace();            
+        }
     }   
 }

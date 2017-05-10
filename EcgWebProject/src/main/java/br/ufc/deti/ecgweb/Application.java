@@ -5,6 +5,9 @@
  */
 package br.ufc.deti.ecgweb;
 
+import br.ufc.deti.ecgweb.utils.mitbih.MitBihData;
+import br.ufc.deti.ecgweb.utils.mitbih.MitBihHeader;
+import java.io.IOException;
 import javax.persistence.Persistence;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 public class Application {
 
-    public static void main(String args[]) {        
+    public static void main(String args[]) {      
         
         Persistence.generateSchema("ecgweb", null);
         SpringApplication.run(Application.class, args);

@@ -21,8 +21,8 @@ public class MitBihClient extends Client{
      */
     @Override
     public void setPersonalData(PersonalData personalData){       
-        personalData.setCpf("00000000000");
-        personalData.setRg("00000000000");
+        personalData.setCpf(UUID.randomUUID().toString());
+        personalData.setRg(UUID.randomUUID().toString());
         personalData.setEmail(UUID.randomUUID().toString() + "@mitbih.com");
         personalData.setGender(GenderType.Male);
         this.personalData = personalData;

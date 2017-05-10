@@ -9,6 +9,10 @@ import br.ufc.deti.ecgweb.application.dto.ListExamsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
@@ -160,5 +164,45 @@ public class EcgController {
         
         List<GetSignalsResponseDTO> dtos = Converters.converterListSignalToListSignalDto(service.getSignals(channelId));
         return dtos;
+    }
+    
+    /**
+     * Return the qtd of signals.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/numberOfSignals", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetNumberOfSignalsResponseDTO getNumberOfSignals(@RequestBody GetNumberOfSignalsRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        GetNumberOfSignalsResponseDTO response = new GetNumberOfSignalsResponseDTO();
+        response.setQtd((long)service.getSignals(dto.getChannelId()).size());
+        
+        return response;        
+    }
+    
+    /**
+     * Return signals interval.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getSignalsInterval", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  GetSignalsIntervalResponseDTO getSignalsInterval(@RequestBody GetSignalsIntervalRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        GetSignalsIntervalResponseDTO response = new GetSignalsIntervalResponseDTO();
+        
+        response.setSignals( Converters.converterListEcgSignalToListDoubleDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
+        return response;
     }
 }

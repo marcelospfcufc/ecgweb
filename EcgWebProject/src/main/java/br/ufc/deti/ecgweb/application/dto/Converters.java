@@ -82,4 +82,16 @@ public class Converters {
 
         return loginDTO;
     }
+    
+    public static List<Double> converterListEcgSignalToListDoubleDTO(List<EcgSignal> signals) {
+        List<Double> doubleList = new ArrayList<Double>();
+        
+        for (EcgSignal signal : signals) {
+            doubleList.add(signal.getyIntensity());
+        }
+        
+        return doubleList;
+    }
+    
+    
 }

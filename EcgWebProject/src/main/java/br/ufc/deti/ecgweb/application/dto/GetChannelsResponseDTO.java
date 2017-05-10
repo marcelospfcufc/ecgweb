@@ -11,7 +11,7 @@ import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
  *
  * @author Marcelo Araujo Lima
  */
-public class GetChannelsResponseDTO extends AbstractAuthenticationRequestDTO{
+public class GetChannelsResponseDTO{
     private Long id;
     private EcgLeadType type;
 

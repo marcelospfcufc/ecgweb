@@ -2,6 +2,7 @@ package br.ufc.deti.ecgweb.domain.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
