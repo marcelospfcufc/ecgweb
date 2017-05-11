@@ -7,7 +7,6 @@ package br.ufc.deti.ecgweb.domain.client;
 
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
-import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.repositories.ClientRepository;
 import java.util.List;
@@ -25,7 +24,6 @@ import br.ufc.deti.ecgweb.utils.mitbih.MitBihData;
 import br.ufc.deti.ecgweb.utils.mitbih.MitBihHeader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -45,7 +43,7 @@ public class ClientService {
     private PatientRepository patientRepository;
     
     @Autowired
-    private MitBihClientRepository mitBihClientRepository;
+    private MitBihClientRepository mitBihPatientRepository;
     
     @Autowired
     private EcgRepository ecgRepository;   
@@ -132,19 +130,17 @@ public class ClientService {
     }
     
     public void addMitBihPatient(String name) throws IOException {
-        Patient patient = new Patient();
-        PersonalData data = new PersonalData();        
-        data.setName(name);                
-        data.setCpf(UUID.randomUUID().toString());
-        data.setRg(UUID.randomUUID().toString());
-        data.setGender(GenderType.Male);
-        data.setEmail(UUID.randomUUID().toString()+"@gmail.com");
-        patient.setPersonalData(data);
-        patientRepository.saveAndFlush(patient);
         
         MitBihHeader mitBihHeader = new MitBihHeader("mitbih/" + name + ".hea");        
         MitBihData mitBihData = new MitBihData("mitbih/" + name + ".txt");        
         
+        MitBihPatient patient = new MitBihPatient();
+        patient.setAge(mitBihHeader.getAge());
+        patient.setGender(mitBihHeader.getGender());
+        patient.setName(name);
+        mitBihPatientRepository.save(patient);
+                
+         
         Ecg ecg = new Ecg();
         ecg.setBaseLine(mitBihHeader.getBaseLine());
         ecg.setGain(mitBihHeader.getGain());
@@ -153,7 +149,7 @@ public class ClientService {
         ecgRepository.saveAndFlush(ecg);
         
         patient.addEcgExam(ecg);
-        patientRepository.saveAndFlush(patient);
+        mitBihPatientRepository.saveAndFlush(patient);
         
         EcgChannel channel1 = new EcgChannel();
         channel1.setLeadType(mitBihHeader.getTypeChannel1());
@@ -190,11 +186,10 @@ public class ClientService {
 
             channel1.addSignal(signal);
             ecgChannelRepository.saveAndFlush(channel1);            
-        }
+        }        
     }
 
-    public List<Client> listAllMitBihClients() {
-        List<Client> clients = (List)mitBihClientRepository.findAll();
-        return clients;
+    public List<MitBihPatient> listAllMitBihClients() {        
+        return mitBihPatientRepository.findAll();
     }
 }

@@ -4,7 +4,6 @@ import br.ufc.deti.ecgweb.application.dto.AddDoctorRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddMitBihRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddPatientRequestDTO;
 import br.ufc.deti.ecgweb.domain.client.ClientService;
-import br.ufc.deti.ecgweb.domain.client.GenderType;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.io.IOException;
@@ -57,15 +56,21 @@ public class AdminController {
     
     @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addMitbih(@RequestBody AddMitBihRequestDTO dto) {
+    public void addMitbih(@RequestBody final AddMitBihRequestDTO dto) {
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-
-        try {
-            clientService.addMitBihPatient(dto.getName());
-        } catch (IOException ex) {
-            ex.printStackTrace();            
-        }
+        
+        Thread t = new Thread(){
+            @Override
+            public void run() {
+                try {
+                    clientService.addMitBihPatient(dto.getName());
+                } catch (IOException ex) {
+                    throw new ServiceNotAuthorizedException();
+                }
+            }
+        };
+        t.start();
     }   
 }

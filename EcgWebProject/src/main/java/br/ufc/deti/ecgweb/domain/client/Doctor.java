@@ -27,7 +27,6 @@ public class Doctor extends Client {
 
     public void setCrm(String crm) {
         //TODO
-        //VALIDAR
         this.crm = crm;
     }
     

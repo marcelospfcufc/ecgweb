@@ -5,7 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.repositories;
 
-import br.ufc.deti.ecgweb.domain.client.MitBihClient;
+import br.ufc.deti.ecgweb.domain.client.MitBihPatient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +14,5 @@ import org.springframework.stereotype.Repository;
  * @author marcelo
  */
 @Repository
-public interface MitBihClientRepository extends JpaRepository<MitBihClient, Long>{
+public interface MitBihClientRepository extends JpaRepository<MitBihPatient, Long>{
 }

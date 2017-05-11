@@ -6,6 +6,7 @@
 package br.ufc.deti.ecgweb.application.dto;
 
 import br.ufc.deti.ecgweb.domain.client.Client;
+import br.ufc.deti.ecgweb.domain.client.MitBihPatient;
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
@@ -18,6 +19,19 @@ import java.util.List;
  * @author Marcelo Araujo Lima
  */
 public class Converters {
+    
+    public static List<ListAllMitBihPatientResponseDTO> converterMitBihPatientListToListAllMitBihPatientResponseDTO(List<MitBihPatient> patients) {
+        List<ListAllMitBihPatientResponseDTO> patientsDTO = new ArrayList<ListAllMitBihPatientResponseDTO>();
+        for (MitBihPatient patient : patients) {
+            ListAllMitBihPatientResponseDTO dto = new ListAllMitBihPatientResponseDTO();
+            dto.setAge(patient.getAge());
+            dto.setGender(patient.getGender());
+            dto.setName(patient.getName());
+            dto.setId(patient.getId());
+            patientsDTO.add(dto);
+        }
+        return patientsDTO;
+    }
 
     public static List<ListClientsResponseDTO> converterListClientToListClientsResponseDTO(List<Client> clients) {
         List<ListClientsResponseDTO> clientsDTO = new ArrayList<ListClientsResponseDTO>();
@@ -92,6 +106,4 @@ public class Converters {
         
         return doubleList;
     }
-    
-    
 }

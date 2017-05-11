@@ -50,18 +50,8 @@ public class EcgController {
         }
 
         service.addEcg(clientId, dto.getExamDate(), dto.getSampleRate(), dto.getDurationMs(), dto.getBaseLine(), dto.getGain(), dto.getFinished(), dto.getDescription());
-    }
+    }   
     
-    @RequestMapping(value = "ecg/mitbih/{clientId}/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public void addMitBihEcg(@PathVariable(value = "clientId") Long clientId, @RequestBody AddEcgRequestDTO dto) {
-
-        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
-            throw new ServiceNotAuthorizedException();
-        }
-
-        service.addMitBihEcg(clientId, dto.getExamDate(), dto.getSampleRate(), dto.getDurationMs(), dto.getBaseLine(), dto.getGain(), dto.getFinished(), dto.getDescription());
-    }
 
     @RequestMapping(value = "ecg/client/{clientId}/listExams", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody

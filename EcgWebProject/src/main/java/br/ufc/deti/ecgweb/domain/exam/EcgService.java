@@ -60,23 +60,6 @@ public class EcgService {
         patientRepository.save(patient);        
     }
     
-    public void addMitBihEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
-
-        Ecg ecg = new Ecg();
-        ecg.setExamDate(examDate);
-        ecg.setSampleRate(sampleRate);
-        ecg.setBaseLine(baseLine);
-        ecg.setDurationMs(durationMs);
-        ecg.setGain(gain);
-        ecg.setFinished(finished);
-        ecg.setDescription(description);
-        ecgRepository.save(ecg);
-        
-        MitBihClient mitbih = mitbihRepository.findOne(clientId);        
-        mitbih.addEcgExam(ecg);
-        mitbihRepository.save(mitbih);        
-    }
-    
     public List<Ecg> listAllEcgsPerPatient(Long patientId) {
         Patient patient = patientRepository.findOne(patientId);        
         return patient.getExams();

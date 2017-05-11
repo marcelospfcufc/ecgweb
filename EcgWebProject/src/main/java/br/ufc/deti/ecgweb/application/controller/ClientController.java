@@ -9,10 +9,10 @@ import br.ufc.deti.ecgweb.application.dto.AddPatientToDoctorRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListClientsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.ListAllDoctorsRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.ListAllMitBihClientsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllMitBihPatientsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListAllMitBihPatientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.ListAllPatientsFromDoctorRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListAllPatientsRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.PersonalDataDTO;
 import br.ufc.deti.ecgweb.domain.client.ClientService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.util.List;
@@ -91,14 +91,7 @@ public class ClientController{
     @RequestMapping(value = "mitbih/listAll", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ListClientsResponseDTO> listAllMitBihClients(@RequestBody ListAllMitBihClientsRequestDTO dto) {     
-        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllMitBihClients());                        
-        return clientsDTO;        
+    public List<ListAllMitBihPatientResponseDTO> listAllMitBihClients(@RequestBody ListAllMitBihPatientsRequestDTO dto) {     
+        return Converters.converterMitBihPatientListToListAllMitBihPatientResponseDTO(service.listAllMitBihClients());                                
     }
-    
-//    @RequestMapping(value = "mitbih/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
-//    @ResponseStatus(HttpStatus.OK)
-//    public void addMitBihClient(@RequestBody PersonalDataDTO personalData) {        
-//        service.addMitBihClient(personalData.getName());
-//    }
 }

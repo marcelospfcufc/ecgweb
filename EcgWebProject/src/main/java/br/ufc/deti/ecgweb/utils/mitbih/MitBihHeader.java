@@ -5,6 +5,7 @@
  */
 package br.ufc.deti.ecgweb.utils.mitbih;
 
+import br.ufc.deti.ecgweb.domain.client.GenderType;
 import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +25,8 @@ public class MitBihHeader {
     private long nSamples;
     private long baseLine;
     private long gain;
+    private int age;
+    private GenderType gender;
     private EcgLeadType typeChannel1;
     private EcgLeadType typeChannel2;
     
@@ -74,12 +77,21 @@ public class MitBihHeader {
         baseLine = Integer.parseInt(split[4]);        
         typeChannel2 = getLeadTypeFromString(split[8]);        
     }
+    
+    private void fillFourthLine(String line) {
+        String split[] = line.split(" ");
+        age = Integer.parseInt(split[1]);
+        gender = split[2].compareTo("M") == 0 ? GenderType.Male : GenderType.Female;                
+    }
+    
+    
 
     public MitBihHeader(String fileName) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);        
         fillFirstLine(lines.get(0));
         fillSecondLine(lines.get(1));
         fillThirdLine(lines.get(2));        
+        fillFourthLine(lines.get(2));        
     }
 
     public String getRecordName() {
@@ -145,6 +157,24 @@ public class MitBihHeader {
     public void setTypeChannel2(EcgLeadType typeChannel2) {
         this.typeChannel2 = typeChannel2;
     }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
+    
+    
 
     @Override
     public String toString() {
