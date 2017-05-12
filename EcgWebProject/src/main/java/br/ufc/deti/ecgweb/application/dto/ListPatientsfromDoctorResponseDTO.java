@@ -1,25 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package br.ufc.deti.ecgweb.application.dto;
 
 import br.ufc.deti.ecgweb.domain.client.GenderType;
 
 /**
- *
  * @author Marcelo Araujo Lima
  */
-public class ListAllMitBihPatientResponseDTO extends AbstractAuthenticationRequestDTO{
-
-    private Long id;    
-    
-    private String name;
-    private Integer age;
+public class ListPatientsfromDoctorResponseDTO{    
+    private Long patientId;
+    private String name;        
     private GenderType gender;
 
-    public Long getId() {
-        return id;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 
     public String getName() {
@@ -28,14 +29,6 @@ public class ListAllMitBihPatientResponseDTO extends AbstractAuthenticationReque
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 
     public GenderType getGender() {

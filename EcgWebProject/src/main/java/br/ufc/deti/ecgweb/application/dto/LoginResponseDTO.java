@@ -9,7 +9,7 @@ package br.ufc.deti.ecgweb.application.dto;
  *
  * @author Marcelo Araujo Lima
  */
-public class LoginReturnDTO {
+public class LoginResponseDTO {
     private Long clientId;
     private String key;
 

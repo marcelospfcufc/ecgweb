@@ -7,7 +7,7 @@ package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.LoginDTO;
-import br.ufc.deti.ecgweb.application.dto.LoginReturnDTO;
+import br.ufc.deti.ecgweb.application.dto.LoginResponseDTO;
 import br.ufc.deti.ecgweb.domain.security.Login;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +32,8 @@ public class LoginController {
     @RequestMapping(value = "login", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)    
-    public LoginReturnDTO getLogin(@RequestBody LoginDTO login){
+    public LoginResponseDTO getLogin(@RequestBody LoginDTO login){
         Login login_ = service.loginSystem(login.getLogin(), login.getPassword());
-        return Converters.converterLoginToLoginReturnDTO(login_);
+        return Converters.converterLoginToLoginResponseDTO(login_);
     }
 }

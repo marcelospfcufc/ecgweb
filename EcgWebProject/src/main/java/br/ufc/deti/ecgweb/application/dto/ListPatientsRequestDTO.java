@@ -4,5 +4,5 @@ package br.ufc.deti.ecgweb.application.dto;
  *
  * @author Marcelo Araujo Lima
  */
-public class ListAllDoctorsRequestDTO extends AbstractAuthenticationRequestDTO{
+public class ListPatientsRequestDTO extends AbstractAuthenticationRequestDTO{
 }

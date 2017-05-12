@@ -8,28 +8,27 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author Marcelo Araujo Lima
  */
-public class ListExamsPerClientResponseDTO{
+public class ListEcgsPerClientResponseDTO{
 
-    private Long examId;    
+    private Long ecgId;    
     
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime examDate;
     
-    private Long sampleRate;
-    private Long durationMs;
+    private Long sampleRate;    
     private Long baseLine;
     private Long gain;
     private String finished;
     private String description;
 
-    public Long getExamId() {
-        return examId;
+    public Long getEcgId() {
+        return ecgId;
     }
 
-    public void setExamId(Long examId) {
-        this.examId = examId;
-    }   
+    public void setEcgId(Long ecgId) {
+        this.ecgId = ecgId;
+    }
 
     public LocalDateTime getExamDate() {
         return examDate;
@@ -45,15 +44,7 @@ public class ListExamsPerClientResponseDTO{
 
     public void setSampleRate(Long sampleRate) {
         this.sampleRate = sampleRate;
-    }
-
-    public Long getDurationMs() {
-        return durationMs;
-    }
-
-    public void setDurationMs(Long durationMs) {
-        this.durationMs = durationMs;
-    }
+    }    
 
     public Long getBaseLine() {
         return baseLine;

@@ -14,6 +14,7 @@ import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MitBihClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
+import br.ufc.deti.ecgweb.utils.algorithms.QRSComplexAlgorithm1;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -95,8 +96,7 @@ public class EcgService {
         return ecg.getChannels();
     }
     
-    public void addEcgSignal(Long channelId, Integer idx, Double intensity) {        
-        
+    public void addEcgSignal(Long channelId, Integer idx, Double intensity) {
         EcgSignal signal = new EcgSignal();
         signal.setSampleIdx(idx);
         signal.setyIntensity(intensity);        
@@ -110,5 +110,14 @@ public class EcgService {
     public List<EcgSignal> getSignals(Long channelId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         return channel.getSignals();
+    }
+    
+    public List<EcgSignalRange> getQrsComplex(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        
+        List<EcgSignal> signals = channel.getSignals();
+        //int sampleRate = channel.getEcg().getSampleRate().intValue();
+        
+        return QRSComplexAlgorithm1.getQrsComplex(signals, 360);
     }
 }

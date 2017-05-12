@@ -4,13 +4,15 @@ import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.AddChannelRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddEcgRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddSignalRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.ListExamsPerClientRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.ListExamsPerClientResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetQrsComplexRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetQrsComplexResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
@@ -21,7 +23,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,17 +54,16 @@ public class EcgController {
     }   
     
 
-    @RequestMapping(value = "ecg/client/listExams", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "ecg/client/listEcgs", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ListExamsPerClientResponseDTO> listExamsPerClient(@RequestBody ListExamsPerClientRequestDTO dto) {
+    public List<ListEcgsPerClientResponseDTO> listEcgsPerClient(@RequestBody ListEcgsPerClientRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        List<ListExamsPerClientResponseDTO> ecgsDTO = Converters.converterListEcgToListEcgDto(service.listAllEcgsPerPatient(dto.getClientId()));
-        return ecgsDTO;
+        return Converters.converterListEcgsToListEcgsResponseDto(service.listAllEcgsPerPatient(dto.getClientId()));        
     }
 
     @RequestMapping(value = "ecg/editReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -102,7 +102,6 @@ public class EcgController {
     /**
      * Return a list with all channels from ECG exam.
      *
-     * @param ecgId
      * @param dto
      * @return List of Channels
      */
@@ -115,13 +114,12 @@ public class EcgController {
             throw new ServiceNotAuthorizedException();
         }
 
-        return Converters.converterListEcgChannelToEcgChannelDto(service.getChannels(dto.getEcgId()));        
+        return Converters.converterListEcgChannelsToListEcgChannelsResponseDto(service.getChannels(dto.getEcgId()));        
     }
 
     /**
      * Add a new signal to channel.
      *
-     * @param channelId
      * @param dto
      */
     @RequestMapping(value = "ecg/channel/addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -150,7 +148,7 @@ public class EcgController {
             throw new ServiceNotAuthorizedException();
         }
         
-        return Converters.converterListSignalToListSignalDto(service.getSignals(dto.getChannelId()));
+        return Converters.converterListSignalsListToListSignalsResponseDto(service.getSignals(dto.getChannelId()));
     }
     
     /**
@@ -189,7 +187,24 @@ public class EcgController {
         
         GetSignalsIntervalResponseDTO response = new GetSignalsIntervalResponseDTO();
         
-        response.setSignals(Converters.converterListEcgSignalToListDoubleDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
+        response.setSignals(Converters.converterListEcgSignalsToListDoublesResponseDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
         return response;
+    }
+    
+    /**
+     * Return QRS Complex from Channel.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getQrsComplex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetQrsComplexResponseDTO> getQrsComplex(@RequestBody GetQrsComplexRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId()));
     }
 }
