@@ -11,12 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
 @Entity
+@Table(name = "mit_bih_patient")
 public class MitBihPatient implements Serializable{    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
