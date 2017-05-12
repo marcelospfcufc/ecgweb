@@ -19,7 +19,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,27 +51,26 @@ public class ClientController{
         return clientsDTO;
     }
     
-    @RequestMapping(value = "doctor/{doctorId}/{patientId}/addPatient", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
+    @RequestMapping(value = "doctor/addPatient", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")    
     @ResponseStatus(HttpStatus.OK)
-    public void addPatientToDoctor(@PathVariable(value = "doctorId") Long doctorId, @PathVariable(value = "patientId") Long patientId, @RequestBody AddPatientToDoctorRequestDTO dto) {  
+    public void addPatientToDoctor(@RequestBody AddPatientToDoctorRequestDTO dto) {  
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }        
         
-        service.addPatientToDoctor(doctorId, patientId);
+        service.addPatientToDoctor(dto.getDoctorId(), dto.getPatientId());
     }
     
-    @RequestMapping(value = "doctor/{doctorId}/listAllPatients", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "doctor/listPatients", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ListClientsResponseDTO> listAllPatientsFromDoctor(@PathVariable(value = "doctorId") Long doctorId, @RequestBody ListAllPatientsFromDoctorRequestDTO dto) {             
+    public List<ListClientsResponseDTO> listAllPatientsFromDoctor(@RequestBody ListAllPatientsFromDoctorRequestDTO dto) {             
         
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
         
-        List<ListClientsResponseDTO> clientsDTO = Converters.converterListClientToListClientsResponseDTO(service.listAllPatientsFromDoctor(doctorId));                                
-        return clientsDTO;        
+        return Converters.converterListClientToListClientsResponseDTO(service.listAllPatientsFromDoctor(dto.getDoctorId()));
     }    
     
     @RequestMapping(value = "patient/listAll", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")

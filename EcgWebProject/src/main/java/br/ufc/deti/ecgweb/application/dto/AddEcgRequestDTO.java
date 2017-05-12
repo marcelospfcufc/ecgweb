@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class AddEcgRequestDTO extends AbstractAuthenticationRequestDTO{
 
-    private Long id;    
+    private Long patientId;    
     
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
@@ -23,13 +23,13 @@ public class AddEcgRequestDTO extends AbstractAuthenticationRequestDTO{
     private String finished;
     private String description;
 
-    public Long getId() {
-        return id;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }    
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
+    }
 
     public LocalDateTime getExamDate() {
         return examDate;

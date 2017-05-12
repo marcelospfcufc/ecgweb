@@ -145,7 +145,7 @@ public class ClientService {
         ecg.setBaseLine(mitBihHeader.getBaseLine());
         ecg.setGain(mitBihHeader.getGain());
         ecg.setSampleRate(mitBihHeader.getSampleRate());
-        ecg.setFinished(true);
+        ecg.setFinished(false);
         ecgRepository.saveAndFlush(ecg);
         
         patient.addEcgExam(ecg);
@@ -187,6 +187,9 @@ public class ClientService {
             channel1.addSignal(signal);
             ecgChannelRepository.saveAndFlush(channel1);            
         }        
+        
+        ecg.setFinished(true);
+        ecgRepository.saveAndFlush(ecg);
     }
 
     public List<MitBihPatient> listAllMitBihClients() {        

@@ -12,16 +12,16 @@ import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
  * @author Marcelo Araujo Lima
  */
 public class GetChannelsResponseDTO{
-    private Long id;
+    private Long channelId;
     private EcgLeadType type;
 
-    public Long getId() {
-        return id;
+    public Long getChannelId() {
+        return channelId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setChannelId(Long channelId) {
+        this.channelId = channelId;
+    }    
 
     public EcgLeadType getType() {
         return type;

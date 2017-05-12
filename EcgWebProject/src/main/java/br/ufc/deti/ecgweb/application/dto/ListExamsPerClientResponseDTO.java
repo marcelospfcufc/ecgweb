@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class ListExamsPerClientResponseDTO{
 
-    private Long id;    
+    private Long examId;    
     
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
@@ -23,13 +23,13 @@ public class ListExamsPerClientResponseDTO{
     private String finished;
     private String description;
 
-    public Long getId() {
-        return id;
+    public Long getExamId() {
+        return examId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }    
+    public void setExamId(Long examId) {
+        this.examId = examId;
+    }   
 
     public LocalDateTime getExamDate() {
         return examDate;

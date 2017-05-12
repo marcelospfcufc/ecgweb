@@ -41,62 +41,62 @@ public class EcgController {
     @Autowired
     private LoginService loginService;
 
-    @RequestMapping(value = "ecg/client/{clientId}/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/client/addEcg", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addEcg(@PathVariable(value = "clientId") Long clientId, @RequestBody AddEcgRequestDTO dto) {
+    public void addEcg(@RequestBody AddEcgRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        service.addEcg(clientId, dto.getExamDate(), dto.getSampleRate(), dto.getDurationMs(), dto.getBaseLine(), dto.getGain(), dto.getFinished(), dto.getDescription());
+        service.addEcg(dto.getPatientId(), dto.getExamDate(), dto.getSampleRate(), dto.getDurationMs(), dto.getBaseLine(), dto.getGain(), dto.getFinished(), dto.getDescription());
     }   
     
 
-    @RequestMapping(value = "ecg/client/{clientId}/listExams", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "ecg/client/listExams", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<ListExamsPerClientResponseDTO> listExamsPerClient(@PathVariable(value = "clientId") Long clientId, @RequestBody ListExamsPerClientRequestDTO dto) {
+    public List<ListExamsPerClientResponseDTO> listExamsPerClient(@RequestBody ListExamsPerClientRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        List<ListExamsPerClientResponseDTO> ecgsDTO = Converters.converterListEcgToListEcgDto(service.listAllEcgsPerPatient(clientId));
+        List<ListExamsPerClientResponseDTO> ecgsDTO = Converters.converterListEcgToListEcgDto(service.listAllEcgsPerPatient(dto.getClientId()));
         return ecgsDTO;
     }
 
-    @RequestMapping(value = "ecg/{ecgId}/editReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/editReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void editReport(@PathVariable(value = "ecgId") Long ecgId, @RequestBody EditReportRequestDTO dto) {
+    public void editReport(@RequestBody EditReportRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        service.editReport(ecgId, dto.getReport());
+        service.editReport(dto.getEcgId(), dto.getReport());
     }
 
-    @RequestMapping(value = "ecg/{ecgId}/setFinished", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/setFinished", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void setEcgFinished(@PathVariable(value = "ecgId") Long ecgId, @RequestBody EditReportRequestDTO dto) {
+    public void setEcgFinished(@RequestBody EditReportRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        service.setEcgStatus(ecgId);
+        service.setEcgStatus(dto.getEcgId());
     }
 
-    @RequestMapping(value = "ecg/{ecgId}/addChannel", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/addChannel", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addChannel(@PathVariable(value = "ecgId") Long ecgId, @RequestBody AddChannelRequestDTO dto) {
+    public void addChannel(@RequestBody AddChannelRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        service.addEcgChannel(ecgId, dto.getType());
+        service.addEcgChannel(dto.getEcgId(), dto.getType());
     }
 
     /**
@@ -106,17 +106,16 @@ public class EcgController {
      * @param dto
      * @return List of Channels
      */
-    @RequestMapping(value = "ecg/{ecgId}/listChannels", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/listChannels", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GetChannelsResponseDTO> getChannels(@PathVariable(value = "ecgId") Long ecgId, @RequestBody GetChannelsRequestDTO dto) {
+    public List<GetChannelsResponseDTO> getChannels(@RequestBody GetChannelsRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        List<GetChannelsResponseDTO> dtos = Converters.converterListEcgChannelToEcgChannelDto(service.getChannels(ecgId));
-        return dtos;
+        return Converters.converterListEcgChannelToEcgChannelDto(service.getChannels(dto.getEcgId()));        
     }
 
     /**
@@ -125,35 +124,33 @@ public class EcgController {
      * @param channelId
      * @param dto
      */
-    @RequestMapping(value = "ecg/channel/{channelId}/addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public void addSignal(@PathVariable(value = "channelId") Long channelId, @RequestBody AddSignalRequestDTO dto) {
+    public void addSignal(@RequestBody AddSignalRequestDTO dto) {
         
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
         
-        service.addEcgSignal(channelId, dto.getIdx(), dto.getIntensity());
+        service.addEcgSignal(dto.getChannelId(), dto.getIdx(), dto.getIntensity());
     }
 
     /**
      * Return a list of signals from a specific channel.
      *
-     * @param channelId
      * @param dto
      * @return List of signals
      */
-    @RequestMapping(value = "ecg/channel/{channelId}/listSignals", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/listSignals", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GetSignalsResponseDTO> getSignals(@PathVariable(value = "channelId") Long channelId, @RequestBody GetSignalsRequestDTO dto) {
+    public List<GetSignalsResponseDTO> getSignals(@RequestBody GetSignalsRequestDTO dto) {
                 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
         
-        List<GetSignalsResponseDTO> dtos = Converters.converterListSignalToListSignalDto(service.getSignals(channelId));
-        return dtos;
+        return Converters.converterListSignalToListSignalDto(service.getSignals(dto.getChannelId()));
     }
     
     /**
@@ -192,7 +189,7 @@ public class EcgController {
         
         GetSignalsIntervalResponseDTO response = new GetSignalsIntervalResponseDTO();
         
-        response.setSignals( Converters.converterListEcgSignalToListDoubleDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
+        response.setSignals(Converters.converterListEcgSignalToListDoubleDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
         return response;
     }
 }

@@ -28,9 +28,6 @@ public class Ecg extends AbstractExam {
     @JoinColumn(name = "Exam_Id", nullable = true)
     private final List<EcgChannel> channels = new ArrayList<EcgChannel>();    
     
-    @Column(name = "duration_ms")
-    private Long durationMs;
-    
     @Column(name = "sample_rate")
     private Long sampleRate;    
     
@@ -101,15 +98,7 @@ public class Ecg extends AbstractExam {
         }
         
         return channel_;
-    }
-
-    public Long getDurationMs() {
-        return durationMs;
-    }
-
-    public void setDurationMs(Long durationMs) {
-        this.durationMs = durationMs;
-    }
+    }    
 
     public Long getSampleRate() {
         return sampleRate;

@@ -11,7 +11,7 @@ package br.ufc.deti.ecgweb.application.dto;
  */
 public class LoginReturnDTO {
     private Long clientId;
-    private String uuid;
+    private String key;
 
     public Long getClientId() {
         return clientId;
@@ -21,14 +21,11 @@ public class LoginReturnDTO {
         this.clientId = clientId;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getKey() {
+        return key;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setKey(String key) {
+        this.key = key;
     }
-    
-    
-    
 }

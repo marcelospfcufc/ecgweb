@@ -10,16 +10,16 @@ package br.ufc.deti.ecgweb.application.dto;
  * @author Marcelo Araujo Lima
  */
 public class GetSignalsResponseDTO {
-    private Long id;
+    private Long signalId;
     private Integer idx;
     private Double intensity;
 
-    public Long getId() {
-        return id;
+    public Long getSignalId() {
+        return signalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSignalId(Long signalId) {
+        this.signalId = signalId;
     }
 
     public Integer getIdx() {

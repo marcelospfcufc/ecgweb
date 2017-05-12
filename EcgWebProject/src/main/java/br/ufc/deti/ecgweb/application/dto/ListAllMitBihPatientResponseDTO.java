@@ -1,9 +1,6 @@
 package br.ufc.deti.ecgweb.application.dto;
 
 import br.ufc.deti.ecgweb.domain.client.GenderType;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *

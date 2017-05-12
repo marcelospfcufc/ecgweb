@@ -48,8 +48,7 @@ public class EcgService {
         Ecg ecg = new Ecg();
         ecg.setExamDate(examDate);
         ecg.setSampleRate(sampleRate);
-        ecg.setBaseLine(baseLine);
-        ecg.setDurationMs(durationMs);
+        ecg.setBaseLine(baseLine);        
         ecg.setGain(gain);
         ecg.setFinished(finished);
         ecg.setDescription(description);

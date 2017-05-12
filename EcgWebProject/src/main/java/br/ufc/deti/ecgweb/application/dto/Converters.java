@@ -51,13 +51,12 @@ public class Converters {
             ListExamsPerClientResponseDTO dto = new ListExamsPerClientResponseDTO();
 
             dto.setBaseLine(ecg.getBaseLine());
-            dto.setDescription(ecg.getDescription());
-            dto.setDurationMs(ecg.getDurationMs());
+            dto.setDescription(ecg.getDescription());            
             dto.setExamDate(ecg.getExamDate());
             dto.setFinished(ecg.getFinished().toString());
             dto.setGain(ecg.getGain());
             dto.setSampleRate(ecg.getSampleRate());
-            dto.setId(ecg.getId());
+            dto.setExamId(ecg.getId());
 
             ecgsDTO.add(dto);
         }
@@ -69,7 +68,7 @@ public class Converters {
         for (EcgChannel channel : channels) {
             GetChannelsResponseDTO dto = new GetChannelsResponseDTO();
             
-            dto.setId(channel.getId());
+            dto.setChannelId(channel.getId());
             dto.setType(channel.getLeadType());
             ecgChannelsDTO.add(dto);
         }
@@ -80,7 +79,7 @@ public class Converters {
         List<GetSignalsResponseDTO> signalsDTO = new ArrayList<GetSignalsResponseDTO>();
         for (EcgSignal signal : signals) {
             GetSignalsResponseDTO dto = new GetSignalsResponseDTO();
-            dto.setId(signal.getId());
+            dto.setSignalId(signal.getId());
             dto.setIdx(signal.getSampleIdx());
             dto.setIntensity(signal.getyIntensity());
             signalsDTO.add(dto);
@@ -92,7 +91,7 @@ public class Converters {
     public static LoginReturnDTO converterLoginToLoginReturnDTO(Login login) {
         LoginReturnDTO loginDTO = new LoginReturnDTO();
         loginDTO.setClientId(login.getClient().getId());
-        loginDTO.setUuid(login.getUuid());
+        loginDTO.setKey(login.getUuid());
 
         return loginDTO;
     }
