@@ -36,9 +36,9 @@ public class EcgChannel implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "Ecg_Channel_Id", nullable = true)
-    private Ecg ecg;
+    private Ecg ecg;*/
     
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Ecg_Channel_Id")
@@ -58,15 +58,6 @@ public class EcgChannel implements Serializable{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PWAVE_ID")
     private PWave pWave;    
-
-    public Ecg getEcg() {
-        return ecg;
-    }
-    
-    public void setEcg(Ecg ecg) {
-        this.ecg = ecg;
-    }
-    
     
 
     public EcgChannel() {
