@@ -27,4 +27,11 @@ public class Patient extends Client{
     public void addDoctor(Doctor doctor) {
         doctors.add(doctor);
     }
+
+    @Override
+    public String getRole() {
+        return RoleType.PATIENT;
+    }
+
+    
 }

@@ -12,6 +12,7 @@ package br.ufc.deti.ecgweb.application.dto;
 public class LoginResponseDTO {
     private Long clientId;
     private String key;
+    private String role;
 
     public Long getClientId() {
         return clientId;
@@ -27,5 +28,13 @@ public class LoginResponseDTO {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

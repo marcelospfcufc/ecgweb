@@ -41,4 +41,9 @@ public class Doctor extends Client {
     public List<Patient> getPatients() {
         return patients;
     }
+
+    @Override
+    public String getRole() {
+        return RoleType.DOCTOR;
+    }
 }

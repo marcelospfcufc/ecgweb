@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "client")
 @DiscriminatorColumn(name = "Role")
-public class Client implements Serializable {
+public abstract class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        
@@ -40,6 +40,8 @@ public class Client implements Serializable {
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "Client_Id")
     private final List<Ecg> exams = new ArrayList<Ecg>();
+    
+    public abstract String getRole();
     
     public Long getId() {
         return id;
@@ -73,7 +75,7 @@ public class Client implements Serializable {
         if (examAux != null) 
             exams.remove(examAux);
     }
-
+    
     public List<Ecg> getExams() {
         return exams;
     }    

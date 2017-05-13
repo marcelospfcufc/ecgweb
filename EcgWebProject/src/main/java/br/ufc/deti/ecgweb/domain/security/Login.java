@@ -111,4 +111,8 @@ public class Login implements Serializable {
     public void setLastAccess(LocalDateTime lastAccess) {
         this.lastAccess = lastAccess;
     }
+    
+    public String getRole() {
+        return client.getRole();
+    }
 }

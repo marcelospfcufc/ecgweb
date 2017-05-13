@@ -128,6 +128,7 @@ public class Converters {
     public static LoginResponseDTO converterLoginToLoginResponseDTO(Login login) {
         LoginResponseDTO loginDTO = new LoginResponseDTO();
         loginDTO.setClientId(login.getClient().getId());
+        loginDTO.setRole(login.getRole());
         loginDTO.setKey(login.getUuid());
 
         return loginDTO;

@@ -6,7 +6,9 @@
 package br.ufc.deti.ecgweb.domain.security;
 
 import br.ufc.deti.ecgweb.application.controller.LoginFailedException;
+import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
 import br.ufc.deti.ecgweb.domain.repositories.LoginRepository;
+import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,12 @@ public class LoginService {
     
     @Autowired
     private LoginRepository loginRepository;    
+    
+    @Autowired
+    private PatientRepository patientRepository;    
+    
+    @Autowired
+    private DoctorRepository doctorRepository;    
     
     public boolean hasAccess(String login, String key) {
         
