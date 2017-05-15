@@ -11,6 +11,7 @@ import br.ufc.deti.ecgweb.domain.repositories.LoginRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -42,8 +43,9 @@ public class LoginService {
         }
                 
         return true;
-    }
+    }    
     
+    @Transactional
     public Login loginSystem(String login, String password) {
         
         Login login_ = loginRepository.findByLogin(login);        

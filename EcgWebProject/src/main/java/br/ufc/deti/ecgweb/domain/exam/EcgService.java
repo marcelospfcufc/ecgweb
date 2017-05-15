@@ -17,6 +17,7 @@ import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import br.ufc.deti.ecgweb.utils.algorithms.QRSComplexAlgorithm1;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -43,7 +44,7 @@ public class EcgService {
     @Autowired
     private MitBihClientRepository mitbihRepository;   
     
-    
+    @Transactional
     public void addEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
 
         Ecg ecg = new Ecg();
@@ -58,13 +59,14 @@ public class EcgService {
         Patient patient = patientRepository.findOne(clientId);        
         patient.addEcgExam(ecg);
         patientRepository.save(patient);        
-    }
+    }    
     
     public List<Ecg> listAllEcgsPerPatient(Long patientId) {
         Patient patient = patientRepository.findOne(patientId);        
         return patient.getExams();
     }
     
+    @Transactional
     public void editReport(Long ecgId, String report) {        
         EcgReport report_ = new EcgReport();
         report_.setReport(report);
@@ -75,12 +77,14 @@ public class EcgService {
         ecgRepository.save(ecg);
     }
     
+    @Transactional
     public void setEcgStatus(Long ecgId) {
         Ecg ecg = ecgRepository.findOne(ecgId);
         ecg.setFinished(true);
         ecgRepository.save(ecg);
     }
     
+    @Transactional
     public void addEcgChannel(Long ecgId, EcgLeadType leadType) {
         EcgChannel channel = new EcgChannel();
         channel.setLeadType(leadType);
@@ -91,11 +95,13 @@ public class EcgService {
         ecgRepository.save(ecg);
     }
     
+    
     public List<EcgChannel> getChannels(Long ecgId) {
         Ecg ecg = ecgRepository.findOne(ecgId);        
         return ecg.getChannels();
     }
     
+    @Transactional
     public void addEcgSignal(Long channelId, Integer idx, Double intensity) {
         EcgSignal signal = new EcgSignal();
         signal.setSampleIdx(idx);
@@ -110,7 +116,7 @@ public class EcgService {
     public List<EcgSignal> getSignals(Long channelId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         return channel.getSignals();
-    }
+    }    
     
     public List<EcgSignalRange> getQrsComplex(Long channelId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);

@@ -25,6 +25,7 @@ import br.ufc.deti.ecgweb.utils.mitbih.MitBihHeader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -57,6 +58,7 @@ public class ClientService {
     @Autowired
     private EcgSignalRepository ecgSignalRepository;   
     
+    @Transactional
     private void addLogin(String strLogin, String password, Client client) {
         Login login = new Login();
         login.setLogin(strLogin);
@@ -67,7 +69,9 @@ public class ClientService {
     }
     
 
+    @Transactional
     public Doctor addDoctor(String name, String email, String cpf, String rg, String crm, GenderType gender, LocalDate birthday) {
+        
         Doctor doctor = new Doctor();
         PersonalData data = new PersonalData();
         
@@ -82,7 +86,6 @@ public class ClientService {
         doctorRepository.save(doctor);
         
         addLogin(data.getCpf(), UUID.randomUUID().toString(), doctor);
-        
         return doctor;
     }
 
@@ -91,6 +94,7 @@ public class ClientService {
         return doctors;
     }
 
+    @Transactional
     public Patient addPatient(String name, String email, String cpf, String rg, GenderType gender, LocalDate birthday) {
         Patient patient = new Patient();
         PersonalData data = new PersonalData();        
@@ -113,6 +117,7 @@ public class ClientService {
         return patients;
     }
     
+    @Transactional
     public void addPatientToDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findOne(patientId);
         Doctor doctor = doctorRepository.findOne(doctorId);        
@@ -129,6 +134,7 @@ public class ClientService {
         return (List)doctor.getPatients();
     }
     
+    @Transactional
     public void addMitBihPatient(String name) throws IOException {
         
         MitBihHeader mitBihHeader = new MitBihHeader("mitbih/" + name + ".hea");        
@@ -189,7 +195,7 @@ public class ClientService {
         }        
         
         ecg.setFinished(true);
-        ecgRepository.saveAndFlush(ecg);
+        ecgRepository.saveAndFlush(ecg);        
     }
 
     public List<MitBihPatient> listAllMitBihClients() {        
