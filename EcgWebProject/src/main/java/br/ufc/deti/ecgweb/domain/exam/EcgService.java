@@ -14,7 +14,9 @@ import br.ufc.deti.ecgweb.domain.repositories.EcgRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgSignalRepository;
 import br.ufc.deti.ecgweb.domain.repositories.MitBihClientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
+import br.ufc.deti.ecgweb.utils.algorithms.PWaveAlgorithm2;
 import br.ufc.deti.ecgweb.utils.algorithms.QRSComplexAlgorithm1;
+import br.ufc.deti.ecgweb.utils.algorithms.TWaveAlgorithm2;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,18 +88,20 @@ public class EcgService {
     
     @Transactional
     public void addEcgChannel(Long ecgId, EcgLeadType leadType) {
-        EcgChannel channel = new EcgChannel();
-        channel.setLeadType(leadType);
-        ecgChannelRepository.save(channel);
-        
         Ecg ecg = ecgRepository.findOne(ecgId);
+        
+        EcgChannel channel = new EcgChannel();
+        channel.setLeadType(leadType);        
+        channel.setEcg(ecg);
+        ecgChannelRepository.save(channel);        
+        
         ecg.addChannel(channel);
         ecgRepository.save(ecg);
     }
     
     
     public List<EcgChannel> getChannels(Long ecgId) {
-        Ecg ecg = ecgRepository.findOne(ecgId);        
+        Ecg ecg = ecgRepository.findOne(ecgId);  
         return ecg.getChannels();
     }
     
@@ -122,8 +126,26 @@ public class EcgService {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         
         List<EcgSignal> signals = channel.getSignals();
-        //int sampleRate = channel.getEcg().getSampleRate().intValue();
+        int sampleRate = channel.getEcg().getSampleRate().intValue();
         
-        return QRSComplexAlgorithm1.getQrsComplex(signals, 360);
+        return QRSComplexAlgorithm1.getQrsComplex(signals, sampleRate);
+    }
+    
+    public List<EcgSignalRange> getPWave(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        
+        List<EcgSignal> signals = channel.getSignals();
+        int sampleRate = channel.getEcg().getSampleRate().intValue();
+        
+        return PWaveAlgorithm2.getPWave(signals, sampleRate);
+    }
+    
+    public List<EcgSignalRange> getTWave(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        
+        List<EcgSignal> signals = channel.getSignals();
+        int sampleRate = channel.getEcg().getSampleRate().intValue();
+        
+        return TWaveAlgorithm2.getTWave(signals, sampleRate);
     }
 }

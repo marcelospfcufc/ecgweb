@@ -152,22 +152,24 @@ public class ClientService {
         ecg.setGain(mitBihHeader.getGain());
         ecg.setSampleRate(mitBihHeader.getSampleRate());
         ecg.setFinished(false);
-        ecgRepository.saveAndFlush(ecg);
+        ecgRepository.save(ecg);
         
         patient.addEcgExam(ecg);
-        mitBihPatientRepository.saveAndFlush(patient);
+        mitBihPatientRepository.save(patient);
         
         EcgChannel channel1 = new EcgChannel();
         channel1.setLeadType(mitBihHeader.getTypeChannel1());
-        ecgChannelRepository.saveAndFlush(channel1);
+        channel1.setEcg(ecg);
+        ecgChannelRepository.save(channel1);
         
         EcgChannel channel2 = new EcgChannel();
         channel2.setLeadType(mitBihHeader.getTypeChannel2());
-        ecgChannelRepository.saveAndFlush(channel2);
+        channel2.setEcg(ecg);
+        ecgChannelRepository.save(channel2);
         
         ecg.addChannel(channel1);
         ecg.addChannel(channel2);
-        ecgRepository.saveAndFlush(ecg);
+        ecgRepository.save(ecg);
         
         List<Double> channel1Signals = mitBihData.getChannel1();
         List<Double> channel2Signals = mitBihData.getChannel2();
@@ -177,10 +179,10 @@ public class ClientService {
             EcgSignal signal = new EcgSignal();
             signal.setSampleIdx(count++);
             signal.setyIntensity(channel2Signal);
-            ecgSignalRepository.saveAndFlush(signal);
+            ecgSignalRepository.save(signal);
 
             channel2.addSignal(signal);
-            ecgChannelRepository.saveAndFlush(channel2);            
+            ecgChannelRepository.save(channel2);            
         }
         
         count = 0;
@@ -188,14 +190,14 @@ public class ClientService {
             EcgSignal signal = new EcgSignal();
             signal.setSampleIdx(count++);
             signal.setyIntensity(channel1Signal);
-            ecgSignalRepository.saveAndFlush(signal);
+            ecgSignalRepository.save(signal);
 
             channel1.addSignal(signal);
-            ecgChannelRepository.saveAndFlush(channel1);            
+            ecgChannelRepository.save(channel1);            
         }        
         
         ecg.setFinished(true);
-        ecgRepository.saveAndFlush(ecg);        
+        ecgRepository.save(ecg);        
     }
 
     public List<MitBihPatient> listAllMitBihClients() {        

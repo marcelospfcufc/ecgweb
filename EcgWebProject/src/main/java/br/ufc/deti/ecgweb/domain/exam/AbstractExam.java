@@ -27,6 +27,7 @@ public abstract class AbstractExam implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "exam_id")
     private Long id;
 
     @Column(name = "exam_date")

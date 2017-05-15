@@ -24,8 +24,7 @@ public class Ecg extends AbstractExam {
     @JoinColumn(name = "Exam_Id", nullable = true)
     private final List<EcgAnnotation> annotations = new ArrayList<EcgAnnotation>();
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exam_Id", nullable = true)
+    @OneToMany(mappedBy = "ecg", targetEntity = EcgChannel.class, fetch = FetchType.LAZY)            
     private final List<EcgChannel> channels = new ArrayList<EcgChannel>();    
     
     @Column(name = "sample_rate")

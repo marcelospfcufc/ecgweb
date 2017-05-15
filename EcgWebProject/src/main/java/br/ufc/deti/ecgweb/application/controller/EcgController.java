@@ -11,12 +11,16 @@ import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPWavesRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPWavesResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetTWavesRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetTWavesResponseDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.util.List;
@@ -206,5 +210,39 @@ public class EcgController {
         }               
         
         return Converters.converterListEcgSignalRangeToListGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId()));
+    }
+    
+    /**
+     * Return P Waves from Channel.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getPWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetPWavesResponseDTO> getPWaves(@RequestBody GetPWavesRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetPWavesResponseDTO(service.getPWave(dto.getChannelId()));
+    }
+    
+    /**
+     * Return T Waves from Channel.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getTWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetTWavesResponseDTO> getTWaves(@RequestBody GetTWavesRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
     }
 }

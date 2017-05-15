@@ -36,13 +36,13 @@ public class EcgChannel implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    /*@ManyToOne
-    @JoinColumn(name = "Ecg_Channel_Id", nullable = true)
-    private Ecg ecg;*/
+    @ManyToOne(optional = false)
+    @JoinColumn(name="exam_id",referencedColumnName="exam_id")
+    private Ecg ecg;
     
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "Ecg_Channel_Id")
-    private final Set<EcgSignal> signals = new HashSet<EcgSignal>();
+    private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
     @Column (name = "lead_type")
     private EcgLeadType leadType;    
@@ -136,5 +136,13 @@ public class EcgChannel implements Serializable{
 
     public void setpWave(PWave pWave) {
         this.pWave = pWave;
+    }
+
+    public Ecg getEcg() {
+        return ecg;
+    }
+
+    public void setEcg(Ecg ecg) {
+        this.ecg = ecg;
     }
 }

@@ -156,4 +156,30 @@ public class Converters {
         
         return list;
     }
+    
+    public static List<GetPWavesResponseDTO> converterListEcgSignalRangeToListGetPWavesResponseDTO(List<EcgSignalRange> signals) {
+        List<GetPWavesResponseDTO> list = new ArrayList<GetPWavesResponseDTO>();
+        
+        for (EcgSignalRange signal : signals) {
+            GetPWavesResponseDTO dto = new GetPWavesResponseDTO();
+            dto.setFirstIdx(signal.getFirst());
+            dto.setLastIdx(signal.getLast());
+            list.add(dto);
+        }
+        
+        return list;
+    }
+    
+    public static List<GetTWavesResponseDTO> converterListEcgSignalRangeToListGetTWavesResponseDTO(List<EcgSignalRange> signals) {
+        List<GetTWavesResponseDTO> list = new ArrayList<GetTWavesResponseDTO>();
+        
+        for (EcgSignalRange signal : signals) {
+            GetTWavesResponseDTO dto = new GetTWavesResponseDTO();
+            dto.setFirstIdx(signal.getFirst());
+            dto.setLastIdx(signal.getLast());
+            list.add(dto);
+        }
+        
+        return list;
+    }
 }
