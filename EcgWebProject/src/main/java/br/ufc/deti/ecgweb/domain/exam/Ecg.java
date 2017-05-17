@@ -13,7 +13,6 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.Type;
 
 /**
- *
  * @author Marcelo Araujo Lima
  */
 @Entity

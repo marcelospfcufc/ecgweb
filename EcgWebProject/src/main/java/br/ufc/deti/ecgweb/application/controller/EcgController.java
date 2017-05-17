@@ -9,6 +9,8 @@ import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetImportExamPathRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetImportExamPathResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesRequestDTO;
@@ -21,9 +23,12 @@ import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.ImportExamRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.ImportExamResponseDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -244,5 +249,48 @@ public class EcgController {
         }               
         
         return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
+    }
+    
+    /**
+     * Get Ftp Path to upload file.
+     * @param dto
+     * @return
+     */
+    @RequestMapping(value = "ecg/getFtpUrl", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  GetImportExamPathResponseDTO getImportExamPath(@RequestBody GetImportExamPathRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        GetImportExamPathResponseDTO response = new GetImportExamPathResponseDTO();
+        response.setFtpLogin("ecgweb");
+        response.setFtpPassword("ecgweb");        
+        response.setUrl("ftp://ftp.lesc.ufc.br/ecgweb/");        
+        response.setFileName(dto.getPatientId() + "_" + UUID.randomUUID().toString());
+        
+        return response;
+    }
+    
+    /**
+     * Import Exam file.
+     * @param dto
+     * @return
+     */
+    @RequestMapping(value = "ecg/importExam", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  ImportExamResponseDTO importExam(@RequestBody ImportExamRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        ImportExamResponseDTO response = new ImportExamResponseDTO();
+        response.setSuccess(true);
+        
+        return response;
     }
 }

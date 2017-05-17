@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author marcelo
+ * @author Marcelo Araujo Lima
  */
 @Entity
 @Table(name = "exam")
