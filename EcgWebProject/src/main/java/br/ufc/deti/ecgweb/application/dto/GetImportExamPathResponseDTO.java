@@ -6,10 +6,10 @@ package br.ufc.deti.ecgweb.application.dto;
  */
 public class GetImportExamPathResponseDTO{
 
-    private String url;
-    private String fileName;
+    private String url;    
     private String ftpLogin;
     private String ftpPassword;
+    private String fileName;
 
     public String getUrl() {
         return url;
@@ -33,7 +33,7 @@ public class GetImportExamPathResponseDTO{
 
     public void setFtpPassword(String ftpPassword) {
         this.ftpPassword = ftpPassword;
-    }
+    }    
 
     public String getFileName() {
         return fileName;

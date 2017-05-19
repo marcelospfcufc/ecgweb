@@ -33,6 +33,9 @@ public abstract class AbstractExam implements Serializable {
     @Column(name = "exam_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime examDate;    
+    
+    @Column(name = "file_name")
+    private String fileName;
 
     public Long getId() {
         return id;
@@ -50,7 +53,13 @@ public abstract class AbstractExam implements Serializable {
         this.examDate = examDate;
     }
 
-    
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }    
 
     @Override
     public int hashCode() {
@@ -80,7 +89,4 @@ public abstract class AbstractExam implements Serializable {
         }
         return true;
     }
-
-    
-
 }

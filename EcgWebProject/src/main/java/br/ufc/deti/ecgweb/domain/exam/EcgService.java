@@ -148,4 +148,10 @@ public class EcgService {
         
         return TWaveAlgorithm2.getTWave(signals, sampleRate);
     }
+    
+    
+    public void importEcg(Long patientId, byte[] bytes) {
+        
+    }
+    
 }

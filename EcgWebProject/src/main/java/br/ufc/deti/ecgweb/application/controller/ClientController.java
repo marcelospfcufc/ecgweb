@@ -6,7 +6,6 @@
 package br.ufc.deti.ecgweb.application.controller;
 
 import br.ufc.deti.ecgweb.application.dto.AddPatientToDoctorRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.ListClientsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.ListDoctorsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListMitBihPatientsRequestDTO;

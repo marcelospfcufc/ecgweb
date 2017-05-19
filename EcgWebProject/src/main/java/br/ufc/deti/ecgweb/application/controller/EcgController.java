@@ -9,7 +9,7 @@ import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.GetImportExamPathRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.UploadEcgRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetImportExamPathResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
@@ -27,16 +27,26 @@ import br.ufc.deti.ecgweb.application.dto.ImportExamRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ImportExamResponseDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
+import br.ufc.deti.ecgweb.utils.ftp.EcgWebFtpData;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Marcelo Araujo Lima
@@ -251,46 +261,34 @@ public class EcgController {
         return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
     }
     
-    /**
-     * Get Ftp Path to upload file.
-     * @param dto
-     * @return
-     */
-    @RequestMapping(value = "ecg/getFtpUrl", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseBody
+    @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes="multipart/mixed")
     @ResponseStatus(HttpStatus.OK)
-    public  GetImportExamPathResponseDTO getImportExamPath(@RequestBody GetImportExamPathRequestDTO dto) {
-                
-        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+    public  void uploadFile(@RequestParam ("file") MultipartFile file, @RequestParam String login, @RequestParam String key, @RequestParam Long patientId) throws IOException { 
+        
+        if (!loginService.hasAccess(login, key)) {
             throw new ServiceNotAuthorizedException();
         }
         
-        GetImportExamPathResponseDTO response = new GetImportExamPathResponseDTO();
-        response.setFtpLogin("ecgweb");
-        response.setFtpPassword("ecgweb");        
-        response.setUrl("ftp://ftp.lesc.ufc.br/ecgweb/");        
-        response.setFileName(dto.getPatientId() + "_" + UUID.randomUUID().toString());
+        //curl http://lesc.ufc.br/ecgweb/ecg/upload -X POST -F 'file=@/home/marcelo/Desktop/turing-image-multimedia-imx6x-turing.sdcard.gz' -H "Content-Type: multipart/mixed"
         
-        return response;
-    }
-    
-    /**
-     * Import Exam file.
-     * @param dto
-     * @return
-     */
-    @RequestMapping(value = "ecg/importExam", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
-    public  ImportExamResponseDTO importExam(@RequestBody ImportExamRequestDTO dto) {
-                
-        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
-            throw new ServiceNotAuthorizedException();
+        
+        if(file == null || file.isEmpty()) {
+            throw new ServiceUploadNullFileException();
         }
         
-        ImportExamResponseDTO response = new ImportExamResponseDTO();
-        response.setSuccess(true);
+        System.out.println(file.getContentType());
+        System.out.println(file.getOriginalFilename());
         
-        return response;
+        File ecgFile = new File("/tmp/" + file.getOriginalFilename());
+        
+        file.transferTo(ecgFile);
+        
+        /*try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("/tmp/file.dat");
+            Files.write(path, bytes);
+        } catch (IOException ex) {
+            
+        }*/
     }
 }
