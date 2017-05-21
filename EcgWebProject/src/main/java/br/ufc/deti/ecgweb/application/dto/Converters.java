@@ -144,6 +144,21 @@ public class Converters {
         return doubleList;
     }
     
+    public static List<GetQrsComplexFromAlgorithmResponseDTO> converterListEcgSignalRangeToListGetQrsComplexFromAlgortihmResponseDTO(List<EcgSignalRange> signals) {
+        List<GetQrsComplexFromAlgorithmResponseDTO> list = new ArrayList<GetQrsComplexFromAlgorithmResponseDTO>();
+        
+        for (EcgSignalRange signal : signals) {
+            GetQrsComplexFromAlgorithmResponseDTO dto = new GetQrsComplexFromAlgorithmResponseDTO();
+            dto.setFirstIdx(signal.getFirst());
+            dto.setLastIdx(signal.getLast());
+            dto.setPeakIdx(signal.getPeakIdx());
+            
+            list.add(dto);
+        }
+        
+        return list;
+    }
+    
     public static List<GetQrsComplexResponseDTO> converterListEcgSignalRangeToListGetQrsComplexResponseDTO(List<EcgSignalRange> signals) {
         List<GetQrsComplexResponseDTO> list = new ArrayList<GetQrsComplexResponseDTO>();
         
@@ -151,6 +166,7 @@ public class Converters {
             GetQrsComplexResponseDTO dto = new GetQrsComplexResponseDTO();
             dto.setFirstIdx(signal.getFirst());
             dto.setLastIdx(signal.getLast());
+            dto.setPeakIdx(signal.getPeakIdx());
             list.add(dto);
         }
         
@@ -181,5 +197,20 @@ public class Converters {
         }
         
         return list;
+    }
+    
+    public static List<EcgSignalRange> converterFromListEcgSignalRangeDTOToListEcgSignalRange(List<EcgSignalRangeDTO> intervalsDTO) {
+        
+        List<EcgSignalRange> intervals = new ArrayList<EcgSignalRange>();
+        for (EcgSignalRangeDTO ecgSignalRangeDTO : intervalsDTO) {
+            EcgSignalRange signalRange = new EcgSignalRange();
+            
+            signalRange.setFirst(ecgSignalRangeDTO.getFirstIdx());
+            signalRange.setLast(ecgSignalRangeDTO.getLastIdx());
+            signalRange.setPeakIdx(ecgSignalRangeDTO.getPeakIdx());
+            intervals.add(signalRange);
+        }
+        
+        return intervals;
     }
 }

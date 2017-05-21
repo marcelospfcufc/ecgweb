@@ -37,23 +37,39 @@ public abstract class AbstractWave implements Serializable {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany()
     @JoinColumn(name = "Wave_Id")
-    private final List<WaveRage> intervals = new ArrayList<WaveRage>();
+    private final List<EcgSignalRange> intervals = new ArrayList<EcgSignalRange>();
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 
     public Long getId() {
         return id;
     }    
     
-    public void addInterval(WaveRage range) {
+    public void addInterval(EcgSignalRange range) {
         intervals.add(range);
     }
     
-    public void delInterval(WaveRage range) {
+    public void delInterval(EcgSignalRange range) {
         intervals.remove(range);
     }
     
-    public List<WaveRage> getInterlvals() {
+    public List<EcgSignalRange> getInterlvals() {
         return intervals;
+    }
+    
+    public void clearWaves() {
+        
+        if(intervals == null || intervals.isEmpty())
+            return;
+        
+        intervals.clear();        
     }
 }

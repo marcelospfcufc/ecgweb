@@ -20,6 +20,7 @@
     <class>br.ufc.deti.ecgweb.domain.exam.TWave</class>
     <class>br.ufc.deti.ecgweb.domain.exam.WaveRage</class>
     <class>br.ufc.deti.ecgweb.domain.client.MitBihPatient</class>
+    <class>br.ufc.deti.ecgweb.domain.exam.EcgSignalRange</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/ecgweb?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="ecgweb"/>

@@ -9,7 +9,7 @@ package br.ufc.deti.ecgweb.application.dto;
  *
  * @author Marcelo Araujo Lima
  */
-public class GetQrsComplexResponseDTO {
+public class GetQrsComplexFromAlgorithmResponseDTO {
     private Long firstIdx;
     private Long lastIdx;
     private Long peakIdx;
@@ -37,5 +37,9 @@ public class GetQrsComplexResponseDTO {
     public void setPeakIdx(Long peakIdx) {
         this.peakIdx = peakIdx;
     }
+    
+
+    
+    
     
 }

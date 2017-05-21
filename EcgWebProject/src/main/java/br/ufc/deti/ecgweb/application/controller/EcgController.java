@@ -9,12 +9,12 @@ import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.UploadEcgRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.GetImportExamPathResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetQrsComplexFromAlgorithmRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetQrsComplexFromAlgorithmResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
@@ -23,20 +23,12 @@ import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.ImportExamRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.ImportExamResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.SetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
-import br.ufc.deti.ecgweb.utils.ftp.EcgWebFtpData;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -211,6 +203,23 @@ public class EcgController {
     }
     
     /**
+     * Return QRS Complex from Channel signals using algorithm.     
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getQrsComplexFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetQrsComplexFromAlgorithmResponseDTO> getQrsComplexFromAlgorithm(@RequestBody GetQrsComplexFromAlgorithmRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetQrsComplexFromAlgortihmResponseDTO(service.getQrsComplexFromAlgorithm(dto.getChannelId(), (long)1));
+    }
+    
+    /**
      * Return QRS Complex from Channel.     
      * @param dto
      * @return List of signals
@@ -225,6 +234,26 @@ public class EcgController {
         }               
         
         return Converters.converterListEcgSignalRangeToListGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId()));
+    }
+    
+    /**
+     * Return QRS Complex from Channel.     
+     * @param dto     
+     */
+    @RequestMapping(value = "ecg/channel/setQrsComplex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  void setQrsComplex(@RequestBody SetQrsComplexRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        if(dto.getDoctorId() == null) {
+            throw new ServiceInvalidInputParametersException();
+        }
+        
+        service.setQrsComplex(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
     }
     
     /**

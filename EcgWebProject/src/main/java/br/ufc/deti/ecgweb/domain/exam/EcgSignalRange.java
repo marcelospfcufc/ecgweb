@@ -1,14 +1,37 @@
 package br.ufc.deti.ecgweb.domain.exam;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class EcgSignalRange {
+
+@Entity
+@Table(name = "ecg_signal_range")
+public class EcgSignalRange implements Serializable {
     private Long first;
     private Long last;
-    private Long peakIdx;
-    private Long peakValue;
+    @Column(name = "peak_idx")
+    private Long peakIdx;   
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getFirst() {
         return first;
@@ -33,14 +56,4 @@ public class EcgSignalRange {
     public void setPeakIdx(Long peakIdx) {
         this.peakIdx = peakIdx;
     }
-
-    public Long getPeakValue() {
-        return peakValue;
-    }
-
-    public void setPeakValue(Long peakValue) {
-        this.peakValue = peakValue;
-    }
-    
-    
 }
