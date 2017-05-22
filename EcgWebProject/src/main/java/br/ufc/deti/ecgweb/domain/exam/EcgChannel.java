@@ -68,6 +68,10 @@ public class EcgChannel implements Serializable{
     public void setId(Long id) {
         this.id = id;
     }
+    
+    public EcgSignal getSignal(Integer idx) {
+        return signals.get(idx);
+    }
 
     /**
      * Get all signals.

@@ -1,6 +1,5 @@
 package br.ufc.deti.ecgweb.utils.algorithms;
 
-import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import java.util.ArrayList;
 import java.util.List;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
@@ -130,6 +129,25 @@ public class Util {
         }
 
         return Util.ArrayListToDouble(res);
+    }
+    
+    public static void updatePeakIdxInEcgSignalRange(List<EcgSignal> signals, EcgSignalRange range) {
+        
+        Long idx = range.getFirst();                
+        double value = signals.get(0).getyIntensity();
+        
+        for(Long i=range.getFirst(); i<range.getLast(); i++) {
+            
+            EcgSignal signal = signals.get(i.intValue());
+            Double aux = signal.getyIntensity();
+            
+            if(aux >= value) {
+                value = aux;
+                idx = i;
+            }
+        }
+        
+        range.setPeakIdx(idx);
     }
 
 }

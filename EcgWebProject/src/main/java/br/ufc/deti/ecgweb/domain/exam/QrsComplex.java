@@ -8,5 +8,5 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue(value = WaveType.QRSCOMPLEX)
-public class QrsComplex extends AbstractWave{    
+public class QrsComplex extends AbstractWave{
 }

@@ -11,6 +11,7 @@ import br.ufc.deti.ecgweb.domain.exam.Ecg;
 import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignalRange;
+import br.ufc.deti.ecgweb.domain.exam.RRInterval;
 import br.ufc.deti.ecgweb.domain.security.Login;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +160,34 @@ public class Converters {
         return list;
     }
     
+    public static List<GetPWavesFromAlgorithmResponseDTO> converterListEcgSignalRangeToListGetPWavesFromAlgortihmResponseDTO(List<EcgSignalRange> signals) {
+        List<GetPWavesFromAlgorithmResponseDTO> list = new ArrayList<GetPWavesFromAlgorithmResponseDTO>();
+        
+        for (EcgSignalRange signal : signals) {
+            GetPWavesFromAlgorithmResponseDTO dto = new GetPWavesFromAlgorithmResponseDTO();
+            dto.setFirstIdx(signal.getFirst());
+            dto.setLastIdx(signal.getLast());            
+            
+            list.add(dto);
+        }
+        
+        return list;
+    }
+    
+    public static List<GetTWavesFromAlgorithmResponseDTO> converterListEcgSignalRangeToListGetTWavesFromAlgortihmResponseDTO(List<EcgSignalRange> signals) {
+        List<GetTWavesFromAlgorithmResponseDTO> list = new ArrayList<GetTWavesFromAlgorithmResponseDTO>();
+        
+        for (EcgSignalRange signal : signals) {
+            GetTWavesFromAlgorithmResponseDTO dto = new GetTWavesFromAlgorithmResponseDTO();
+            dto.setFirstIdx(signal.getFirst());
+            dto.setLastIdx(signal.getLast());            
+            
+            list.add(dto);
+        }
+        
+        return list;
+    }
+    
     public static List<GetQrsComplexResponseDTO> converterListEcgSignalRangeToListGetQrsComplexResponseDTO(List<EcgSignalRange> signals) {
         List<GetQrsComplexResponseDTO> list = new ArrayList<GetQrsComplexResponseDTO>();
         
@@ -212,5 +241,21 @@ public class Converters {
         }
         
         return intervals;
+    }
+    
+    public static GetPlotRRResponseDTO converterFromListRRIntervalToGetPlotRRResponseDTO(List<RRInterval> intervals) {
+        GetPlotRRResponseDTO response = new GetPlotRRResponseDTO();
+        response.setxUnity(TimeUnityTypeDTO.SECOND);
+        response.setyUnity(TimeUnityTypeDTO.SECOND);
+        List<RRIntervalDTO> intervalsDTO = new ArrayList<RRIntervalDTO>();
+        for (RRInterval interval : intervals) {
+            RRIntervalDTO dto = new RRIntervalDTO();
+            dto.setX(interval.getX());
+            dto.setY(interval.getY());                        
+            intervalsDTO.add(dto);
+        }
+        
+        response.setPlotRR(intervalsDTO);        
+        return response;
     }
 }

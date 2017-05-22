@@ -9,21 +9,35 @@ import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetEcgInformationRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetEcgInformationResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPWaveFromAlgorithmRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPWavesFromAlgorithmResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPlotRRRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetPlotRRResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexFromAlgorithmRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexFromAlgorithmResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetReportRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetReportResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetTWaveFromAlgorithmRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetTWavesFromAlgorithmResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWavesResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.HeartRateUnityTypeDTO;
+import br.ufc.deti.ecgweb.application.dto.SetPWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.SetQrsComplexRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.SetTWavesRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.TimeUnityTypeDTO;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.io.File;
@@ -86,6 +100,20 @@ public class EcgController {
         }
 
         service.editReport(dto.getEcgId(), dto.getReport());
+    }
+    
+    @RequestMapping(value = "ecg/getReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetReportResponseDTO getReport(@RequestBody GetReportRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        GetReportResponseDTO resp = new GetReportResponseDTO();
+        resp.setReport(service.getReport(dto.getEcgId()));
+        return resp;
     }
 
     @RequestMapping(value = "ecg/setFinished", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -257,6 +285,23 @@ public class EcgController {
     }
     
     /**
+     * Return
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getPWavesFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetPWavesFromAlgorithmResponseDTO> getPWavesFromAlgorithm(@RequestBody GetPWaveFromAlgorithmRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetPWavesFromAlgortihmResponseDTO(service.getPWaveFromAlgorithm(dto.getChannelId(), (long)1));
+    }
+    
+    /**
      * Return P Waves from Channel.     
      * @param dto
      * @return List of signals
@@ -274,6 +319,44 @@ public class EcgController {
     }
     
     /**
+     * Persists PWaves.
+     * @param dto     
+     */
+    @RequestMapping(value = "ecg/channel/setPWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  void setPWaves(@RequestBody SetPWavesRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        if(dto.getDoctorId() == null) {
+            throw new ServiceInvalidInputParametersException();
+        }
+        
+        service.setPWave(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
+    }
+    
+    
+    /**
+     * Return
+     * @param dto
+     * @return List of signals
+     */
+    @RequestMapping(value = "ecg/channel/getTWavesFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  List<GetTWavesFromAlgorithmResponseDTO> getTWavesFromAlgorithm(@RequestBody GetTWaveFromAlgorithmRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterListEcgSignalRangeToListGetTWavesFromAlgortihmResponseDTO(service.getTWaveFromAlgorithm(dto.getChannelId(), (long)1));
+    }
+    
+    /**
      * Return T Waves from Channel.     
      * @param dto
      * @return List of signals
@@ -288,6 +371,64 @@ public class EcgController {
         }               
         
         return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
+    }
+    
+    /**
+     * Persists PWaves.
+     * @param dto     
+     */
+    @RequestMapping(value = "ecg/channel/setTWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  void setTWaves(@RequestBody SetTWavesRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        if(dto.getDoctorId() == null) {
+            throw new ServiceInvalidInputParametersException();
+        }
+        
+        service.setTWave(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
+    }
+    
+    @RequestMapping(value = "ecg/channel/getPlotRR", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public  GetPlotRRResponseDTO getPlotRR(@RequestBody GetPlotRRRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }               
+        
+        return Converters.converterFromListRRIntervalToGetPlotRRResponseDTO(service.getRRPlot(dto.getChannelId()));
+    }
+    
+    @RequestMapping(value = "ecg/getEcgInformation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetEcgInformationResponseDTO getEcgInformation(@RequestBody GetEcgInformationRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        GetEcgInformationResponseDTO response = new GetEcgInformationResponseDTO();
+        response.setHeartRate(service.getHeartRate(dto.getChannelId()));
+        response.setHeartRateUnity(HeartRateUnityTypeDTO.BPM);
+        
+        response.setQrsDuration(service.getQrsDuration(dto.getChannelId()));
+        response.setQrsDurationUnity(TimeUnityTypeDTO.SECOND);
+        
+        response.settWaveDuration(service.getTWaveDuration(dto.getChannelId()));
+        response.settWaveDurationUnity(TimeUnityTypeDTO.SECOND);
+        
+        response.setpWaveDuration(service.getPWaveDuration(dto.getChannelId()));
+        response.setpWaveDurationUnity(TimeUnityTypeDTO.SECOND);
+        
+        
+        return response;
     }
     
     @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes="multipart/mixed")

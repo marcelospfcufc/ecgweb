@@ -13,6 +13,14 @@ public class QRSComplexAlgorithm1 {
     
     public static List<EcgSignalRange> getQrsComplex(List<EcgSignal> signals, Integer sampleRate) {
         Algorithm1 algorithm = new Algorithm1(signals,sampleRate);
-        return algorithm.getQRS();
+        
+        
+        List<EcgSignalRange> qrsOut = algorithm.getQRS();
+        
+        for (EcgSignalRange ecgSignalRange : qrsOut) {
+            Util.updatePeakIdxInEcgSignalRange(signals, ecgSignalRange);
+        }
+        
+        return qrsOut;
     }
 }
