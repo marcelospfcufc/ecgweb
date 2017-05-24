@@ -11,8 +11,8 @@ package br.ufc.deti.ecgweb.domain.exam;
  */
 public class RRInterval {
     
-    private Double x;//ms
-    private Double y;//ms
+    private Double x;
+    private Double y;
 
     public Double getX() {
         return x;

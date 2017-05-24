@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.ufc.deti.ecgweb.utils.algorithms;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -10,9 +5,10 @@ import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignalRange;
 import java.util.List;
 
-public class QRSComplexAlgorithm2 {
+public class QRSComplexAlgorithm2 extends AbstractComplexQrsAlgorithm{
     
-    public static List<EcgSignalRange> getQrsComplex(List<EcgSignal> signals, Integer sampleRate) {
+    @Override
+    public List<EcgSignalRange> getQrsComplex(List<EcgSignal> signals, Integer sampleRate) {
         List<Double> channel1 = Util.convertSignal(signals);
         double freq = sampleRate;
         

@@ -5,9 +5,11 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
+import br.ufc.deti.ecgweb.application.controller.ServiceUploadInvalidFormatException;
 import br.ufc.deti.ecgweb.domain.client.*;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgChannelRepository;
+import br.ufc.deti.ecgweb.domain.repositories.EcgFileRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,23 @@ import br.ufc.deti.ecgweb.domain.repositories.PWaveRepository;
 import br.ufc.deti.ecgweb.domain.repositories.PatientRepository;
 import br.ufc.deti.ecgweb.domain.repositories.QrsComplexRepository;
 import br.ufc.deti.ecgweb.domain.repositories.TWaveRepository;
+import br.ufc.deti.ecgweb.utils.algorithms.AbstractComplexQrsAlgorithm;
+import br.ufc.deti.ecgweb.utils.algorithms.AbstractPWaveAlgorithm;
+import br.ufc.deti.ecgweb.utils.algorithms.AbstractTWaveAlgorithm;
 import br.ufc.deti.ecgweb.utils.algorithms.EcgArtifacts;
-import br.ufc.deti.ecgweb.utils.algorithms.PWaveAlgorithm2;
-import br.ufc.deti.ecgweb.utils.algorithms.QRSComplexAlgorithm1;
-import br.ufc.deti.ecgweb.utils.algorithms.TWaveAlgorithm2;
+import br.ufc.deti.ecgweb.utils.algorithms.PWaveAlgorithmFactory;
+import br.ufc.deti.ecgweb.utils.algorithms.QrsComplexAlgorithmFactory;
+import br.ufc.deti.ecgweb.utils.algorithms.TWaveAlgorithmFactory;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -67,6 +79,9 @@ public class EcgService {
 
     @Autowired
     private EcgSignalRangeRepository ecgSignalRangeRepository;
+    
+    @Autowired
+    private EcgFileRepository ecgFileRepository;
 
     @Transactional
     public void addEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
@@ -158,8 +173,12 @@ public class EcgService {
 
         List<EcgSignal> signals = channel.getSignals();
         int sampleRate = channel.getEcg().getSampleRate().intValue();
+        
+        AbstractComplexQrsAlgorithm algorithm = QrsComplexAlgorithmFactory.getComplexQrsAlgorithm(algorithmId.intValue());
+        if (algorithm == null)
+            return new ArrayList<EcgSignalRange>();
 
-        return QRSComplexAlgorithm1.getQrsComplex(signals, sampleRate);
+        return algorithm.getQrsComplex(signals, sampleRate);
     }
 
     public List<EcgSignalRange> getQrsComplex(Long channelId) {
@@ -255,8 +274,10 @@ public class EcgService {
 
         List<EcgSignal> signals = channel.getSignals();
         int sampleRate = channel.getEcg().getSampleRate().intValue();
+        
+        AbstractPWaveAlgorithm algorithm = PWaveAlgorithmFactory.getPWaveAlgorithm(algorithmId.intValue());
 
-        return PWaveAlgorithm2.getPWave(signals, sampleRate);
+        return algorithm.getPWaves(signals, sampleRate);
     }
 
     public List<EcgSignalRange> getPWave(Long channelId) {
@@ -314,7 +335,9 @@ public class EcgService {
         List<EcgSignal> signals = channel.getSignals();
         int sampleRate = channel.getEcg().getSampleRate().intValue();
 
-        return TWaveAlgorithm2.getTWave(signals, sampleRate);
+        AbstractTWaveAlgorithm algorithm = TWaveAlgorithmFactory.getTWaveAlgorithm(algorithmId.intValue());
+
+        return algorithm.getTWaves(signals, sampleRate);
     }
 
     public List<EcgSignalRange> getTWave(Long channelId) {
@@ -404,8 +427,41 @@ public class EcgService {
         return EcgArtifacts.getWaveDuration(tRanges, channel.getEcg().getSampleRate());
     }
 
-    public void importEcg(Long patientId, byte[] bytes) {
-
+    @Transactional
+    public void importEcg(Long patientId, File file) throws IOException {
+        
+        EcgFileType type = null;
+        
+        if(file.getName().toLowerCase().contains(".xml")) {
+            type = EcgFileType.HL7;
+        }
+        
+        if(type == null)
+            throw new ServiceUploadInvalidFormatException();       
+        
+        String newfileName = UUID.randomUUID().toString();        
+        
+        Patient patient = patientRepository.findOne(patientId);
+        
+        EcgFile ecgFile = new EcgFile();
+        ecgFile.setDate(LocalDateTime.now());
+        ecgFile.setFileName(newfileName);
+        ecgFile.setType(type);
+        ecgFileRepository.save(ecgFile);
+        
+        Ecg ecg = new Ecg();
+        ecg.setFinished(Boolean.TRUE);        
+        ecg.setFile(ecgFile);
+        ecgRepository.save(ecg);
+        
+        patient.addEcgExam(ecg);
+        patientRepository.save(patient);
+        
+        Path pathIn = FileSystems.getDefault().getPath(file.getAbsolutePath());
+        Path pathOut = FileSystems.getDefault().getPath("/home/ecgs/" + newfileName);
+        
+        Files.copy(pathIn, pathOut);
+        Files.deleteIfExists(pathIn);
     }
 
 }

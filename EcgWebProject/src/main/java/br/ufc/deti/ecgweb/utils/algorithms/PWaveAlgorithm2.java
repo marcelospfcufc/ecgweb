@@ -15,8 +15,9 @@ import java.util.List;
  *
  * @author Rômulo
  */
-public class PWaveAlgorithm2 {
-    public static List<EcgSignalRange> getPWave(List<EcgSignal> signals, Integer sampleRate) {
+public class PWaveAlgorithm2 extends AbstractPWaveAlgorithm{
+    @Override
+    public List<EcgSignalRange> getPWaves(List<EcgSignal> signals, Integer sampleRate) {
         List<Double> channel1 = Util.convertSignal(signals);
         double freq = sampleRate;
         

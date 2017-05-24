@@ -37,6 +37,9 @@ public class Ecg extends AbstractExam {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private EcgReport report;
     
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)    
+    private EcgFile file;
+    
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean finished;
@@ -137,6 +140,16 @@ public class Ecg extends AbstractExam {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public EcgFile getFile() {
+        return file;
+    }
+
+    public void setFile(EcgFile file) {
+        this.file = file;
+    }
+    
+    
     
     
 }

@@ -446,19 +446,9 @@ public class EcgController {
             throw new ServiceUploadNullFileException();
         }
         
-        System.out.println(file.getContentType());
-        System.out.println(file.getOriginalFilename());
+        File ecgFile = new File("/tmp/" + file.getOriginalFilename());        
+        file.transferTo(ecgFile);  
         
-        File ecgFile = new File("/tmp/" + file.getOriginalFilename());
-        
-        file.transferTo(ecgFile);
-        
-        /*try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get("/tmp/file.dat");
-            Files.write(path, bytes);
-        } catch (IOException ex) {
-            
-        }*/
+        service.importEcg(patientId, ecgFile);                
     }
 }
