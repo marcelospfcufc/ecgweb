@@ -9,56 +9,146 @@ import br.ufc.deti.ecgweb.domain.exam.AbstractHL7Format;
 import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
 
 /**
  * @author Marcelo Araujo Lima
  */
-public class HL7FormatImpl extends AbstractHL7Format{
+public class HL7FormatImpl extends AbstractHL7Format {
+
+    private List<List<EcgSignal>> channelSignals = new ArrayList<List<EcgSignal>>();
+    private List<EcgLeadType> channelTypes = new ArrayList<EcgLeadType>();
+    private Long sampleRate;
+    private Long gain;
+    private Long baseLine;
+    private String description;
+    private Integer numberOfChannels;
+    private LocalDateTime examDate;
 
     public HL7FormatImpl(File ecgFile) {
         super(ecgFile);
+
+        loadInformation(ecgFile);
+    }
+
+    private void loadInformation(File ecgFile) {
+        List<Signal> signals = null;
+        try {
+            signals = ReaderHl7.read(ecgFile);
+
+            numberOfChannels = signals.size();
+            if (signals.size() > 0) {
+                Signal signal = signals.get(0);
+
+                sampleRate = (long) signal.getTimeIncrement();
+                gain = (long) signal.getScale();
+                baseLine = (long) signal.getOrigin();
+                description = "";
+                examDate = LocalDateTime.now();
+
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(HL7FormatImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JAXBException ex) {
+            Logger.getLogger(HL7FormatImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (signals != null) {
+
+            for (Signal s : signals) {
+                List<EcgSignal> sig = new ArrayList<EcgSignal>();
+
+                for (int i = 0; i < s.size(); i++) {
+                    EcgSignal ecg = new EcgSignal();
+                    ecg.setSampleIdx(i);
+                    ecg.setyIntensity(s.get(i));
+
+                    sig.add(ecg);
+                }
+
+                channelTypes.add(getLeadTypeFromString(s.getName()));
+                channelSignals.add(sig);
+            }
+        }
+    }
+
+    private EcgLeadType getLeadTypeFromString(String value) {
+
+        if (value.compareTo("MLI") == 0) {
+            return EcgLeadType.I;
+        } else if (value.compareTo("MLII") == 0) {
+            return EcgLeadType.II;
+        } else if (value.compareTo("MLIII") == 0) {
+            return EcgLeadType.III;
+        } else if (value.compareTo("V1") == 0) {
+            return EcgLeadType.V1;
+        } else if (value.compareTo("V2") == 0) {
+            return EcgLeadType.V2;
+        } else if (value.compareTo("V3") == 0) {
+            return EcgLeadType.V3;
+        } else if (value.compareTo("V4") == 0) {
+            return EcgLeadType.V4;
+        } else if (value.compareTo("V5") == 0) {
+            return EcgLeadType.V5;
+        } else if (value.compareTo("V6") == 0) {
+            return EcgLeadType.V6;
+        }
+
+        return EcgLeadType.II;
     }
 
     @Override
     public Long getSampleRate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return sampleRate;
     }
 
     @Override
     public Long getGain() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return gain;
     }
 
     @Override
     public Long getBaseLine() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return baseLine;
     }
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return description;
     }
 
     @Override
     public Integer getNumberOfChannels() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return numberOfChannels;
     }
 
     @Override
     public LocalDateTime getExamDate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return examDate;
     }
 
     @Override
     public EcgLeadType getChannelType(Integer channelIdx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (channelIdx >= channelTypes.size()) {
+            return null;
+        }
+
+        return channelTypes.get(channelIdx);
     }
 
     @Override
     public List<EcgSignal> getChannelSignals(Integer channelIdx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (channelIdx >= channelSignals.size()) {
+            return null;
+        }
+
+        return channelSignals.get(channelIdx);
     }
-    
+
 }
