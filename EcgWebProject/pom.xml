@@ -133,7 +133,8 @@
             <groupId>org.cvrgrid.hl7aecg</groupId>
             <artifactId>libReaderHl7</artifactId>
             <version>1.0</version>
-        </dependency>
+        </dependency>       
+        
     </dependencies>
 
     <build>

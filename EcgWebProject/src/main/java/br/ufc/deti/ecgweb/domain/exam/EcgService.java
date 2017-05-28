@@ -5,6 +5,7 @@
  */
 package br.ufc.deti.ecgweb.domain.exam;
 
+import br.ufc.deti.ecgweb.application.controller.ServiceUploadDuplicatedActionException;
 import br.ufc.deti.ecgweb.application.controller.ServiceUploadInvalidFormatException;
 import br.ufc.deti.ecgweb.domain.client.*;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
@@ -28,16 +29,25 @@ import br.ufc.deti.ecgweb.utils.algorithms.EcgArtifacts;
 import br.ufc.deti.ecgweb.utils.algorithms.PWaveAlgorithmFactory;
 import br.ufc.deti.ecgweb.utils.algorithms.QrsComplexAlgorithmFactory;
 import br.ufc.deti.ecgweb.utils.algorithms.TWaveAlgorithmFactory;
+import br.ufc.deti.ecgweb.utils.ecgformat.HL7FormatImpl;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -47,6 +57,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EcgService {
 
+    private final Lock lock = new ReentrantLock(true);
+    private static final Map<Long, File> uploadFileMap = Collections.synchronizedMap(new HashMap<Long, File>());
+
+    /*@Autowired
+    private Logger logger;*/
+    //private Logger logger = (Logger) LoggerFactory.getLogger(EcgService.class);
     @Autowired
     private PatientRepository patientRepository;
 
@@ -79,9 +95,21 @@ public class EcgService {
 
     @Autowired
     private EcgSignalRangeRepository ecgSignalRangeRepository;
-    
+
     @Autowired
     private EcgFileRepository ecgFileRepository;
+
+    public synchronized void addUploadFile(Long key, File file) {
+        uploadFileMap.put(key, file);
+    }
+
+    public synchronized void removeUploadFile(Long key) {
+        uploadFileMap.remove(key);
+    }
+
+    public synchronized File getUploadFile(Long key) {
+        return uploadFileMap.get(key);
+    }
 
     @Transactional
     public void addEcg(Long clientId, LocalDateTime examDate, Long sampleRate, Long durationMs, Long baseLine, Long gain, Boolean finished, String description) {
@@ -173,10 +201,11 @@ public class EcgService {
 
         List<EcgSignal> signals = channel.getSignals();
         int sampleRate = channel.getEcg().getSampleRate().intValue();
-        
+
         AbstractComplexQrsAlgorithm algorithm = QrsComplexAlgorithmFactory.getComplexQrsAlgorithm(algorithmId.intValue());
-        if (algorithm == null)
+        if (algorithm == null) {
             return new ArrayList<EcgSignalRange>();
+        }
 
         return algorithm.getQrsComplex(signals, sampleRate);
     }
@@ -274,7 +303,7 @@ public class EcgService {
 
         List<EcgSignal> signals = channel.getSignals();
         int sampleRate = channel.getEcg().getSampleRate().intValue();
-        
+
         AbstractPWaveAlgorithm algorithm = PWaveAlgorithmFactory.getPWaveAlgorithm(algorithmId.intValue());
 
         return algorithm.getPWaves(signals, sampleRate);
@@ -289,7 +318,7 @@ public class EcgService {
 
         return channel.getpWave().getInterlvals();
     }
-    
+
     private void tWaveDeleteAllSignalsRange(Doctor doctor, TWave tWave, List<EcgSignalRange> signalsRange) {
         for (EcgSignalRange ecgSignalRange : signalsRange) {
             ecgSignalRangeRepository.delete(ecgSignalRange.getId());
@@ -404,7 +433,7 @@ public class EcgService {
         List<EcgSignalRange> pRanges;
 
         if (pWave == null || pWave.getInterlvals().isEmpty()) {
-            pRanges = getPWaveFromAlgorithm(channelId, (long)1);
+            pRanges = getPWaveFromAlgorithm(channelId, (long) 1);
         } else {
             pRanges = pWave.getInterlvals();
         }
@@ -419,7 +448,7 @@ public class EcgService {
         List<EcgSignalRange> tRanges;
 
         if (tWave == null || tWave.getInterlvals().isEmpty()) {
-            tRanges = getTWaveFromAlgorithm(channelId, (long)1);
+            tRanges = getTWaveFromAlgorithm(channelId, (long) 1);
         } else {
             tRanges = tWave.getInterlvals();
         }
@@ -427,41 +456,110 @@ public class EcgService {
         return EcgArtifacts.getWaveDuration(tRanges, channel.getEcg().getSampleRate());
     }
 
-    @Transactional
-    public void importEcg(Long patientId, File file) throws IOException {
+    @Transactional(timeout = 0)
+    public void importEcg(Long patientId, File file, String ecgFileKey) throws IOException {
         
-        EcgFileType type = null;
-        
-        if(file.getName().toLowerCase().contains(".xml")) {
-            type = EcgFileType.HL7;
+        System.out.println("Map Size=" + uploadFileMap.size());
+
+        EcgFileType type = EcgFileType.HL7;
+
+        lock.lock();
+        try {
+            if (getUploadFile(patientId) != null) {
+                //Has upload file occurring
+                throw new ServiceUploadDuplicatedActionException();
+            } else {
+                addUploadFile(patientId, file);
+            }
+        } finally {
+            lock.unlock();
         }
         
-        if(type == null)
-            throw new ServiceUploadInvalidFormatException();       
-        
-        String newfileName = UUID.randomUUID().toString();        
-        
+        System.out.println("Map Size=" + uploadFileMap.size());
+
+        AbstractHL7Format hl7 = new HL7FormatImpl(file);
+
+        String newfileName = ecgFileKey;
+
         Patient patient = patientRepository.findOne(patientId);
-        
+
         EcgFile ecgFile = new EcgFile();
         ecgFile.setDate(LocalDateTime.now());
         ecgFile.setFileName(newfileName);
         ecgFile.setType(type);
         ecgFileRepository.save(ecgFile);
-        
+
         Ecg ecg = new Ecg();
-        ecg.setFinished(Boolean.TRUE);        
+        ecg.setBaseLine(hl7.getBaseLine());
+        ecg.setGain(hl7.getGain());
+        ecg.setSampleRate(hl7.getSampleRate());
+        ecg.setFinished(Boolean.FALSE);
         ecg.setFile(ecgFile);
         ecgRepository.save(ecg);
-        
+
+        for (int i = 0; i < hl7.getNumberOfChannels(); i++) {
+
+            EcgChannel channel = new EcgChannel();
+            channel.setLeadType(hl7.getChannelType(i));
+
+            long count = 0;
+            List<EcgSignal> signals = hl7.getChannelSignals(i);
+            for (EcgSignal signal : signals) {
+                count++;
+                /*if (count == 30000) {
+                    break;
+                }*/
+
+                EcgSignal signal_ = new EcgSignal();
+                signal_.setSampleIdx(signal.getSampleIdx());
+                signal_.setyIntensity(signal.getyIntensity());
+
+                ecgSignalRepository.save(signal_);
+                channel.addSignal(signal_);
+
+                if (count % 10000 == 0) {
+                    System.out.println(patientId + " : signal:" + count);
+                }
+            }
+            channel.setEcg(ecg);
+            ecgChannelRepository.save(channel);
+
+            ecg.addChannel(channel);
+            ecgRepository.save(ecg);
+        }
+
         patient.addEcgExam(ecg);
         patientRepository.save(patient);
-        
+
+        ecg.setFinished(Boolean.TRUE);
+        ecgRepository.save(ecg);
+
         Path pathIn = FileSystems.getDefault().getPath(file.getAbsolutePath());
         Path pathOut = FileSystems.getDefault().getPath("/home/ecgs/" + newfileName);
-        
+
         Files.copy(pathIn, pathOut);
         Files.deleteIfExists(pathIn);
-    }
 
+        lock.lock();
+        try {
+            removeUploadFile(patientId);
+        }finally {
+            lock.unlock();
+        }
+        
+        System.out.println("Map Size=" + uploadFileMap.size());
+    }
+    
+    public boolean isUploadOccurring(Long patientId, String ecgFileKey) {        
+        Patient patient = patientRepository.findOne(patientId);
+        List<Ecg> ecgs = patient.getExams();
+        for (Ecg ecg : ecgs) {
+            if(ecg.getFile().getFileName().compareTo(ecgFileKey) == 0) {
+                if(ecg.getFinished())
+                    return false;
+            }
+        }        
+        
+        return true;
+    }
 }

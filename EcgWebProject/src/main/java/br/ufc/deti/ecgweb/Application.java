@@ -5,9 +5,6 @@
  */
 package br.ufc.deti.ecgweb;
 
-import br.ufc.deti.ecgweb.utils.mitbih.MitBihData;
-import br.ufc.deti.ecgweb.utils.mitbih.MitBihHeader;
-import java.io.IOException;
 import javax.persistence.Persistence;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
