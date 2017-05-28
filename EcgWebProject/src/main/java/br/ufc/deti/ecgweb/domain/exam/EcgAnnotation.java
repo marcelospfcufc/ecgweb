@@ -26,13 +26,13 @@ public class EcgAnnotation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;    
+    private Long id;        
     
-    @Column(name = "start_time_ms")
-    private Double startTimeMs;
+    @Column(name = "first_idx")
+    private Long fisrtIdx;    
     
-    @Column(name = "final_time_ms")
-    private Double finalTimeMs;
+    @Column(name = "last_idx")
+    private Long lastIdx;
     
     private String comment;    
     
@@ -46,23 +46,7 @@ public class EcgAnnotation implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Double getStartTimeMs() {
-        return startTimeMs;
-    }
-
-    public void setStartTimeMs(Double startTimeMs) {
-        this.startTimeMs = startTimeMs;
-    }
-
-    public Double getFinalTimeMs() {
-        return finalTimeMs;
-    }
-
-    public void setFinalTimeMs(Double finalTimeMs) {
-        this.finalTimeMs = finalTimeMs;
-    }
+    }    
 
     public String getComment() {
         return comment;
@@ -80,14 +64,30 @@ public class EcgAnnotation implements Serializable {
         this.doctor = doctor;
     }
 
+    public Long getFisrtIdx() {
+        return fisrtIdx;
+    }
+
+    public void setFisrtIdx(Long fisrtIdx) {
+        this.fisrtIdx = fisrtIdx;
+    }
+
+    public Long getLastIdx() {
+        return lastIdx;
+    }
+
+    public void setLastIdx(Long lastIdx) {
+        this.lastIdx = lastIdx;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 61 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 61 * hash + (this.startTimeMs != null ? this.startTimeMs.hashCode() : 0);
-        hash = 61 * hash + (this.finalTimeMs != null ? this.finalTimeMs.hashCode() : 0);
-        hash = 61 * hash + (this.comment != null ? this.comment.hashCode() : 0);
-        hash = 61 * hash + (this.doctor != null ? this.doctor.hashCode() : 0);
+        int hash = 7;
+        hash = 23 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 23 * hash + (this.fisrtIdx != null ? this.fisrtIdx.hashCode() : 0);
+        hash = 23 * hash + (this.lastIdx != null ? this.lastIdx.hashCode() : 0);
+        hash = 23 * hash + (this.comment != null ? this.comment.hashCode() : 0);
+        hash = 23 * hash + (this.doctor != null ? this.doctor.hashCode() : 0);
         return hash;
     }
 
@@ -103,10 +103,10 @@ public class EcgAnnotation implements Serializable {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
-        if (this.startTimeMs != other.startTimeMs && (this.startTimeMs == null || !this.startTimeMs.equals(other.startTimeMs))) {
+        if (this.fisrtIdx != other.fisrtIdx && (this.fisrtIdx == null || !this.fisrtIdx.equals(other.fisrtIdx))) {
             return false;
         }
-        if (this.finalTimeMs != other.finalTimeMs && (this.finalTimeMs == null || !this.finalTimeMs.equals(other.finalTimeMs))) {
+        if (this.lastIdx != other.lastIdx && (this.lastIdx == null || !this.lastIdx.equals(other.lastIdx))) {
             return false;
         }
         if ((this.comment == null) ? (other.comment != null) : !this.comment.equals(other.comment)) {
@@ -117,4 +117,9 @@ public class EcgAnnotation implements Serializable {
         }
         return true;
     }
+
+    
+    
+      
+    
 }

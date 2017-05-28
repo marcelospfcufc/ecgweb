@@ -42,6 +42,10 @@ public class EcgChannel implements Serializable{
     @JoinColumn(name = "Ecg_Channel_Id")
     private final List<EcgSignal> signals = new ArrayList<EcgSignal>();
     
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "channel_id", nullable = true)
+    private final List<EcgAnnotation> annotations = new ArrayList<EcgAnnotation>();
+    
     @Column (name = "lead_type")
     private EcgLeadType leadType;    
     
@@ -67,6 +71,33 @@ public class EcgChannel implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    public List<EcgAnnotation> getAnnotations() {
+        return annotations;
+    }
+    
+    public void addAnnotation(EcgAnnotation annotation) {
+        annotations.add(annotation);
+    }
+
+    public void delAnnotation(EcgAnnotation annotation) {
+        annotations.remove(annotation);
+    }    
+    
+    public boolean removeAnnotationIdx(Long idx) {
+        
+        for (EcgAnnotation annotation : annotations) {
+            Long first_ = annotation.getFisrtIdx();
+            Long last_ = annotation.getLastIdx();
+            
+            if(idx >= first_ && idx <= last_) {
+                annotations.remove(annotation);
+                return true;
+            }
+        }        
+        
+        return false;
     }
     
     public EcgSignal getSignal(Integer idx) {

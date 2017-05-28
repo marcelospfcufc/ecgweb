@@ -8,6 +8,7 @@ package br.ufc.deti.ecgweb.domain.exam;
 import br.ufc.deti.ecgweb.application.controller.ServiceUploadDuplicatedActionException;
 import br.ufc.deti.ecgweb.application.controller.ServiceUploadInvalidFormatException;
 import br.ufc.deti.ecgweb.domain.client.*;
+import br.ufc.deti.ecgweb.domain.repositories.AnnotationRepository;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgChannelRepository;
 import br.ufc.deti.ecgweb.domain.repositories.EcgFileRepository;
@@ -98,6 +99,9 @@ public class EcgService {
 
     @Autowired
     private EcgFileRepository ecgFileRepository;
+    
+    @Autowired
+    private AnnotationRepository annotationRepository;
 
     public synchronized void addUploadFile(Long key, File file) {
         uploadFileMap.put(key, file);
@@ -454,6 +458,29 @@ public class EcgService {
         }
 
         return EcgArtifacts.getWaveDuration(tRanges, channel.getEcg().getSampleRate());
+    }
+    
+    @Transactional
+    public void addAnnotation(Long channelId, Long doctorId, String comment, Long firstIdx, Long lastIdx) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        Doctor doctor = doctorRepository.findOne(doctorId);                
+        
+        EcgAnnotation annotation = new EcgAnnotation();
+        annotation.setComment(comment);
+        annotation.setFisrtIdx(firstIdx);
+        annotation.setLastIdx(lastIdx);
+        annotation.setDoctor(doctor);
+        annotationRepository.save(annotation);
+        
+        channel.addAnnotation(annotation);
+        ecgChannelRepository.save(channel);        
+    }
+    
+    @Transactional
+    public void removeAnnotationAtIndex(Long channelId, Long idx) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        channel.removeAnnotationIdx(idx);
+        ecgChannelRepository.save(channel);
     }
 
     @Transactional(timeout = 0)

@@ -1,9 +1,12 @@
 package br.ufc.deti.ecgweb.application.controller;
 
+import br.ufc.deti.ecgweb.application.dto.AddAnnotationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.AddChannelRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddEcgRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddSignalRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.AnnotationDTO;
+import br.ufc.deti.ecgweb.application.dto.DelAnnotationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
@@ -421,6 +424,36 @@ public class EcgController {
         return Converters.converterFromListRRIntervalToGetPlotRRResponseDTO(service.getRRPlot(dto.getChannelId()));
     }
 
+
+    @RequestMapping(value = "ecg/channel/addAnnotation", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addAnnotation(@RequestBody AddAnnotationRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        List<AnnotationDTO> annotationsDTO = dto.getAnnotations();
+        for (AnnotationDTO annotation : annotationsDTO) {
+            System.out.println("comment:" + annotation.getComment());
+            System.out.println("Idx:" + annotation.getFirstIdx());
+            System.out.println("Idx:" + annotation.getLastIdx());
+            
+            service.addAnnotation(dto.getChannelId(), dto.getDoctorId(), annotation.getComment(), annotation.getFirstIdx(), annotation.getLastIdx());
+        }
+    }
+    
+    @RequestMapping(value = "ecg/channel/delAnnotation", method = RequestMethod.POST, consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+        public  void delAnnotation(@RequestBody DelAnnotationRequestDTO dto) {
+                
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }       
+        
+        service.removeAnnotationAtIndex(dto.getChannelId(), dto.getIdx());
+    }
+
     @RequestMapping(value = "ecg/getEcgInformation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -446,6 +479,7 @@ public class EcgController {
         return response;
     }
 
+
     @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes = "multipart/mixed", produces = "Application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -461,6 +495,7 @@ public class EcgController {
         if (file == null || file.isEmpty()) {
             throw new ServiceUploadNullFileException();
         }
+
 
         if (!file.getOriginalFilename().toLowerCase().contains(".xml")) {
             throw new ServiceUploadInvalidFormatException();
@@ -506,5 +541,5 @@ public class EcgController {
         response.setStatus(service.isUploadOccurring(dto.getPatientId(), dto.getEcgFileKey()));
         
         return response;
-    }    
+    }           
 }
