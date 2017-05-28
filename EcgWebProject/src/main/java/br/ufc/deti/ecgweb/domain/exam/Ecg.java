@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.hibernate.annotations.Type;
@@ -17,11 +16,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @DiscriminatorValue(value = "Ecg")
-public class Ecg extends AbstractExam {
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Exam_Id", nullable = true)
-    private final List<EcgAnnotation> annotations = new ArrayList<EcgAnnotation>();
+public class Ecg extends AbstractExam {    
     
     @OneToMany(mappedBy = "ecg", targetEntity = EcgChannel.class, fetch = FetchType.LAZY)            
     private final List<EcgChannel> channels = new ArrayList<EcgChannel>();    
@@ -53,32 +48,7 @@ public class Ecg extends AbstractExam {
 
     public void setReport(EcgReport report) {
         this.report = report;
-    }
-
-    public List<EcgAnnotation> getAnnotations() {
-        return annotations;
-    }
-    
-    public void addAnnotation(EcgAnnotation annotation) {
-        annotations.add(annotation);
-    }
-
-    public void delAnnotation(EcgAnnotation annotation) {
-        annotations.remove(annotation);
-    }
-
-    public void delAnnotationByTimeMs(Double timeMs) {
-        List<EcgAnnotation> annotations_ = new ArrayList<EcgAnnotation>();
-        for (EcgAnnotation annotationAux : annotations) {
-            if (Double.compare(timeMs, annotationAux.getStartTimeMs()) >= 0 && Double.compare(timeMs, annotationAux.getFinalTimeMs()) <= 0 ) {
-                annotations_.add(annotationAux);
-            }
-        }
-
-        for (int i = 0; i < annotations_.size(); i++) {
-            annotations.remove(annotations_.get(i));
-        }        
-    }
+    }   
 
     public List<EcgChannel> getChannels() {
         return channels;

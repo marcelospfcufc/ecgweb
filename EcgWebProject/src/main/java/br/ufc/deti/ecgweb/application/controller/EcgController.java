@@ -1,9 +1,12 @@
 package br.ufc.deti.ecgweb.application.controller;
 
+import br.ufc.deti.ecgweb.application.dto.AddAnnotationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.Converters;
 import br.ufc.deti.ecgweb.application.dto.AddChannelRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddEcgRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.AddSignalRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.AnnotationDTO;
+import br.ufc.deti.ecgweb.application.dto.DelAnnotationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
@@ -76,8 +79,7 @@ public class EcgController {
         }
 
         service.addEcg(dto.getPatientId(), dto.getExamDate(), dto.getSampleRate(), dto.getDurationMs(), dto.getBaseLine(), dto.getGain(), dto.getFinished(), dto.getDescription());
-    }   
-    
+    }
 
     @RequestMapping(value = "ecg/client/listEcgs", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
@@ -88,7 +90,7 @@ public class EcgController {
             throw new ServiceNotAuthorizedException();
         }
 
-        return Converters.converterListEcgsToListEcgsResponseDto(service.listAllEcgsPerPatient(dto.getClientId()));        
+        return Converters.converterListEcgsToListEcgsResponseDto(service.listAllEcgsPerPatient(dto.getClientId()));
     }
 
     @RequestMapping(value = "ecg/editReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
@@ -101,7 +103,7 @@ public class EcgController {
 
         service.editReport(dto.getEcgId(), dto.getReport());
     }
-    
+
     @RequestMapping(value = "ecg/getReport", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -110,7 +112,7 @@ public class EcgController {
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         GetReportResponseDTO resp = new GetReportResponseDTO();
         resp.setReport(service.getReport(dto.getEcgId()));
         return resp;
@@ -153,7 +155,7 @@ public class EcgController {
             throw new ServiceNotAuthorizedException();
         }
 
-        return Converters.converterListEcgChannelsToListEcgChannelsResponseDto(service.getChannels(dto.getEcgId()));        
+        return Converters.converterListEcgChannelsToListEcgChannelsResponseDto(service.getChannels(dto.getEcgId()));
     }
 
     /**
@@ -164,11 +166,11 @@ public class EcgController {
     @RequestMapping(value = "ecg/channel/addSignal", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void addSignal(@RequestBody AddSignalRequestDTO dto) {
-        
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         service.addEcgSignal(dto.getChannelId(), dto.getIdx(), dto.getIntensity());
     }
 
@@ -182,16 +184,17 @@ public class EcgController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<GetSignalsResponseDTO> getSignals(@RequestBody GetSignalsRequestDTO dto) {
-                
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         return Converters.converterListSignalsListToListSignalsResponseDto(service.getSignals(dto.getChannelId()));
     }
-    
+
     /**
-     * Return the qtd of signals.     
+     * Return the qtd of signals.
+     *
      * @param dto
      * @return List of signals
      */
@@ -199,212 +202,246 @@ public class EcgController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public GetNumberOfSignalsResponseDTO getNumberOfSignals(@RequestBody GetNumberOfSignalsRequestDTO dto) {
-                
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         GetNumberOfSignalsResponseDTO response = new GetNumberOfSignalsResponseDTO();
-        response.setQtd((long)service.getSignals(dto.getChannelId()).size());
-        
-        return response;        
+        response.setQtd((long) service.getSignals(dto.getChannelId()).size());
+
+        return response;
     }
-    
+
     /**
-     * Return signals interval.     
+     * Return signals interval.
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getSignalsInterval", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  GetSignalsIntervalResponseDTO getSignalsInterval(@RequestBody GetSignalsIntervalRequestDTO dto) {
-                
+    public GetSignalsIntervalResponseDTO getSignalsInterval(@RequestBody GetSignalsIntervalRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         GetSignalsIntervalResponseDTO response = new GetSignalsIntervalResponseDTO();
-        
+
         response.setSignals(Converters.converterListEcgSignalsToListDoublesResponseDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
         return response;
     }
-    
+
     /**
-     * Return QRS Complex from Channel signals using algorithm.     
+     * Return QRS Complex from Channel signals using algorithm.
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getQrsComplexFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetQrsComplexFromAlgorithmResponseDTO> getQrsComplexFromAlgorithm(@RequestBody GetQrsComplexFromAlgorithmRequestDTO dto) {
-                
+    public List<GetQrsComplexFromAlgorithmResponseDTO> getQrsComplexFromAlgorithm(@RequestBody GetQrsComplexFromAlgorithmRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        return Converters.converterListEcgSignalRangeToListGetQrsComplexFromAlgortihmResponseDTO(service.getQrsComplexFromAlgorithm(dto.getChannelId(), (long)1));
+        }
+
+        return Converters.converterListEcgSignalRangeToListGetQrsComplexFromAlgortihmResponseDTO(service.getQrsComplexFromAlgorithm(dto.getChannelId(), (long) 1));
     }
-    
+
     /**
-     * Return QRS Complex from Channel.     
+     * Return QRS Complex from Channel.
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getQrsComplex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetQrsComplexResponseDTO> getQrsComplex(@RequestBody GetQrsComplexRequestDTO dto) {
-                
+    public List<GetQrsComplexResponseDTO> getQrsComplex(@RequestBody GetQrsComplexRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
+        }
+
         return Converters.converterListEcgSignalRangeToListGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId()));
     }
-    
+
     /**
-     * Return QRS Complex from Channel.     
-     * @param dto     
+     * Return QRS Complex from Channel.
+     *
+     * @param dto
      */
     @RequestMapping(value = "ecg/channel/setQrsComplex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  void setQrsComplex(@RequestBody SetQrsComplexRequestDTO dto) {
-                
+    public void setQrsComplex(@RequestBody SetQrsComplexRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        if(dto.getDoctorId() == null) {
+        }
+
+        if (dto.getDoctorId() == null) {
             throw new ServiceInvalidInputParametersException();
         }
-        
-        service.setQrsComplex(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
+
+        service.setQrsComplex(dto.getDoctorId(), dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
     }
-    
+
     /**
      * Return
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getPWavesFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetPWavesFromAlgorithmResponseDTO> getPWavesFromAlgorithm(@RequestBody GetPWaveFromAlgorithmRequestDTO dto) {
-                
+    public List<GetPWavesFromAlgorithmResponseDTO> getPWavesFromAlgorithm(@RequestBody GetPWaveFromAlgorithmRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        return Converters.converterListEcgSignalRangeToListGetPWavesFromAlgortihmResponseDTO(service.getPWaveFromAlgorithm(dto.getChannelId(), (long)1));
+        }
+
+        return Converters.converterListEcgSignalRangeToListGetPWavesFromAlgortihmResponseDTO(service.getPWaveFromAlgorithm(dto.getChannelId(), (long) 1));
     }
-    
+
     /**
-     * Return P Waves from Channel.     
+     * Return P Waves from Channel.
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getPWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetPWavesResponseDTO> getPWaves(@RequestBody GetPWavesRequestDTO dto) {
-                
+    public List<GetPWavesResponseDTO> getPWaves(@RequestBody GetPWavesRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
+        }
+
         return Converters.converterListEcgSignalRangeToListGetPWavesResponseDTO(service.getPWave(dto.getChannelId()));
     }
-    
+
     /**
      * Persists PWaves.
-     * @param dto     
+     *
+     * @param dto
      */
     @RequestMapping(value = "ecg/channel/setPWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  void setPWaves(@RequestBody SetPWavesRequestDTO dto) {
-                
+    public void setPWaves(@RequestBody SetPWavesRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        if(dto.getDoctorId() == null) {
+        }
+
+        if (dto.getDoctorId() == null) {
             throw new ServiceInvalidInputParametersException();
         }
-        
-        service.setPWave(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
+
+        service.setPWave(dto.getDoctorId(), dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
     }
-    
-    
+
     /**
      * Return
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getTWavesFromAlgorithm", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetTWavesFromAlgorithmResponseDTO> getTWavesFromAlgorithm(@RequestBody GetTWaveFromAlgorithmRequestDTO dto) {
-                
+    public List<GetTWavesFromAlgorithmResponseDTO> getTWavesFromAlgorithm(@RequestBody GetTWaveFromAlgorithmRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        return Converters.converterListEcgSignalRangeToListGetTWavesFromAlgortihmResponseDTO(service.getTWaveFromAlgorithm(dto.getChannelId(), (long)1));
+        }
+
+        return Converters.converterListEcgSignalRangeToListGetTWavesFromAlgortihmResponseDTO(service.getTWaveFromAlgorithm(dto.getChannelId(), (long) 1));
     }
-    
+
     /**
-     * Return T Waves from Channel.     
+     * Return T Waves from Channel.
+     *
      * @param dto
      * @return List of signals
      */
     @RequestMapping(value = "ecg/channel/getTWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  List<GetTWavesResponseDTO> getTWaves(@RequestBody GetTWavesRequestDTO dto) {
-                
+    public List<GetTWavesResponseDTO> getTWaves(@RequestBody GetTWavesRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
+        }
+
         return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
     }
-    
+
     /**
      * Persists PWaves.
-     * @param dto     
+     *
+     * @param dto
      */
     @RequestMapping(value = "ecg/channel/setTWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  void setTWaves(@RequestBody SetTWavesRequestDTO dto) {
-                
+    public void setTWaves(@RequestBody SetTWavesRequestDTO dto) {
+
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
-        
-        if(dto.getDoctorId() == null) {
+        }
+
+        if (dto.getDoctorId() == null) {
             throw new ServiceInvalidInputParametersException();
         }
-        
-        service.setTWave(dto.getDoctorId(),dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
+
+        service.setTWave(dto.getDoctorId(), dto.getChannelId(), Converters.converterFromListEcgSignalRangeDTOToListEcgSignalRange(dto.getIntervals()));
     }
-    
+
     @RequestMapping(value = "ecg/channel/getPlotRR", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public  GetPlotRRResponseDTO getPlotRR(@RequestBody GetPlotRRRequestDTO dto) {
+    public GetPlotRRResponseDTO getPlotRR(@RequestBody GetPlotRRRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        return Converters.converterFromListRRIntervalToGetPlotRRResponseDTO(service.getRRPlot(dto.getChannelId()));
+    }
+
+    @RequestMapping(value = "ecg/channel/addAnnotation", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public void addAnnotation(@RequestBody AddAnnotationRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        List<AnnotationDTO> annotationsDTO = dto.getAnnotations();
+        for (AnnotationDTO annotation : annotationsDTO) {
+            service.addAnnotation(dto.getChannelId(), dto.getDoctorId(), annotation.getComment(), annotation.getFirstIdx(), annotation.getLastIdx());
+        }
+    }
+    
+    @RequestMapping(value = "ecg/channel/delAnnotation", method = RequestMethod.POST, consumes = "application/json")    
+    @ResponseStatus(HttpStatus.OK)
+        public  void delAnnotation(@RequestBody DelAnnotationRequestDTO dto) {
                 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }               
+        }       
         
-        return Converters.converterFromListRRIntervalToGetPlotRRResponseDTO(service.getRRPlot(dto.getChannelId()));
+        service.removeAnnotationAtIndex(dto.getChannelId(), dto.getIdx());
     }
-    
+
     @RequestMapping(value = "ecg/getEcgInformation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -413,42 +450,39 @@ public class EcgController {
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         GetEcgInformationResponseDTO response = new GetEcgInformationResponseDTO();
         response.setHeartRate(service.getHeartRate(dto.getChannelId()));
         response.setHeartRateUnity(HeartRateUnityTypeDTO.BPM);
-        
+
         response.setQrsDuration(service.getQrsDuration(dto.getChannelId()));
         response.setQrsDurationUnity(TimeUnityTypeDTO.SECOND);
-        
+
         response.settWaveDuration(service.getTWaveDuration(dto.getChannelId()));
         response.settWaveDurationUnity(TimeUnityTypeDTO.SECOND);
-        
+
         response.setpWaveDuration(service.getPWaveDuration(dto.getChannelId()));
         response.setpWaveDurationUnity(TimeUnityTypeDTO.SECOND);
-        
-        
+
         return response;
     }
-    
-    @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes="multipart/mixed")
+
+    @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes = "multipart/mixed")
     @ResponseStatus(HttpStatus.OK)
-    public  void uploadFile(@RequestParam ("file") MultipartFile file, @RequestParam String login, @RequestParam String key, @RequestParam Long patientId) throws IOException { 
-        
+    public void uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String login, @RequestParam String key, @RequestParam Long patientId) throws IOException {
+
         if (!loginService.hasAccess(login, key)) {
             throw new ServiceNotAuthorizedException();
         }
-        
+
         //curl http://lesc.ufc.br/ecgweb/ecg/upload -X POST -F 'file=@/home/marcelo/Desktop/turing-image-multimedia-imx6x-turing.sdcard.gz' -H "Content-Type: multipart/mixed"
-        
-        
-        if(file == null || file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new ServiceUploadNullFileException();
         }
-        
-        File ecgFile = new File("/tmp/" + file.getOriginalFilename());        
-        file.transferTo(ecgFile);  
-        
-        service.importEcg(patientId, ecgFile);                
+
+        File ecgFile = new File("/tmp/" + file.getOriginalFilename());
+        file.transferTo(ecgFile);
+
+        service.importEcg(patientId, ecgFile);
     }
 }
