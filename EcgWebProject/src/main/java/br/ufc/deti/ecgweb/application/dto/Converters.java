@@ -8,6 +8,7 @@ package br.ufc.deti.ecgweb.application.dto;
 import br.ufc.deti.ecgweb.domain.client.Client;
 import br.ufc.deti.ecgweb.domain.client.MitBihPatient;
 import br.ufc.deti.ecgweb.domain.exam.Ecg;
+import br.ufc.deti.ecgweb.domain.exam.EcgAnnotation;
 import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignalRange;
@@ -257,5 +258,24 @@ public class Converters {
         
         response.setPlotRR(intervalsDTO);        
         return response;
+    }
+    
+    public static List<AnnotationDTO> converterFromEcgAnnotationListToAnnotationDTOList(List<EcgAnnotation> annotations) {
+        List<AnnotationDTO> listDto = new ArrayList<AnnotationDTO>();
+        
+        for (EcgAnnotation annotation : annotations) {
+            
+            AnnotationDTO dto = new AnnotationDTO();
+            dto.setComment(annotation.getComment());
+            dto.setFirstIdx(annotation.getFisrtIdx());
+            dto.setLastIdx(annotation.getLastIdx());            
+            listDto.add(dto);
+        }
+        
+        return listDto;
+        
+        
+        
+        
     }
 }

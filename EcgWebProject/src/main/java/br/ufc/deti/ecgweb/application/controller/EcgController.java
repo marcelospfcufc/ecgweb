@@ -10,12 +10,16 @@ import br.ufc.deti.ecgweb.application.dto.DelAnnotationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.ListEcgsPerClientResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.EditReportRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetAnnotationsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetAnnotationsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetEcgInformationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetEcgInformationResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByIndexRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByIndexResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByTimeRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByTimeResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWaveFromAlgorithmRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesFromAlgorithmResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWavesRequestDTO;
@@ -28,8 +32,10 @@ import br.ufc.deti.ecgweb.application.dto.GetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetQrsComplexResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetReportRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetReportResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalByIndexRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalByIndexResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalByTimeIndexRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetSignalsIntervalByTimeIndexResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetTWaveFromAlgorithmRequestDTO;
@@ -44,7 +50,6 @@ import br.ufc.deti.ecgweb.application.dto.SetQrsComplexRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.SetTWavesRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.TimeUnityTypeDTO;
 import br.ufc.deti.ecgweb.application.dto.UploadFileResponseDTO;
-import br.ufc.deti.ecgweb.domain.exam.EcgFileType;
 import br.ufc.deti.ecgweb.domain.exam.EcgService;
 import br.ufc.deti.ecgweb.domain.security.LoginService;
 import java.io.File;
@@ -205,39 +210,69 @@ public class EcgController {
      * @param dto
      * @return List of signals
      */
-    @RequestMapping(value = "ecg/channel/numberOfSignals", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/numberOfSignalsByIndex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public GetNumberOfSignalsResponseDTO getNumberOfSignals(@RequestBody GetNumberOfSignalsRequestDTO dto) {
+    public GetNumberOfSignalsByIndexResponseDTO getNumberOfSignalsByIndex(@RequestBody GetNumberOfSignalsByIndexRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        GetNumberOfSignalsResponseDTO response = new GetNumberOfSignalsResponseDTO();
+        GetNumberOfSignalsByIndexResponseDTO response = new GetNumberOfSignalsByIndexResponseDTO();
         response.setQtd((long) service.getSignals(dto.getChannelId()).size());
 
         return response;
     }
 
     /**
-     * Return signals interval.
+     * Return signals interval by index.
      *
-     * @param dto
+     * @param dto (GetSignalsIntervalByIndexRequestDTO)
      * @return List of signals
      */
-    @RequestMapping(value = "ecg/channel/getSignalsInterval", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/getSignalsIntervalByIndex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public GetSignalsIntervalResponseDTO getSignalsInterval(@RequestBody GetSignalsIntervalRequestDTO dto) {
+    public GetSignalsIntervalByIndexResponseDTO getSignalsIntervalByIndex(@RequestBody GetSignalsIntervalByIndexRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        GetSignalsIntervalResponseDTO response = new GetSignalsIntervalResponseDTO();
+        GetSignalsIntervalByIndexResponseDTO response = new GetSignalsIntervalByIndexResponseDTO();
 
         response.setSignals(Converters.converterListEcgSignalsToListDoublesResponseDTO(service.getSignals(dto.getChannelId()).subList(dto.getFirst(), dto.getLast())));
+        return response;
+    }
+    
+    @RequestMapping(value = "ecg/channel/numberOfSignalsByTime", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetNumberOfSignalsByTimeResponseDTO getNumberOfSignalsByTime(@RequestBody GetNumberOfSignalsByTimeRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        GetNumberOfSignalsByTimeResponseDTO response = new GetNumberOfSignalsByTimeResponseDTO();
+        response.setQtd((long) service.getNumberOfIndexByTime(dto.getChannelId(), dto.getTimeWindowInSeconds()));
+
+        return response;
+    }
+    
+    @RequestMapping(value = "ecg/channel/getSignalsIntervalByTimeIndex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetSignalsIntervalByTimeIndexResponseDTO getSignalsIntervalByTimeIndex(@RequestBody GetSignalsIntervalByTimeIndexRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+
+        GetSignalsIntervalByTimeIndexResponseDTO response = new GetSignalsIntervalByTimeIndexResponseDTO();
+
+        response.setSignals(Converters.converterListEcgSignalsToListDoublesResponseDTO(service.getSignalsByTimeIndex(dto.getChannelId(), dto.getIndex(), dto.getTimeWindowInSeconds())));
         return response;
     }
 
@@ -435,10 +470,6 @@ public class EcgController {
 
         List<AnnotationDTO> annotationsDTO = dto.getAnnotations();
         for (AnnotationDTO annotation : annotationsDTO) {
-            System.out.println("comment:" + annotation.getComment());
-            System.out.println("Idx:" + annotation.getFirstIdx());
-            System.out.println("Idx:" + annotation.getLastIdx());
-            
             service.addAnnotation(dto.getChannelId(), dto.getDoctorId(), annotation.getComment(), annotation.getFirstIdx(), annotation.getLastIdx());
         }
     }
@@ -453,6 +484,24 @@ public class EcgController {
         
         service.removeAnnotationAtIndex(dto.getChannelId(), dto.getIdx());
     }
+        
+    @RequestMapping(value = "ecg/channel/getAnnotations", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public GetAnnotationsResponseDTO getAnnotations(@RequestBody GetAnnotationsRequestDTO dto) {
+
+        if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
+            throw new ServiceNotAuthorizedException();
+        }
+        
+        
+        
+        GetAnnotationsResponseDTO response = new GetAnnotationsResponseDTO();
+        response.setAnnotations(Converters.converterFromEcgAnnotationListToAnnotationDTOList(service.getAnnotations(dto.getChannelId())));
+        
+        return response;
+    }    
+        
 
     @RequestMapping(value = "ecg/getEcgInformation", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
@@ -478,7 +527,6 @@ public class EcgController {
 
         return response;
     }
-
 
     @RequestMapping(value = "ecg/upload", method = RequestMethod.POST, consumes = "multipart/mixed", produces = "Application/json")
     @ResponseBody

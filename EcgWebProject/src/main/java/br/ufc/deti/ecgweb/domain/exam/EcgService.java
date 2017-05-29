@@ -6,7 +6,6 @@
 package br.ufc.deti.ecgweb.domain.exam;
 
 import br.ufc.deti.ecgweb.application.controller.ServiceUploadDuplicatedActionException;
-import br.ufc.deti.ecgweb.application.controller.ServiceUploadInvalidFormatException;
 import br.ufc.deti.ecgweb.domain.client.*;
 import br.ufc.deti.ecgweb.domain.repositories.AnnotationRepository;
 import br.ufc.deti.ecgweb.domain.repositories.DoctorRepository;
@@ -42,13 +41,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -198,6 +192,33 @@ public class EcgService {
     public List<EcgSignal> getSignals(Long channelId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         return channel.getSignals();
+    }
+    
+    public Long getNumberOfIndexByTime(Long channelId, Long timeWindow) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        Long frequency = channel.getEcg().getSampleRate();
+        Long numberOfSignals = (long) channel.getSignals().size();
+        
+        double timeInSeconds = numberOfSignals / frequency;
+        Double numberOfIndexInWindowSeconds = timeInSeconds / timeWindow;
+        
+        return Math.round(numberOfIndexInWindowSeconds);
+    }
+    
+    public List<EcgSignal> getSignalsByTimeIndex(Long channelId, Long idx, Long timeInSeconds) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        Long frequency = channel.getEcg().getSampleRate();
+        Long firstIdx = frequency * idx;
+        Long lastIndex = firstIdx + (frequency * timeInSeconds);
+        
+        List<EcgSignal> signals = channel.getSignals();
+        
+        if(lastIndex >= signals.size())
+            lastIndex = (long) signals.size();
+        
+        
+        
+        return signals.subList(firstIdx.intValue(), lastIndex.intValue());
     }
 
     public List<EcgSignalRange> getQrsComplexFromAlgorithm(Long channelId, Long algorithmId) {
@@ -481,6 +502,11 @@ public class EcgService {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         channel.removeAnnotationIdx(idx);
         ecgChannelRepository.save(channel);
+    }
+    
+    public List<EcgAnnotation> getAnnotations(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        return channel.getAnnotations();
     }
 
     @Transactional(timeout = 0)

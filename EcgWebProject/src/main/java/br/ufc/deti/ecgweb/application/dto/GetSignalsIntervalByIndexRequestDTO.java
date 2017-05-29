@@ -4,7 +4,7 @@ package br.ufc.deti.ecgweb.application.dto;
  *
  * @author Marcelo Araujo Lima
  */
-public class GetSignalsIntervalRequestDTO extends AbstractAuthenticationRequestDTO{
+public class GetSignalsIntervalByIndexRequestDTO extends AbstractAuthenticationRequestDTO{
     
     private Long channelId;
     private int first;

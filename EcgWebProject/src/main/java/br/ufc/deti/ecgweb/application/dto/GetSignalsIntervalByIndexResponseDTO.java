@@ -12,10 +12,10 @@ import java.util.List;
  *
  * @author Marcelo Araujo Lima
  */
-public class GetSignalsIntervalResponseDTO {
+public class GetSignalsIntervalByIndexResponseDTO {    
     private List<Double> signals;
 
-    public GetSignalsIntervalResponseDTO() {
+    public GetSignalsIntervalByIndexResponseDTO() {
         this.signals = new ArrayList<Double>();
     }
 
@@ -26,6 +26,4 @@ public class GetSignalsIntervalResponseDTO {
     public void setSignals(List<Double> signals) {
         this.signals = signals;
     }
-    
-    
 }
