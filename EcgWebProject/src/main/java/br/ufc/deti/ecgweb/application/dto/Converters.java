@@ -189,44 +189,57 @@ public class Converters {
         return list;
     }
     
-    public static List<GetQrsComplexResponseDTO> converterListEcgSignalRangeToListGetQrsComplexResponseDTO(List<EcgSignalRange> signals) {
-        List<GetQrsComplexResponseDTO> list = new ArrayList<GetQrsComplexResponseDTO>();
+    public static GetQrsComplexResponseDTO converterListEcgSignalRangeToGetQrsComplexResponseDTO(List<EcgSignalRange> signals) {
+        
+        GetQrsComplexResponseDTO dto = new GetQrsComplexResponseDTO();
+        List<QrsComplexDTO> listQrs = new ArrayList<QrsComplexDTO>();
         
         for (EcgSignalRange signal : signals) {
-            GetQrsComplexResponseDTO dto = new GetQrsComplexResponseDTO();
-            dto.setFirstIdx(signal.getFirst());
-            dto.setLastIdx(signal.getLast());
-            dto.setPeakIdx(signal.getPeakIdx());
-            list.add(dto);
+            QrsComplexDTO qrs = new QrsComplexDTO();
+            qrs.setFirstIdx(signal.getFirst());
+            qrs.setLastIdx(signal.getLast());
+            qrs.setPeakIdx(signal.getPeakIdx());            
+            listQrs.add(qrs);
         }
         
-        return list;
+        dto.setListQrs(listQrs);       
+        
+        return dto;
     }
     
-    public static List<GetPWavesResponseDTO> converterListEcgSignalRangeToListGetPWavesResponseDTO(List<EcgSignalRange> signals) {
-        List<GetPWavesResponseDTO> list = new ArrayList<GetPWavesResponseDTO>();
+    public static GetPWavesResponseDTO converterListEcgSignalRangeToGetPWavesResponseDTO(List<EcgSignalRange> signals) {
+        GetPWavesResponseDTO dto = new GetPWavesResponseDTO();
+        List<PWaveDTO> listPWaves = new ArrayList<PWaveDTO>();
         
         for (EcgSignalRange signal : signals) {
-            GetPWavesResponseDTO dto = new GetPWavesResponseDTO();
-            dto.setFirstIdx(signal.getFirst());
-            dto.setLastIdx(signal.getLast());
-            list.add(dto);
+            PWaveDTO pWave = new PWaveDTO();
+            pWave.setFirstIdx(signal.getFirst());
+            pWave.setLastIdx(signal.getLast());
+            
+            listPWaves.add(pWave);
         }
         
-        return list;
+        dto.setpWaves(listPWaves);       
+        
+        return dto;
     }
     
-    public static List<GetTWavesResponseDTO> converterListEcgSignalRangeToListGetTWavesResponseDTO(List<EcgSignalRange> signals) {
-        List<GetTWavesResponseDTO> list = new ArrayList<GetTWavesResponseDTO>();
+    public static GetTWavesResponseDTO converterListEcgSignalRangeToGetTWavesResponseDTO(List<EcgSignalRange> signals) {
+        
+        GetTWavesResponseDTO dto = new GetTWavesResponseDTO();
+        List<TWaveDTO> listTWaves = new ArrayList<TWaveDTO>();
         
         for (EcgSignalRange signal : signals) {
-            GetTWavesResponseDTO dto = new GetTWavesResponseDTO();
-            dto.setFirstIdx(signal.getFirst());
-            dto.setLastIdx(signal.getLast());
-            list.add(dto);
+            TWaveDTO tWave = new TWaveDTO();
+            tWave.setFirstIdx(signal.getFirst());
+            tWave.setLastIdx(signal.getLast());
+            
+            listTWaves.add(tWave);
         }
         
-        return list;
+        dto.settWaves(listTWaves);       
+        
+        return dto;
     }
     
     public static List<EcgSignalRange> converterFromListEcgSignalRangeDTOToListEcgSignalRange(List<EcgSignalRangeDTO> intervalsDTO) {

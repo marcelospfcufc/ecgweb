@@ -11,69 +11,20 @@ import br.ufc.deti.ecgweb.domain.exam.EcgChannel;
 import br.ufc.deti.ecgweb.domain.exam.EcgLeadType;
 import br.ufc.deti.ecgweb.domain.exam.EcgSignal;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBException;
 
 /**
  * @author Marcelo Araujo Lima
  */
-public class HL7FormatImpl extends AbstractEcgFormat {
+public class DicomEcgFormatImpl extends AbstractEcgFormat {
 
-    public HL7FormatImpl() {
+    public DicomEcgFormatImpl() {
     }
 
     @Override
     public void loadInformationFromFile(File ecgFile) {
-        
-        if (ecgFile == null) {
-            throw new NullPointerException();
-        }else {
-            this.ecgFile = ecgFile;
-        }
-        
-        List<Signal> signals = null;
-        try {
-            signals = ReaderHl7.read(ecgFile);
-
-            numberOfChannels = signals.size();
-            if (signals.size() > 0) {
-                Signal signal = signals.get(0);
-
-                sampleRate = (long) signal.getTimeIncrement();
-                gain = (long) signal.getScale();
-                baseLine = (long) signal.getOrigin();
-                description = "";
-                examDate = LocalDateTime.now();
-
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(HL7FormatImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
-            Logger.getLogger(HL7FormatImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        if (signals != null) {
-
-            for (Signal s : signals) {
-                List<EcgSignal> sig = new ArrayList<EcgSignal>();
-
-                for (int i = 0; i < s.size(); i++) {
-                    EcgSignal ecg = new EcgSignal();
-                    ecg.setSampleIdx(i);
-                    ecg.setyIntensity(s.get(i));
-
-                    sig.add(ecg);
-                }
-
-                channelTypes.add(getLeadTypeFromString(s.getName()));
-                channelSignals.add(sig);
-            }
-        }
+        //TODO
     }
 
     private EcgLeadType getLeadTypeFromString(String value) {

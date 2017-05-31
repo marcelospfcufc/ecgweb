@@ -1,41 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.ufc.deti.ecgweb.application.dto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Marcelo Araujo Lima
  */
-public class GetQrsComplexResponseDTO {
-    private Long firstIdx;
-    private Long lastIdx;
-    private Long peakIdx;
-
-    public Long getFirstIdx() {
-        return firstIdx;
-    }
-
-    public void setFirstIdx(Long firstIdx) {
-        this.firstIdx = firstIdx;
-    }
-
-    public Long getLastIdx() {
-        return lastIdx;
-    }
-
-    public void setLastIdx(Long lastIdx) {
-        this.lastIdx = lastIdx;
-    }
-
-    public Long getPeakIdx() {
-        return peakIdx;
-    }
-
-    public void setPeakIdx(Long peakIdx) {
-        this.peakIdx = peakIdx;
-    }
+public class GetQrsComplexResponseDTO {   
     
+    List<QrsComplexDTO> listQrs = new ArrayList<QrsComplexDTO>();
+
+    public List<QrsComplexDTO> getListQrs() {
+        return listQrs;
+    }
+
+    public void setListQrs(List<QrsComplexDTO> listQrs) {
+        this.listQrs = listQrs;
+    }
 }

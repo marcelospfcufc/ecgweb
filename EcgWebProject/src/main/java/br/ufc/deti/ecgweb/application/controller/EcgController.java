@@ -16,8 +16,8 @@ import br.ufc.deti.ecgweb.application.dto.GetChannelsRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetChannelsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetEcgInformationRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetEcgInformationResponseDTO;
-import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByIndexRequestDTO;
-import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByIndexResponseDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsRequestDTO;
+import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByTimeRequestDTO;
 import br.ufc.deti.ecgweb.application.dto.GetNumberOfSignalsByTimeResponseDTO;
 import br.ufc.deti.ecgweb.application.dto.GetPWaveFromAlgorithmRequestDTO;
@@ -210,16 +210,16 @@ public class EcgController {
      * @param dto
      * @return List of signals
      */
-    @RequestMapping(value = "ecg/channel/numberOfSignalsByIndex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/numberOfSignals", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public GetNumberOfSignalsByIndexResponseDTO getNumberOfSignalsByIndex(@RequestBody GetNumberOfSignalsByIndexRequestDTO dto) {
+    public GetNumberOfSignalsResponseDTO getNumberOfSignals(@RequestBody GetNumberOfSignalsRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        GetNumberOfSignalsByIndexResponseDTO response = new GetNumberOfSignalsByIndexResponseDTO();
+        GetNumberOfSignalsResponseDTO response = new GetNumberOfSignalsResponseDTO();
         response.setQtd((long) service.getSignals(dto.getChannelId()).size());
 
         return response;
@@ -231,7 +231,7 @@ public class EcgController {
      * @param dto (GetSignalsIntervalByIndexRequestDTO)
      * @return List of signals
      */
-    @RequestMapping(value = "ecg/channel/getSignalsIntervalByIndex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "ecg/channel/getSignalsInterval", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public GetSignalsIntervalByIndexResponseDTO getSignalsIntervalByIndex(@RequestBody GetSignalsIntervalByIndexRequestDTO dto) {
@@ -303,13 +303,13 @@ public class EcgController {
     @RequestMapping(value = "ecg/channel/getQrsComplex", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GetQrsComplexResponseDTO> getQrsComplex(@RequestBody GetQrsComplexRequestDTO dto) {
+    public GetQrsComplexResponseDTO getQrsComplex(@RequestBody GetQrsComplexRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
-
-        return Converters.converterListEcgSignalRangeToListGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId()));
+        
+        return Converters.converterListEcgSignalRangeToGetQrsComplexResponseDTO(service.getQrsComplex(dto.getChannelId(), dto.getDoctorId()));
     }
 
     /**
@@ -360,13 +360,13 @@ public class EcgController {
     @RequestMapping(value = "ecg/channel/getPWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GetPWavesResponseDTO> getPWaves(@RequestBody GetPWavesRequestDTO dto) {
+    public GetPWavesResponseDTO getPWaves(@RequestBody GetPWavesRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        return Converters.converterListEcgSignalRangeToListGetPWavesResponseDTO(service.getPWave(dto.getChannelId()));
+        return Converters.converterListEcgSignalRangeToGetPWavesResponseDTO(service.getPWave(dto.getChannelId(), dto.getDoctorId()));
     }
 
     /**
@@ -417,13 +417,13 @@ public class EcgController {
     @RequestMapping(value = "ecg/channel/getTWaves", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public List<GetTWavesResponseDTO> getTWaves(@RequestBody GetTWavesRequestDTO dto) {
+    public GetTWavesResponseDTO getTWaves(@RequestBody GetTWavesRequestDTO dto) {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
 
-        return Converters.converterListEcgSignalRangeToListGetTWavesResponseDTO(service.getTWave(dto.getChannelId()));
+        return Converters.converterListEcgSignalRangeToGetTWavesResponseDTO(service.getTWave(dto.getChannelId(), dto.getDoctorId()));
     }
 
     /**

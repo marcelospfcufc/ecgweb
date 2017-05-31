@@ -4,7 +4,7 @@ package br.ufc.deti.ecgweb.application.dto;
  *
  * @author Marcelo Araujo Lima
  */
-public class GetNumberOfSignalsByIndexResponseDTO{    
+public class GetNumberOfSignalsResponseDTO{    
     private Long qtd;
 
     public Long getQtd() {

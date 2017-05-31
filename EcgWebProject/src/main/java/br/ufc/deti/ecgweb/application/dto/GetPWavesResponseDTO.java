@@ -5,29 +5,22 @@
  */
 package br.ufc.deti.ecgweb.application.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Marcelo Araujo Lima
  */
 public class GetPWavesResponseDTO {
-    private double firstIdx;
-    private double lastIdx;
+    List<PWaveDTO> pWaves = new ArrayList<PWaveDTO>();
 
-    public double getFirstIdx() {
-        return firstIdx;
+    public List<PWaveDTO> getpWaves() {
+        return pWaves;
     }
 
-    public void setFirstIdx(double firstIdx) {
-        this.firstIdx = firstIdx;
+    public void setpWaves(List<PWaveDTO> pWaves) {
+        this.pWaves = pWaves;
     }
-
-    public double getLastIdx() {
-        return lastIdx;
-    }
-
-    public void setLastIdx(double lastIdx) {
-        this.lastIdx = lastIdx;
-    }
-    
     
 }

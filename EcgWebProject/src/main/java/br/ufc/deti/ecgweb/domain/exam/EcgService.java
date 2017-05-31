@@ -202,13 +202,22 @@ public class EcgService {
         double timeInSeconds = numberOfSignals / frequency;
         Double numberOfIndexInWindowSeconds = timeInSeconds / timeWindow;
         
-        return Math.round(numberOfIndexInWindowSeconds);
+        
+        
+        Long roundValue = Math.round(numberOfIndexInWindowSeconds);
+        if(roundValue < numberOfIndexInWindowSeconds ) {
+            roundValue++; 
+        }
+        
+        System.out.println(numberOfIndexInWindowSeconds + ":" + roundValue);
+        
+        return roundValue;
     }
     
     public List<EcgSignal> getSignalsByTimeIndex(Long channelId, Long idx, Long timeInSeconds) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         Long frequency = channel.getEcg().getSampleRate();
-        Long firstIdx = frequency * idx;
+        Long firstIdx = frequency * timeInSeconds * idx;
         Long lastIndex = firstIdx + (frequency * timeInSeconds);
         
         List<EcgSignal> signals = channel.getSignals();
@@ -235,11 +244,12 @@ public class EcgService {
         return algorithm.getQrsComplex(signals, sampleRate);
     }
 
-    public List<EcgSignalRange> getQrsComplex(Long channelId) {
+    public List<EcgSignalRange> getQrsComplex(Long channelId, Long doctorId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
 
         if (channel.getQrsComplex() == null) {
-            return new ArrayList<EcgSignalRange>();
+            AbstractComplexQrsAlgorithm algorithm = QrsComplexAlgorithmFactory.getComplexQrsAlgorithm(1);
+            setQrsComplex(doctorId, channelId, algorithm.getQrsComplex(channel.getSignals(), channel.getEcg().getSampleRate().intValue()));
         }
 
         return channel.getQrsComplex().getInterlvals();
@@ -334,11 +344,12 @@ public class EcgService {
         return algorithm.getPWaves(signals, sampleRate);
     }
 
-    public List<EcgSignalRange> getPWave(Long channelId) {
+    public List<EcgSignalRange> getPWave(Long channelId, Long doctorId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
 
         if (channel.getpWave() == null) {
-            return new ArrayList<EcgSignalRange>();
+            AbstractPWaveAlgorithm algorithm = PWaveAlgorithmFactory.getPWaveAlgorithm(2);
+            setPWave(doctorId, channelId, algorithm.getPWaves(channel.getSignals(), channel.getEcg().getSampleRate().intValue()));
         }
 
         return channel.getpWave().getInterlvals();
@@ -394,11 +405,12 @@ public class EcgService {
         return algorithm.getTWaves(signals, sampleRate);
     }
 
-    public List<EcgSignalRange> getTWave(Long channelId) {
+    public List<EcgSignalRange> getTWave(Long channelId, Long doctorId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
 
         if (channel.gettWave() == null) {
-            return new ArrayList<EcgSignalRange>();
+            AbstractTWaveAlgorithm algorithm = TWaveAlgorithmFactory.getTWaveAlgorithm(2);
+            setTWave(doctorId, channelId, algorithm.getTWaves(channel.getSignals(), channel.getEcg().getSampleRate().intValue()));
         }
 
         return channel.gettWave().getInterlvals();
@@ -530,7 +542,8 @@ public class EcgService {
         
         System.out.println("Map Size=" + uploadFileMap.size());
 
-        AbstractHL7Format hl7 = new HL7FormatImpl(file);
+        AbstractEcgFormat hl7 = new HL7FormatImpl();
+        hl7.loadInformationFromFile(file);
 
         String newfileName = ecgFileKey;
 
@@ -610,9 +623,11 @@ public class EcgService {
             if(ecg.getFile().getFileName().compareTo(ecgFileKey) == 0) {
                 if(ecg.getFinished())
                     return false;
+                else
+                    return true;
             }
         }        
         
-        return true;
+        return false;
     }
 }

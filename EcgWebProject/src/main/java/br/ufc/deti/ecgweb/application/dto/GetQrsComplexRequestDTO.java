@@ -6,6 +6,7 @@ package br.ufc.deti.ecgweb.application.dto;
  */
 public class GetQrsComplexRequestDTO extends AbstractAuthenticationRequestDTO {
 
+    private Long doctorId;
     private Long channelId;    
 
     public Long getChannelId() {
@@ -14,5 +15,13 @@ public class GetQrsComplexRequestDTO extends AbstractAuthenticationRequestDTO {
 
     public void setChannelId(Long channelId) {
         this.channelId = channelId;
+    }
+
+    public Long getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 }

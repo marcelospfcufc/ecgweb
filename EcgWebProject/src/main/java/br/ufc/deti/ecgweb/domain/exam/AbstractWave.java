@@ -33,7 +33,7 @@ public abstract class AbstractWave implements Serializable {
     private Long id;            
     
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
+    @JoinColumn(name = "doctor_id", nullable = true)
     private Doctor doctor;
     
     @OneToMany()
