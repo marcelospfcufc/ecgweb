@@ -467,6 +467,8 @@ public class EcgController {
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
         }
+        
+        service.removeAllAnnotation(dto.getChannelId());
 
         List<AnnotationDTO> annotationsDTO = dto.getAnnotations();
         for (AnnotationDTO annotation : annotationsDTO) {
@@ -492,9 +494,7 @@ public class EcgController {
 
         if (!loginService.hasAccess(dto.getLogin(), dto.getKey())) {
             throw new ServiceNotAuthorizedException();
-        }
-        
-        
+        }       
         
         GetAnnotationsResponseDTO response = new GetAnnotationsResponseDTO();
         response.setAnnotations(Converters.converterFromEcgAnnotationListToAnnotationDTOList(service.getAnnotations(dto.getChannelId())));

@@ -30,7 +30,12 @@ public class Doctor extends Client {
         this.crm = crm;
     }
     
-    public void addPatient(Patient patient) {
+    public void addPatient(Patient patient) {        
+        
+        if(patients.contains(patient)) {            
+            return;
+        }
+        
         patients.add(patient);        
     }
     

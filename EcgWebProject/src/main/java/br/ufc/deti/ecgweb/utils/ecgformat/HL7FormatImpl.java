@@ -32,8 +32,6 @@ public class HL7FormatImpl extends AbstractEcgFormat {
         
         if (ecgFile == null) {
             throw new NullPointerException();
-        }else {
-            this.ecgFile = ecgFile;
         }
         
         List<Signal> signals = null;

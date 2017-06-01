@@ -516,6 +516,13 @@ public class EcgService {
         ecgChannelRepository.save(channel);
     }
     
+    @Transactional
+    public void removeAllAnnotation(Long channelId) {
+        EcgChannel channel = ecgChannelRepository.findOne(channelId);
+        channel.clearAnnotations();
+        ecgChannelRepository.save(channel);
+    }
+    
     public List<EcgAnnotation> getAnnotations(Long channelId) {
         EcgChannel channel = ecgChannelRepository.findOne(channelId);
         return channel.getAnnotations();

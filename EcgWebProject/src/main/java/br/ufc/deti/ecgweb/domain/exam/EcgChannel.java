@@ -100,6 +100,10 @@ public class EcgChannel implements Serializable{
         return false;
     }
     
+    public void clearAnnotations() {
+        annotations.clear();
+    }
+    
     public EcgSignal getSignal(Integer idx) {
         return signals.get(idx);
     }

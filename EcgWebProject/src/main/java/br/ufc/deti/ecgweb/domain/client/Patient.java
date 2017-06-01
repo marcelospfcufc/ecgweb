@@ -25,6 +25,9 @@ public class Patient extends Client{
     }
 
     public void addDoctor(Doctor doctor) {
+        if(doctors.contains(doctor))
+            return;
+        
         doctors.add(doctor);
     }
 
@@ -32,6 +35,5 @@ public class Patient extends Client{
     public String getRole() {
         return RoleType.PATIENT;
     }
-
     
 }

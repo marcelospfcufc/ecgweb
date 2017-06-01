@@ -10,8 +10,7 @@ import java.util.List;
  * @author Marcelo Araujo Lima
  */
 public abstract class AbstractEcgFormat {
-
-    protected File ecgFile;
+    
     protected List<List<EcgSignal>> channelSignals = new ArrayList<List<EcgSignal>>();
     protected List<EcgLeadType> channelTypes = new ArrayList<EcgLeadType>();
     protected Long sampleRate;
