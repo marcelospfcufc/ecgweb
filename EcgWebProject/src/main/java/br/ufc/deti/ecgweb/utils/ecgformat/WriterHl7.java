@@ -1,5 +1,6 @@
 package br.ufc.deti.ecgweb.utils.ecgformat;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -224,7 +225,7 @@ public class WriterHl7 {
 		return str.toString();
 	}
 
-	public void write(String path, List<Signal> signals) throws IOException {
+	public File write(String path, List<Signal> signals) throws IOException {
 		Element header = header();
 
 		annotatedECG(header, UUID.randomUUID().toString(), "20020510092700", "20020510092900");
@@ -254,59 +255,10 @@ public class WriterHl7 {
 
 		XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
 
-		FileWriter file = new FileWriter(path);
+                File out = new File(path);
+		FileWriter file = new FileWriter(out);
 		xout.output(doc, file);
-	}
-
-	public static void main(String[] args) {
-		WriterHl7 writer = new WriterHl7();
-
-		List<Signal> signals = new ArrayList<Signal>();
-		Signal s1 = new Signal("MDC_ECG_LEAD_I");
-		s1.setTimeUnit("s");
-		s1.setTimeIncrement(1.0 / 360); // (1/freq)
-		s1.setOriginUnit("uV");
-		s1.setOrigin(0);
-		s1.setScaleUnit("uV");
-		s1.setScale(1);
-		
-		for(int i =0 ; i < 1000; i++){
-			s1.add(i%100.0);			
-		}
-
-		Signal s2 = new Signal("MDC_ECG_LEAD_II");
-		s2.setTimeUnit("s");
-		s2.setTimeIncrement(1.0 / 360); // (1/freq)
-		s2.setOriginUnit("uV");
-		s2.setOrigin(100);
-		s2.setScaleUnit("uV");
-		s2.setScale(1);
-		
-		for(int i =0 ; i < 1000; i++){
-			s2.add( i % 100.0);			
-		}
-		
-		signals.add(s1);
-		signals.add(s2);
-		signals.add(s1);
-		signals.add(s2);
-
-		signals.add(s1);
-		signals.add(s2);
-		signals.add(s1);
-		signals.add(s2);
-
-		signals.add(s1);
-		signals.add(s2);
-		signals.add(s1);
-		signals.add(s2);
-
-		try {
-			writer.write(".//src//arquivoXML.xml", signals);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		System.out.println("End");
+                
+                return out;
 	}
 }

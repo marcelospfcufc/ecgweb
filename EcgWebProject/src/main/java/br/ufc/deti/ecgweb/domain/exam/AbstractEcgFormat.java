@@ -13,9 +13,9 @@ public abstract class AbstractEcgFormat {
     
     protected List<List<EcgSignal>> channelSignals = new ArrayList<List<EcgSignal>>();
     protected List<EcgLeadType> channelTypes = new ArrayList<EcgLeadType>();
-    protected Long sampleRate;
-    protected Long gain;
-    protected Long baseLine;
+    protected Double sampleRate;
+    protected Double gain;
+    protected Double baseLine;
     protected String description;
     protected Integer numberOfChannels;
     protected LocalDateTime examDate;

@@ -13,37 +13,37 @@ import org.cvrgrid.hl7aecg.Hl7Ecg;
 import org.cvrgrid.hl7aecg.Hl7EcgLeadData;
 
 public class ReaderHl7 {
-	public static  List<Signal> read(File file) throws IOException, JAXBException {
-		InputStream inputStream = new FileInputStream(file);
-		HL7PreprocessReturn ret = Hl7Ecg.preprocess(inputStream);
 
-		Hl7EcgLeadData data = ret.getLeadData();
-		int leadCount = ret.getLeadCount();
-		int numberPoints = data.getNumberOfPoints();
-		
-		List<Signal> signals = new ArrayList<Signal>();
-		
-		for (int l = 0; l < leadCount; l++) {			
-			PagedEcgXYDataset peg = (PagedEcgXYDataset) data.getOneXYDataset(l);
-			
-			
-			Signal signal = new Signal(data.getLeadName()[l]);
+    public static List<Signal> read(File file) throws IOException, JAXBException {
+        InputStream inputStream = new FileInputStream(file);
+        HL7PreprocessReturn ret = Hl7Ecg.preprocess(inputStream);
 
-			for (int i = 0; i < numberPoints; i++) {
-				signal.add(peg.getYValue(0, i));
-			}
-			
-			signal.setTimeIncrement(data.getTimeIncrement());
-			signal.setTimeUnit(data.getTimeUnit());
-			
-			signal.setScale(data.getLeadScaleValue(l));
-			signal.setScaleUnit(data.getLeadScaleUnit(l));
-			
-			signal.setOrigin(data.getLeadOriginValue(l));
-			signal.setOriginUnit(data.getLeadOriginUnit(l));
-			
-			signals.add(signal);
-		}
-		return signals;
+        Hl7EcgLeadData data = ret.getLeadData();
+        int leadCount = ret.getLeadCount();
+        int numberPoints = data.getNumberOfPoints();
+
+        List<Signal> signals = new ArrayList<Signal>();
+
+        for (int l = 0; l < leadCount; l++) {
+            PagedEcgXYDataset peg = (PagedEcgXYDataset) data.getOneXYDataset(l);
+
+            Signal signal = new Signal(data.getLeadName()[l]);
+
+            for (int i = 0; i < numberPoints; i++) {
+                signal.add(peg.getYValue(0, i));
+            }
+
+            signal.setTimeIncrement(data.getTimeIncrement());
+            signal.setTimeUnit(data.getTimeUnit());
+
+            signal.setScale(data.getLeadScaleValue(l));
+            signal.setScaleUnit(data.getLeadScaleUnit(l));
+
+            signal.setOrigin(data.getLeadOriginValue(l));
+            signal.setOriginUnit(data.getLeadOriginUnit(l));
+
+            signals.add(signal);
         }
+        return signals;
+    }
 }

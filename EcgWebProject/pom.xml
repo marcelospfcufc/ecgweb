@@ -139,8 +139,12 @@
             <groupId>com.pixelmed</groupId>
             <artifactId>pixelmed</artifactId>
             <version>1.0</version>
-        </dependency>       
-        
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>apache-log4j-extras</artifactId>
+            <version>1.2.17</version>
+        </dependency>
     </dependencies>
 
     <build>

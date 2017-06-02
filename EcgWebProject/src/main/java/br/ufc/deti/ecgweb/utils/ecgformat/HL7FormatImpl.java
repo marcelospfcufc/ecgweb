@@ -29,11 +29,11 @@ public class HL7FormatImpl extends AbstractEcgFormat {
 
     @Override
     public void loadInformationFromFile(File ecgFile) {
-        
+
         if (ecgFile == null) {
             throw new NullPointerException();
         }
-        
+
         List<Signal> signals = null;
         try {
             signals = ReaderHl7.read(ecgFile);
@@ -42,9 +42,9 @@ public class HL7FormatImpl extends AbstractEcgFormat {
             if (signals.size() > 0) {
                 Signal signal = signals.get(0);
 
-                sampleRate = (long) signal.getTimeIncrement();
-                gain = (long) signal.getScale();
-                baseLine = (long) signal.getOrigin();
+                sampleRate =  (1.0 / signal.getTimeIncrement());
+                gain =  signal.getScale();
+                baseLine =  signal.getOrigin();
                 description = "";
                 examDate = LocalDateTime.now();
 
@@ -63,6 +63,7 @@ public class HL7FormatImpl extends AbstractEcgFormat {
                 for (int i = 0; i < s.size(); i++) {
                     EcgSignal ecg = new EcgSignal();
                     ecg.setSampleIdx(i);
+
                     ecg.setyIntensity(s.get(i));
 
                     sig.add(ecg);
@@ -101,17 +102,17 @@ public class HL7FormatImpl extends AbstractEcgFormat {
 
     @Override
     public Long getSampleRate() {
-        return sampleRate;
+        return sampleRate.longValue();
     }
 
     @Override
     public Long getGain() {
-        return gain;
+        return gain.longValue();
     }
 
     @Override
     public Long getBaseLine() {
-        return baseLine;
+        return baseLine.longValue();
     }
 
     @Override
@@ -149,10 +150,10 @@ public class HL7FormatImpl extends AbstractEcgFormat {
 
     @Override
     public File getEcgFile(Ecg ecg) {
-        
-        this.gain = ecg.getGain();
-        this.baseLine = ecg.getBaseLine();
-        this.sampleRate = ecg.getSampleRate();
+
+        this.gain = (double)ecg.getGain();
+        this.baseLine = (double)ecg.getBaseLine();
+        this.sampleRate = (double)ecg.getSampleRate();
         this.examDate = ecg.getExamDate();
 
         List<EcgChannel> channels = ecg.getChannels();
@@ -160,9 +161,35 @@ public class HL7FormatImpl extends AbstractEcgFormat {
             channelTypes.add(channel.getLeadType());
             channelSignals.add(channel.getSignals());
         }
-        //TODO
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        WriterHl7 writer = new WriterHl7();
+
+        List<Signal> signals = new ArrayList<Signal>();
+
+        for (int i = 0; i < channelSignals.size(); i++) {
+
+            Signal s = new Signal(channelTypes.get(i).toString());
+            s.setTimeUnit("s");
+            s.setTimeIncrement(1.0 / sampleRate);
+            s.setOriginUnit("uV");
+            s.setOrigin(baseLine);
+            s.setScaleUnit("uV");
+            s.setScale(gain);
+
+            List<EcgSignal> ecgSig = channelSignals.get(i);
+            for (EcgSignal sig : ecgSig) {
+                s.add(sig.getyIntensity() );
+            }
+
+            signals.add(s);
+        }
+
+        try {
+            return writer.write(ecg.getFileName(), signals);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }

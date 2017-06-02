@@ -54,17 +54,17 @@ public class DicomEcgFormatImpl extends AbstractEcgFormat {
 
     @Override
     public Long getSampleRate() {
-        return sampleRate;
+        return sampleRate.longValue();
     }
 
     @Override
     public Long getGain() {
-        return gain;
+        return gain.longValue();
     }
 
     @Override
     public Long getBaseLine() {
-        return baseLine;
+        return baseLine.longValue();
     }
 
     @Override
@@ -103,9 +103,9 @@ public class DicomEcgFormatImpl extends AbstractEcgFormat {
     @Override
     public File getEcgFile(Ecg ecg) {
         
-        this.gain = ecg.getGain();
-        this.baseLine = ecg.getBaseLine();
-        this.sampleRate = ecg.getSampleRate();
+        this.gain = (double)ecg.getGain();
+        this.baseLine = (double)ecg.getBaseLine();
+        this.sampleRate = (double)ecg.getSampleRate();
         this.examDate = ecg.getExamDate();
 
         List<EcgChannel> channels = ecg.getChannels();
